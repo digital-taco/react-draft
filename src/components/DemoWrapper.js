@@ -6,8 +6,10 @@ import Toolbar from '@material-ui/core/Toolbar'
 import IconButton from '@material-ui/core/IconButton'
 import MenuIcon from '@material-ui/icons/Settings'
 import PropsDrawer from './PropsDrawer'
-import useLocalStorage from './useLocalStorage'
+import useLocalStorage from '../useLocalStorage'
 import EditDrawer from './EditDrawer'
+import ActivityBar from './ActivityBar'
+import SideBar from './SideBar'
 
 const styles = {
   grid: css`
@@ -16,7 +18,6 @@ const styles = {
     max-height: 100vh;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
   `,
   wrapper: css`
     padding: 12px;
@@ -43,17 +44,6 @@ const styles = {
     grid-template-rows: 1fr 1fr;
     min-height: calc(100vh - 64px);
   `,
-  global: css`
-    body {
-      margin: 0;
-    }
-    .demo-font {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-        'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-    }
-  `,
   appBar: css`
     z-index: 3000;
     position: relative;
@@ -71,7 +61,9 @@ export default function DemoWrapper({
   setPropStates,
   resetToDefaults,
 }) {
-  const [propsDrawerOpen, setPropsDrawerOpen] = useLocalStorage('propsDrawerOpen', true)
+  const [drawerIsOpen, setDrawerIsOpen] = useLocalStorage('drawerIsOpen', true)
+  const [drawerView, setDrawerView] = useLocalStorage('drawerView', true)
+
   const [editDrawerOpen, setEditDrawerOpen] = useLocalStorage('editDrawerOpen', true)
   const [editItem, setEditItem] = useLocalStorage(`${displayName}_editItem`, null)
 
@@ -83,56 +75,60 @@ export default function DemoWrapper({
   }
 
   return (
-    <>
-      <Global styles={styles.global} />
-      <div css={styles.grid}>
-        {/* APP BAR */}
-        <div css={styles.appBar}>
-          <AppBar position="static" color="primary">
-            <Toolbar>
-              <IconButton
-                onClick={() => setPropsDrawerOpen(!propsDrawerOpen)}
-                edge="start"
-                color="inherit"
-                aria-label="Props"
-              >
-                <MenuIcon />
-              </IconButton>
-              <h4 className="demo-font">{displayName}</h4>
-            </Toolbar>
-          </AppBar>
-        </div>
+    <div css={styles.grid}>
+      {/* APP BAR */}
+      <ActivityBar
+        drawerIsOpen={drawerIsOpen}
+        setDrawerIsOpen={setDrawerIsOpen}
+        drawerView={drawerView}
+        setDrawerView={setDrawerView}
+      />
 
-        {/* MAIN */}
-        <div css={styles.main}>
-          {/* PROPS DRAWER */}
+      <SideBar open={drawerIsOpen}>
+
+
+        {drawerView === 'props' &&
           <PropsDrawer
             propStates={propStates}
-            open={propsDrawerOpen}
+            open={drawerIsOpen && drawerView === 'props'}
             propObjects={propObjects}
             setEditItem={setEditItem}
             updatePropState={updatePropState}
             resetToDefaults={resetToDefaults}
           />
+        }
 
-          {/* DEMO COMPONENT */}
-          <div
-            css={styles.contents}
-            style={{ gridTemplateRows: editDrawerOpen ? `1fr 1fr` : `auto` }}
-          >
-            <div css={styles.wrapper}>{children}</div>
+          {drawerView === 'explorer' && 'Explorer'}
+        {drawerView === 'settings' && 'Settings'}
 
-            {/* EDIT DRAWER */}
-            <EditDrawer
-              open={editDrawerOpen}
-              setOpen={setEditDrawerOpen}
-              editItem={editItem}
-              setEditItem={setEditItem}
-              updatePropState={updatePropState}
-            />
-          </div>
+      </SideBar>
+      <div css={styles.wrapper}>{children}</div>
+
+      {/* <div css={styles.main}>
+        <PropsDrawer
+          propStates={propStates}
+          open={drawerIsOpen && drawerView === 'props'}
+          propObjects={propObjects}
+          setEditItem={setEditItem}
+          updatePropState={updatePropState}
+          resetToDefaults={resetToDefaults}
+        />
+
+        <div
+          css={styles.contents}
+          style={{ gridTemplateRows: editDrawerOpen ? `1fr 1fr` : `auto` }}
+        >
+          <div css={styles.wrapper}>{children}</div>
+
+          <EditDrawer
+            open={editDrawerOpen}
+            setOpen={setEditDrawerOpen}
+            editItem={editItem}
+            setEditItem={setEditItem}
+            updatePropState={updatePropState}
+          />
         </div>
-      </div>
-    </>
+      </div> */}
+    </div>
   )
 }

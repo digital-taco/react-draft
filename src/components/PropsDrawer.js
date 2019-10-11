@@ -3,8 +3,8 @@ import React from 'react'
 import { css, jsx } from '@emotion/core'
 import amber from '@material-ui/core/colors/amber'
 import Button from '@material-ui/core/Button'
-import getInput from './lib/get-input'
-import ChildrenInput from './Inputs/ChildrenInput'
+import getInput from '../lib/get-input'
+import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
 
 const styles = {
@@ -29,11 +29,15 @@ const styles = {
   `,
   propsDrawer: css`
     padding-top: 8px;
-    background-color: #fcfcfc;
     transition: margin-right 0.2s ease-in-out;
     border: solid 1px rgba(0, 0, 0, 0.12);
     display: flex;
     flex-direction: column;
+
+    & * {
+      color: var(--color-text) !important;
+      border-color: var(--color-text) !important;
+    }
   `,
 }
 
@@ -60,7 +64,6 @@ export default function PropsDrawer({
   }, {
     missingPropTypes: []
   })
-  console.log("TCL: inputs", inputs)
 
   const style = {
     display: open ? 'block' : 'none',

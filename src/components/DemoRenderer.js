@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import DemoComponent from 'DemoFile' //eslint-disable-line
 import DemoWrapper from './DemoWrapper'
-import { isJson, removeQuotes } from './lib/helpers'
-import useLocalStorage from './useLocalStorage'
-import canRender from './lib/can-render'
+import { isJson, removeQuotes } from '../lib/helpers'
+import useLocalStorage from '../useLocalStorage'
+import canRender from '../lib/can-render'
 import ChildrenRenderer from './ChildrenRenderer'
 import ErrorBox from './ErrorBox'
+
+import '../global.css'
 
 
 // Add the app container so react can render

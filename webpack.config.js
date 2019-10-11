@@ -25,7 +25,7 @@ module.exports = {
   devtool: 'source-map',
 
   entry: {
-    'render-demo': path.resolve(__dirname, 'src/DemoRenderer.js'),
+    'render-demo': path.resolve(__dirname, 'src/components/DemoRenderer.js'),
   },
 
   plugins: [
