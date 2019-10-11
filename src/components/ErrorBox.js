@@ -1,5 +1,5 @@
 import React from 'react'
-import sharedStyles from './shared.module.css'
+import sharedStyles from '../shared.module.css'
 
 export default function ErrorBox({children}) {
   return (
