@@ -1,7 +1,7 @@
 # react-draft
 📝 WIP: Develop your React components in isolation without any configuration
 
-# Installation
+## Installation
 
 In your project's root directory, run:
 
@@ -17,13 +17,15 @@ In your project's `package.json`, add:
 }
 ```
 
-# Basic Usage
+## Usage
 
+Run the following command in the root of your project:
+
+```bash
+npm run draft
 ```
-// example will go here
-```
 
-# Authors
+## Authors
 
-Zach Williams (Zachintosh)
-Kyle West (kyle-west)
+Zach Williams (@zachintosh)
+Kyle West (@kyle-west)
