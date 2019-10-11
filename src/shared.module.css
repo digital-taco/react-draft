@@ -1,0 +1,13 @@
+
+.missingProps {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-column-gap: 4px;
+  align-items: center;
+  color: red;
+  font-weight: 500;
+  font-size: 16px;
+  padding: 8px 12px;
+  border: solid 1px red;
+  border-radius: 4px;
+}
