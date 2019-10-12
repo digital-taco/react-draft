@@ -10,6 +10,7 @@ import useLocalStorage from '../useLocalStorage'
 import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
+import Explorer from './Explorer'
 
 const styles = {
   grid: css`
@@ -98,7 +99,9 @@ export default function DemoWrapper({
           />
         }
 
-          {drawerView === 'explorer' && 'Explorer'}
+        
+        {drawerView === 'explorer' && <Explorer />}
+        
         {drawerView === 'settings' && 'Settings'}
 
       </SideBar>
