@@ -94,11 +94,9 @@ function ComponentDemo() {
     }, defaultValues)
 
     setPropStates(currentValues)
-    console.log("TCL: ComponentDemo -> currentValues", currentValues)
   }, [componentInfo])
 
   const canRenderComponent = componentInfo && canRender(componentInfo.props, propStates)
-  console.log("TCL: ComponentDemo -> componentInfo", componentInfo)
 
   return (
     <>
