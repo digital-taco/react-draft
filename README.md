@@ -38,7 +38,7 @@ npm link
 Where you cloned `META-react-draft-sandbox`, run:
 
 ```bash
-npm link react-draft
+npm link @js-draft/react-draft
 ```
 
 Run draft in the sandbox. Any changes made in `react-draft` will be picked up.
