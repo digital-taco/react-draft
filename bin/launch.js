@@ -8,10 +8,14 @@ const hotMiddleware = require('webpack-hot-middleware')
 const path = require('path')
 const fs = require('fs')
 const express = require('express')
+const bodyParser = require('body-parser')
 const WebSocket = require('ws')
 const reactDocs = require('react-docgen')
 const standalone = require('@babel/standalone/babel')
 const config = require('../webpack.config')
+const find = require('find');
+
+const fileStructure = find.fileSync(/\.js$/, path.resolve('.')).filter(x => !x.includes('node_modules/'));
 
 const wss = new WebSocket.Server({ port: 8001 })
 const app = express()
@@ -19,7 +23,7 @@ const port = 8080
 const compiler = webpack(config)
 
 // Read Package JSON and parse component information
-let componentInfo, filePath
+let componentInfo, filePath, updateFilePath
 
 try {
   const packageJson = require(path.resolve('.', 'package.json'))
@@ -59,6 +63,18 @@ app.use(
   })
 )
 
+// custom routes have to be set up before the webpack middleware in order to access
+app.get('/files', (req, res) => {
+  let cwd = path.resolve('.')
+  res.json({files: fileStructure.map(x => x.replace(cwd, '')), currentlySelected: filePath.replace(cwd, ''), cwd});
+})
+app.post('/change-selected-file', bodyParser.json(), (req, res) => {
+  let cwd = path.resolve('.')
+  filePath = path.resolve('.' + req.query.newPath)
+  console.log(filePath)
+  res.json({files: fileStructure.map(x => x.replace(cwd, '')), currentlySelected: filePath.replace(cwd, ''), cwd});
+})
+
 /** Add the middleware for hot-module-reloading */
 const wphmw = hotMiddleware(compiler)
 app.use(wphmw)
@@ -85,8 +101,7 @@ wss.on('connection', ws => {
     }
   })
 
-  // Watch the file for any changes to it's documentation (proptypes, name, default prop values, etc.)
-  fs.watchFile(filePath, { interval: 1000 }, () => {
+  const watchFile = () => {
     const updatedComponentInfo = parseComponentFile()
     // Check if they are the same, so we know if documentation updates happened or not
     if (updatedComponentInfo !== componentInfo) {
@@ -94,7 +109,10 @@ wss.on('connection', ws => {
       componentInfo = updatedComponentInfo
       ws.send(updatedComponentInfo)
     }
-  })
+  }
+  // Watch the file for any changes to it's documentation (proptypes, name, default prop values, etc.)
+  let watcher = fs.watchFile(filePath, { interval: 1000 }, watchFile);
+
 })
 
 /** Start that sucker up */

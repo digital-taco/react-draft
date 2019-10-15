@@ -46,9 +46,9 @@ export default function ActivityBar({drawerIsOpen, setDrawerIsOpen, drawerView, 
 
   return (
     <div css={activityBarCss}>
-      <PropsIcon isSelected={drawerView === 'props' ? '' : undefined} onClick={() => handleClick('props')} />
-      <FolderIcon isSelected={drawerView === 'explorer' ? '' : undefined} onClick={() => handleClick('explorer')} />
-      <SettingsIcon isSelected={drawerView === 'settings' ? '' : undefined} onClick={() => handleClick('settings')} />
+      <PropsIcon data-selected={drawerView === 'props' ? '' : undefined} onClick={() => handleClick('props')} />
+      <FolderIcon data-selected={drawerView === 'explorer' ? '' : undefined} onClick={() => handleClick('explorer')} />
+      <SettingsIcon data-selected={drawerView === 'settings' ? '' : undefined} onClick={() => handleClick('settings')} />
     </div>
   )
 }
