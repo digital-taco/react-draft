@@ -34,6 +34,7 @@
     "html-webpack-tags-plugin": "^2.0.13",
     "i18next": "^17.0.6",
     "imports-loader": "^0.8.0",
+    "open": "^6.4.0",
     "parse-prop-types": "^0.3.0",
     "react": "^16.8.6",
     "react-ace": "^7.0.2",

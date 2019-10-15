@@ -13,7 +13,8 @@ const WebSocket = require('ws')
 const reactDocs = require('react-docgen')
 const standalone = require('@babel/standalone/babel')
 const config = require('../webpack.config')
-const find = require('find');
+const find = require('find')
+const open = require('open')
 
 const fileStructure = find.fileSync(/\.js$/, path.resolve('.')).filter(x => !x.includes('node_modules/'));
 
@@ -66,13 +67,13 @@ app.use(
 // custom routes have to be set up before the webpack middleware in order to access
 app.get('/files', (req, res) => {
   let cwd = path.resolve('.')
-  res.json({files: fileStructure.map(x => x.replace(cwd, '')), currentlySelected: filePath.replace(cwd, ''), cwd});
+  res.json({ files: fileStructure.map(x => x.replace(cwd, '')), currentlySelected: filePath.replace(cwd, ''), cwd });
 })
 app.post('/change-selected-file', bodyParser.json(), (req, res) => {
   let cwd = path.resolve('.')
   filePath = path.resolve('.' + req.query.newPath)
   console.log(filePath)
-  res.json({files: fileStructure.map(x => x.replace(cwd, '')), currentlySelected: filePath.replace(cwd, ''), cwd});
+  res.json({ files: fileStructure.map(x => x.replace(cwd, '')), currentlySelected: filePath.replace(cwd, ''), cwd });
 })
 
 /** Add the middleware for hot-module-reloading */
@@ -119,5 +120,7 @@ wss.on('connection', ws => {
 app.listen(port, err => {
   if (err) {
     console.log(err)
+  } else {
+    open(`http://localhost:${port}`)
   }
 })
