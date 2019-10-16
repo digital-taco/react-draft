@@ -9,7 +9,6 @@ import ErrorBox from './ErrorBox'
 
 const styles = {
   propsContainer: css`
-    padding: 8px 16px;
     min-width: 250px;
     box-sizing: border-box;
     display: grid;

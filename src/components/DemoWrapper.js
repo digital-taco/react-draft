@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 /** @jsx jsx */
 import { Global, css, jsx } from '@emotion/core'
 import AppBar from '@material-ui/core/AppBar'
@@ -11,6 +11,8 @@ import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
 import Explorer from './Explorer'
+import Settings from './Settings'
+import { SettingsContext } from './SettingsProvider'
 
 const styles = {
   grid: css`
@@ -21,7 +23,6 @@ const styles = {
     display: flex;
   `,
   wrapper: css`
-    padding: 12px;
     flex-grow: 2;
     overflow-y: scroll;
     min-height: 0;
@@ -68,6 +69,8 @@ export default function DemoWrapper({
   const [editDrawerOpen, setEditDrawerOpen] = useLocalStorage('editDrawerOpen', true)
   const [editItem, setEditItem] = useLocalStorage(`${displayName}_editItem`, null)
 
+  const { settings } = useContext(SettingsContext)
+
   function updatePropState(propName, newState) {
     setPropStates(oldPropStates => ({
       ...oldPropStates,
@@ -85,9 +88,10 @@ export default function DemoWrapper({
         setDrawerView={setDrawerView}
       />
 
+      {/* SIDEBAR */}
       <SideBar open={drawerIsOpen}>
 
-
+        {/* PROPS VIEW */}
         {drawerView === 'props' &&
           <PropsDrawer
             propStates={propStates}
@@ -98,40 +102,17 @@ export default function DemoWrapper({
             resetToDefaults={resetToDefaults}
           />
         }
-
         
+        {/* EXPLORER VIEW */}
         {drawerView === 'explorer' && <Explorer />}
         
-        {drawerView === 'settings' && 'Settings'}
+        {/* SETTINGS VIEW */}
+        {drawerView === 'settings' && <Settings />}
 
       </SideBar>
-      <div css={styles.wrapper}>{children}</div>
 
-      {/* <div css={styles.main}>
-        <PropsDrawer
-          propStates={propStates}
-          open={drawerIsOpen && drawerView === 'props'}
-          propObjects={propObjects}
-          setEditItem={setEditItem}
-          updatePropState={updatePropState}
-          resetToDefaults={resetToDefaults}
-        />
-
-        <div
-          css={styles.contents}
-          style={{ gridTemplateRows: editDrawerOpen ? `1fr 1fr` : `auto` }}
-        >
-          <div css={styles.wrapper}>{children}</div>
-
-          <EditDrawer
-            open={editDrawerOpen}
-            setOpen={setEditDrawerOpen}
-            editItem={editItem}
-            setEditItem={setEditItem}
-            updatePropState={updatePropState}
-          />
-        </div>
-      </div> */}
+      {/* DEMO */}
+      <div css={styles.wrapper} style={{padding: settings.demoPadding + 'px'}}>{children}</div>
     </div>
   )
 }
