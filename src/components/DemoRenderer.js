@@ -7,6 +7,7 @@ import useLocalStorage from '../useLocalStorage'
 import canRender from '../lib/can-render'
 import ChildrenRenderer from './ChildrenRenderer'
 import ErrorBox from './ErrorBox'
+import SettingsProvider from './SettingsProvider'
 
 import '../global.css'
 
@@ -99,7 +100,7 @@ function ComponentDemo() {
   const canRenderComponent = componentInfo && canRender(componentInfo.props, propStates)
 
   return (
-    <>
+    <SettingsProvider>
       {componentInfo && propStates && (
         <DemoWrapper
           displayName={componentInfo.displayName}
@@ -123,7 +124,7 @@ function ComponentDemo() {
           )}
         </DemoWrapper>
       )}
-    </>
+    </SettingsProvider>
   )
 }
 
