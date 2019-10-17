@@ -7,7 +7,7 @@ import useLocalStorage from '../useLocalStorage'
 import canRender from '../lib/can-render'
 import ChildrenRenderer from './ChildrenRenderer'
 import ErrorBox from './ErrorBox'
-import SettingsProvider from './SettingsProvider'
+import SettingsProvider from './Settings/SettingsProvider'
 
 import '../global.css'
 

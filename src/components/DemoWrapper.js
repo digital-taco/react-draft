@@ -11,8 +11,8 @@ import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
 import Explorer from './Explorer'
-import Settings from './Settings'
-import { SettingsContext } from './SettingsProvider'
+import Settings from './Settings/Settings'
+import { SettingsContext } from './Settings/SettingsProvider'
 
 const styles = {
   grid: css`
@@ -112,7 +112,15 @@ export default function DemoWrapper({
       </SideBar>
 
       {/* DEMO */}
-      <div css={styles.wrapper} style={{padding: settings.demoPadding + 'px'}}>{children}</div>
+      <div
+        css={styles.wrapper}
+        style={{
+          padding: settings.demoPadding + 'px',
+          backgroundColor: settings.backgroundColor || '#fff',
+        }}
+      >
+        {children}
+      </div>
     </div>
   )
 }
