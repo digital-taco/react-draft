@@ -93,7 +93,7 @@ const evaluateFiles = (fileStructure) => {
   let fileTree = {}
 
   files.forEach(file => {
-    let paths = file.split('/').filter(x => x)
+    let paths = file.split(/[\\/]/).filter(x => x)
     let fileName = paths[paths.length - 1];
     paths = paths.slice(0, paths.length - 1)
     
