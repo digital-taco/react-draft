@@ -1,10 +1,14 @@
 import React from 'react'
 import sharedStyles from '../shared.module.css'
+import InputLabel from '../base-components/InputLabel'
 
-export default function ErrorBox({children}) {
+export default function ErrorBox({label, error}) {
   return (
-    <div className={sharedStyles.missingProps}>
-      {children}
-    </div>
+    <>
+      <InputLabel label={label} />
+      <div className={sharedStyles.missingProps}>
+        {error}
+      </div>
+    </>
   )
 }

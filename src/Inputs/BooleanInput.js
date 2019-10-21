@@ -1,14 +1,13 @@
 import React from 'react'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
+import Checkbox from '../base-components/Checkbox'
 
 export default function BooleanInput({ propName, value, updatePropState }) {
   return (
-    <FormControlLabel
-      control={
-        <Checkbox checked={value} onChange={e => updatePropState(propName, e.target.checked)} />
-      }
+    <Checkbox
       label={propName}
+      checked={value}
+      onChange={e => updatePropState(propName, e.target.checked)}
+      id={propName}
     />
   )
 }

@@ -18,6 +18,7 @@ const labelCss = css`
 const metaCss = css`
   font-size: 12px;
   color: var(--color-text-secondary);
+  margin-top: 8px;
 `
 
 export default function InputLabel({label, htmlFor, metaText}) {

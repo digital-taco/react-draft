@@ -4,11 +4,22 @@ body {
   --color-background: #26292e;
   --color-background-secondary: #31353c;
   --color-background-highlight: #4d535c;
+  --color-background-highlight2: #535963;
+  --color-background-accent: #767d8a;
   --color-text: #e9e9e9;
   --color-text-secondary: #d9d9d9;
   --color-text-hover: #009dff;
   --color-text-selected: #009dff;
   --color-text-accent: #00FFB7;
+  --color-error-text: rgb(255, 98, 98);
+  --color-warning-text: rgb(255, 182, 98);
+  --border-color-warning: rgb(255, 136, 0);
+
+
+  /* ALERTS */
+  --alert-border-warning: rgb(255, 136, 0);
+  --alert-background-warning: #4d535c;
+  --alert-text-warning: rgb(255, 136, 0);
 }
 .demo-font {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
