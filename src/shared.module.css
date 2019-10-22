@@ -1,13 +1,10 @@
 
 .missingProps {
-  display: grid;
-  grid-template-columns: max-content max-content;
-  grid-column-gap: 4px;
-  align-items: center;
-  color: red;
+  color: var(--alert-text-warning);
   font-weight: 500;
-  font-size: 16px;
-  padding: 8px 12px;
-  border: solid 1px red;
-  border-radius: 4px;
+  font-size: 14px;
+  padding: 8px;
+  border-left: solid 2px var(--border-color-warning);
+  text-transform: uppercase;
+  background-color: var(--color-background-hover);
 }

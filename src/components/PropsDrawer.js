@@ -2,7 +2,7 @@ import React from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import amber from '@material-ui/core/colors/amber'
-import Button from '@material-ui/core/Button'
+import Button from '../base-components/Button'
 import getInput from '../lib/get-input'
 import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
@@ -27,17 +27,12 @@ const styles = {
     }
   `,
   propsDrawer: css`
-    padding-top: 8px;
-    transition: margin-right 0.2s ease-in-out;
-    border: solid 1px rgba(0, 0, 0, 0.12);
     display: flex;
     flex-direction: column;
-
-    & * {
-      color: var(--color-text) !important;
-      border-color: var(--color-text) !important;
-    }
   `,
+  resetButton: css`
+    margin-top: 24px;
+  `
 }
 
 export default function PropsDrawer({
@@ -73,30 +68,33 @@ export default function PropsDrawer({
   }
 
   return (
-    <div css={styles.propsDrawer} style={style} className="demo-font">
-      <div css={styles.propsContainer}>
-        <ChildrenInput value={propStates.children} setEditItem={setEditItem} />
-        {inputs.string && inputs.string.map(getInputProp)}
-        {inputs.number && inputs.number.map(getInputProp)}
-        {inputs.enum && inputs.enum.map(getInputProp)}
-        {inputs.object && inputs.object.map(getInputProp)}
-        {inputs.array && inputs.array.map(getInputProp)}
-        {inputs.shape && inputs.shape.map(getInputProp)}
-        {inputs.exact && inputs.exact.map(getInputProp)}
-        {inputs.bool && inputs.bool.map(getInputProp)}
+    <>
+      <H1>Props</H1>
+      <div css={styles.propsDrawer} style={style} className="demo-font">
+        <div css={styles.propsContainer}>
+          {/* <ChildrenInput value={propStates.children} setEditItem={setEditItem} /> */}
+          {inputs.string && inputs.string.map(getInputProp)}
+          {inputs.number && inputs.number.map(getInputProp)}
+          {inputs.enum && inputs.enum.map(getInputProp)}
+          {inputs.object && inputs.object.map(getInputProp)}
+          {inputs.array && inputs.array.map(getInputProp)}
+          {inputs.shape && inputs.shape.map(getInputProp)}
+          {inputs.exact && inputs.exact.map(getInputProp)}
+          {inputs.bool && inputs.bool.map(getInputProp)}
 
-        {/* MISSING PROP TYPES */}
-        {inputs.missingPropTypes.map(([propName, propInfo]) => (
-          <ErrorBox>
-            {propName}: ERROR Missing PropType
-          </ErrorBox>
-        ))}
-        
-        <Button size="small" color="primary" onClick={resetToDefaults}>
-          Reset to Defaults
-        </Button>
+          {/* MISSING PROP TYPES */}
+          {inputs.missingPropTypes.map(([propName, propInfo]) => (
+            <ErrorBox label={propName} error="Missing PropType" />
+          ))}
+          
+          <div css={styles.resetButton}>
+            <Button size="small" color="primary" onClick={resetToDefaults}>
+              Reset to Defaults
+            </Button>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   )
 }
 //
