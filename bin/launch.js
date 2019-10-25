@@ -45,24 +45,24 @@ function parseComponentFile() {
 }
 
 /** Add the middleware for webpack-dev-server */
-app.use(
-  middleware(compiler, {
-    noInfo: true,
-    publicPath: '/',
-    hot: true,
-    stats: {
-      builtAt: false,
-      colors: true,
-      timings: true,
-      entrypoints: false,
-      assets: false,
-      modules: false,
-      warnings: false,
-      version: false,
-      hash: false,
-    },
-  })
-)
+const devMiddleware = middleware(compiler, {
+  noInfo: true,
+  publicPath: '/',
+  hot: true,
+  stats: {
+    builtAt: false,
+    colors: true,
+    timings: true,
+    entrypoints: false,
+    assets: false,
+    modules: false,
+    warnings: false,
+    version: false,
+    hash: false,
+  },
+})
+
+app.use(devMiddleware)
 
 // custom routes have to be set up before the webpack middleware in order to access
 app.get('/files', (req, res) => {

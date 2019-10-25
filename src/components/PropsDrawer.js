@@ -6,6 +6,7 @@ import Button from '../base-components/Button'
 import getInput from '../lib/get-input'
 import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
+import { H1 } from '../base-components/Headers'
 
 const styles = {
   propsContainer: css`

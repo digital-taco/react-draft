@@ -5,8 +5,8 @@ import { css, jsx } from '@emotion/core'
 const buttonCss = css`
   appearance: none;
   text-transform: uppercase;
-  background-color: var(--button-background);
-  color: var(--color-text-accent);
+  color: var(--color-text-hover);
+  font-weight: bold;
   background-color: var(--color-background-highlight);
   padding: 12px 16px;
   border-radius: 4px;

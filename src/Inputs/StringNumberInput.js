@@ -1,5 +1,6 @@
 import React from 'react'
-import TextField from '@material-ui/core/TextField'
+import TextInput from '../base-components/TextInput'
+import InputLabel from '../base-components/InputLabel'
 
 export default function StringNumberInput({
   type,
@@ -10,16 +11,17 @@ export default function StringNumberInput({
 }) {
   const { defaultValue, required } = propObj
   return (
-    <TextField
-      id={propName}
-      label={propName}
-      variant="outlined"
-      defaultValue={defaultValue ? defaultValue.value : ''}
-      value={value}
-      required={required}
-      margin="dense"
-      type={type}
-      onChange={e => updatePropState(propName, e.target.value)}
-    />
+    <>
+      <InputLabel htmlFor={propName} label={propName} metaText={type} />
+      <TextInput
+        id={propName}
+        label={propName}
+        defaultValue={defaultValue ? defaultValue.value : ''}
+        value={value}
+        required={required}
+        type={type}
+        onChange={e => updatePropState(propName, e.target.value)}
+      />
+    </>
   )
 }
