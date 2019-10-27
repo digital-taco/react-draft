@@ -85,7 +85,6 @@ function ComponentDemo() {
     const [hashedName, Component] = componentEntries.find(([hashedName, Component]) => {
       return Component.meta.filePath === filePath
     })
-    console.log('LOG: updateSelectedComponent -> Component', Component)
     setSelectedComponent(() => Component)
   }
 
@@ -102,7 +101,6 @@ function ComponentDemo() {
     setPropStates(currentValues)
   }, [SelectedComponent])
 
-  console.log('LOG: ComponentDemo -> SelectedComponent', SelectedComponent)
   const canRenderComponent = propStates && canRender(SelectedComponent.meta.props, propStates)
 
   return (
