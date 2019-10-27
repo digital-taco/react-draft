@@ -20,13 +20,18 @@ const fileStructure = {
 
 const componentTree = buildComponentTree(fileStructure)
 
-// Write the exports list
+// Write the exports list on initial load
 buildMasterExports(componentTree)
 
 // Set up webpack, websockets, express
 const app = express()
 const port = 8080
 const compiler = webpack(config)
+
+// Whenever the compilation goes invalid (something changed), rebuild the master exports
+compiler.hooks.invalid.tap('BuildExportsList', () => {
+  buildMasterExports(componentTree)
+})
 
 // Must be added _before_ dev middleware
 app.get('/files', (req, res) => {
@@ -48,6 +53,9 @@ const devMiddleware = middleware(compiler, {
     warnings: false,
     version: false,
     hash: false,
+  },
+  watchOptions: {
+    ignored: /master-exports/,
   },
 })
 app.use(devMiddleware)

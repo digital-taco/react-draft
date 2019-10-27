@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 import * as Components from 'ExportsList' //eslint-disable-line
 import DemoWrapper from './DemoWrapper'
@@ -61,7 +61,7 @@ function getPropStateDefaults(props) {
 /** Identifies the component with the shortest path */
 function getDefaultSelectedComponent() {
   const getCount = path => (path.match(/(\/|\\)/g) || []).length
-  const component = componentEntries.reduce((acc, [hashedName, Component]) => {
+  const component = componentEntries.reduce((acc, [, Component]) => {
     if (!Component.meta) return acc
     if (getCount(acc.meta.filePath) > getCount(Component.meta.filePath)) {
       acc = Component
@@ -75,31 +75,31 @@ function getDefaultSelectedComponent() {
 
 function ComponentDemo() {
   const [SelectedComponent, setSelectedComponent] = useState(getDefaultSelectedComponent())
-  const [propStates, setPropStates, setKey] = useLocalStorage()
+  const storageKey = `${SelectedComponent.meta.displayName}_props`
+  const [propStates, setPropStates] = useLocalStorage(storageKey, getPropStates())
 
+  /** Combines what's in local storage with the default values from the component information */
+  function getPropStates() {
+    const storedValues = JSON.parse(localStorage.getItem(storageKey)) || {}
+    const defaultValues = getPropStateDefaults(SelectedComponent.meta.props)
+    return Object.entries(storedValues).reduce((acc, [propName, value]) => {
+      if (value) acc[propName] = value
+      return acc
+    }, defaultValues)
+  }
+
+  /** Resets all props to their default values */
   function resetToDefaults() {
     setPropStates(getPropStateDefaults(SelectedComponent.meta.props))
   }
 
+  /** Updates the currently selected component, identified by filepath */
   function updateSelectedComponent(filePath) {
-    const [hashedName, Component] = componentEntries.find(([hashedName, Component]) => {
+    const componentEntry = componentEntries.find(([, Component]) => {
       return Component.meta.filePath === filePath
     })
-    setSelectedComponent(() => Component)
+    setSelectedComponent(() => componentEntry[1])
   }
-
-  useEffect(() => {
-    const key = `${SelectedComponent.meta.displayName}_props`
-    setKey(key)
-    const storedValues = JSON.parse(localStorage.getItem(key)) || {}
-    const defaultValues = getPropStateDefaults(SelectedComponent.meta.props)
-    const currentValues = Object.entries(storedValues).reduce((acc, [propName, value]) => {
-      if (value) acc[propName] = value
-      return acc
-    }, defaultValues)
-
-    setPropStates(currentValues)
-  }, [SelectedComponent])
 
   const canRenderComponent = propStates && canRender(SelectedComponent.meta.props, propStates)
 

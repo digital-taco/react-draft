@@ -1,6 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
+const BuildExportsList = require('./lib/BuildExportsList')
 
 module.exports = {
   context: path.resolve('.', 'src'),
@@ -20,6 +21,7 @@ module.exports = {
     new HtmlWebpackPlugin({ title: 'React Draft' }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new BuildExportsList(),
   ],
 
   resolve: {
