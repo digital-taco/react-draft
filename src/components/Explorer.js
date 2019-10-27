@@ -5,6 +5,7 @@ import React from 'react'
 import { css, jsx } from '@emotion/core'
 
 import FolderIcon from '../svgs/FolderIcon'
+import FileIcon from '../svgs/FileIcon'
 import FolderOpenIcon from '../svgs/FolderOpenIcon'
 import CodeIcon from '../svgs/CodeIcon'
 
@@ -53,21 +54,29 @@ const styles = {
   `,
 }
 
-const RecursiveFileSystem = ({ tree, SelectedComponent, updateSelectedComponent }) => {
+const RecursiveFileSystem = ({
+  tree,
+  SelectedComponent,
+  updateSelectedComponent,
+  displayComponents,
+}) => {
   const children = []
 
   Object.entries(tree).forEach(([path, value]) => {
     const isFile = Array.isArray(value)
 
-    if (isFile) {
+    if (isFile && displayComponents) {
       // function is onClick for optimization reasons
       const [filePath, components] = value
       components.forEach(component => {
         children.push(
           <div
             css={styles.file}
-            data-selected={SelectedComponent.meta.filePath === filePath}
-            onClick={() => updateSelectedComponent(filePath)}
+            data-selected={
+              SelectedComponent.meta.filePath === filePath &&
+              SelectedComponent.meta.displayName === component.displayName
+            }
+            onClick={() => updateSelectedComponent(filePath, component.displayName)}
           >
             <CodeIcon />
             {component.displayName}
@@ -78,12 +87,13 @@ const RecursiveFileSystem = ({ tree, SelectedComponent, updateSelectedComponent 
       children.push(
         <div css={styles.folder}>
           <div css={styles.folderName}>
-            <FolderOpenIcon />
+            {isFile ? <FileIcon fill="#fff" /> : <FolderOpenIcon />}
             {path}
           </div>
           <div css={styles.folderContents}>
             <RecursiveFileSystem
-              tree={value}
+              tree={isFile ? { [path]: value } : value}
+              displayComponents={isFile}
               SelectedComponent={SelectedComponent}
               updateSelectedComponent={updateSelectedComponent}
             />

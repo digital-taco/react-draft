@@ -75,7 +75,10 @@ function getDefaultSelectedComponent() {
 
 function ComponentDemo() {
   const [SelectedComponent, setSelectedComponent] = useState(getDefaultSelectedComponent())
-  const storageKey = `${SelectedComponent.meta.displayName}_props`
+
+  // Using the component hash guarantees a key unique to the component
+  // Using the component display name in the key makes storage keys more human readable
+  const storageKey = `${SelectedComponent.meta.componentHash}_${SelectedComponent.meta.displayName}_props`
   const [propStates, setPropStates] = useLocalStorage(storageKey, getPropStates())
 
   /** Combines what's in local storage with the default values from the component information */
@@ -94,9 +97,9 @@ function ComponentDemo() {
   }
 
   /** Updates the currently selected component, identified by filepath */
-  function updateSelectedComponent(filePath) {
+  function updateSelectedComponent(filePath, displayName) {
     const componentEntry = componentEntries.find(([, Component]) => {
-      return Component.meta.filePath === filePath
+      return Component.meta.filePath === filePath && Component.meta.displayName === displayName
     })
     setSelectedComponent(() => componentEntry[1])
   }
