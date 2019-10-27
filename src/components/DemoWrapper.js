@@ -1,13 +1,13 @@
 import React, { useContext } from 'react'
 /** @jsx jsx */
-import { Global, css, jsx } from '@emotion/core'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Settings'
+import { css, jsx } from '@emotion/core'
+// import AppBar from '@material-ui/core/AppBar'
+// import Toolbar from '@material-ui/core/Toolbar'
+// import IconButton from '@material-ui/core/IconButton'
+// import MenuIcon from '@material-ui/icons/Settings'
 import PropsDrawer from './PropsDrawer'
 import useLocalStorage from '../useLocalStorage'
-import EditDrawer from './EditDrawer'
+// import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
 import Explorer from './Explorer'
@@ -63,6 +63,7 @@ export default function DemoWrapper({
   setPropStates,
   resetToDefaults,
   componentTree,
+  SelectedComponent,
   updateSelectedComponent,
 }) {
   const [drawerIsOpen, setDrawerIsOpen] = useLocalStorage('drawerIsOpen', true)
@@ -108,6 +109,7 @@ export default function DemoWrapper({
         {drawerView === 'explorer' && (
           <Explorer
             componentTree={componentTree}
+            SelectedComponent={SelectedComponent}
             updateSelectedComponent={updateSelectedComponent}
           />
         )}

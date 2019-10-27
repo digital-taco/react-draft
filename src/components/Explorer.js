@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
@@ -51,7 +53,7 @@ const styles = {
   `,
 }
 
-const RecursiveFileSystem = ({ tree, updateSelectedComponent }) => {
+const RecursiveFileSystem = ({ tree, SelectedComponent, updateSelectedComponent }) => {
   const children = []
 
   Object.entries(tree).forEach(([path, value]) => {
@@ -64,7 +66,7 @@ const RecursiveFileSystem = ({ tree, updateSelectedComponent }) => {
         children.push(
           <div
             css={styles.file}
-            data-selected={false}
+            data-selected={SelectedComponent.meta.filePath === filePath}
             onClick={() => updateSelectedComponent(filePath)}
           >
             <CodeIcon />
@@ -80,7 +82,11 @@ const RecursiveFileSystem = ({ tree, updateSelectedComponent }) => {
             {path}
           </div>
           <div css={styles.folderContents}>
-            <RecursiveFileSystem tree={value} updateSelectedComponent={updateSelectedComponent} />
+            <RecursiveFileSystem
+              tree={value}
+              SelectedComponent={SelectedComponent}
+              updateSelectedComponent={updateSelectedComponent}
+            />
           </div>
         </div>
       )
@@ -93,7 +99,11 @@ const RecursiveFileSystem = ({ tree, updateSelectedComponent }) => {
 export default function Explorer({ componentTree, SelectedComponent, updateSelectedComponent }) {
   return (
     <div>
-      <RecursiveFileSystem tree={componentTree} updateSelectedComponent={updateSelectedComponent} />
+      <RecursiveFileSystem
+        tree={componentTree}
+        SelectedComponent={SelectedComponent}
+        updateSelectedComponent={updateSelectedComponent}
+      />
     </div>
   )
 }

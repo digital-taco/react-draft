@@ -113,6 +113,7 @@ function ComponentDemo() {
           setPropStates={setPropStates}
           resetToDefaults={resetToDefaults}
           componentTree={componentTree}
+          SelectedComponent={SelectedComponent}
           updateSelectedComponent={updateSelectedComponent}
         >
           {/* DEMO COMPONENT */}
