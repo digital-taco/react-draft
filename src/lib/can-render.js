@@ -2,7 +2,6 @@ export default function canRender(props = {}, propStates = {}) {
   if (!propStates || !props) return false
 
   const allHaveValues = Object.entries(props).every(([propName, propObj]) => {
-
     // If they don't have a propType for the prop, let it pass anyway
     if (!propObj.type) {
       return true

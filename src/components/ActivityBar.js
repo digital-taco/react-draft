@@ -22,12 +22,12 @@ const activityBarCss = css`
     width: 30px;
     fill: var(--color-text);
     cursor: pointer;
-    transition: all .1s ease-in-out;
+    transition: all 0.1s ease-in-out;
   }
 
   & svg:hover {
     fill: var(--color-text-hover);
-    opacity: .8;
+    opacity: 0.8;
   }
 
   & svg[data-selected] {
@@ -35,8 +35,7 @@ const activityBarCss = css`
   }
 `
 
-export default function ActivityBar({drawerIsOpen, setDrawerIsOpen, drawerView, setDrawerView}) {
-
+export default function ActivityBar({ drawerIsOpen, setDrawerIsOpen, drawerView, setDrawerView }) {
   function handleClick(drawerType) {
     setDrawerView(drawerType)
     if (drawerView === drawerType || !drawerIsOpen) {
@@ -46,9 +45,18 @@ export default function ActivityBar({drawerIsOpen, setDrawerIsOpen, drawerView, 
 
   return (
     <div css={activityBarCss}>
-      <PropsIcon data-selected={drawerView === 'props' ? '' : undefined} onClick={() => handleClick('props')} />
-      <FolderIcon data-selected={drawerView === 'explorer' ? '' : undefined} onClick={() => handleClick('explorer')} />
-      <SettingsIcon data-selected={drawerView === 'settings' ? '' : undefined} onClick={() => handleClick('settings')} />
+      <PropsIcon
+        data-selected={drawerView === 'props' ? '' : undefined}
+        onClick={() => handleClick('props')}
+      />
+      <FolderIcon
+        data-selected={drawerView === 'explorer' ? '' : undefined}
+        onClick={() => handleClick('explorer')}
+      />
+      <SettingsIcon
+        data-selected={drawerView === 'settings' ? '' : undefined}
+        onClick={() => handleClick('settings')}
+      />
     </div>
   )
 }

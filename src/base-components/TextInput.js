@@ -15,7 +15,5 @@ const inputCss = css`
 `
 
 export default function TextInput(props) {
-  return (
-    <input css={inputCss} {...props} />
-  )
+  return <input css={inputCss} {...props} />
 }

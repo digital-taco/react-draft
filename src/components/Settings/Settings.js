@@ -14,7 +14,7 @@ export default function Settings() {
         id="setting_demoPadding"
         type="number"
         value={settings.demoPadding}
-        onChange={({ target: { value }}) => {
+        onChange={({ target: { value } }) => {
           updateSetting('demoPadding', value && value >= 0 ? value : 0)
         }}
       />
@@ -23,7 +23,7 @@ export default function Settings() {
       <TextInput
         id="setting_backgroundColor"
         value={settings.backgroundColor}
-        onChange={({ target: { value }}) => {
+        onChange={({ target: { value } }) => {
           updateSetting('backgroundColor', value)
         }}
       />

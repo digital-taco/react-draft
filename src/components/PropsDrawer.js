@@ -4,7 +4,7 @@ import { css, jsx } from '@emotion/core'
 import amber from '@material-ui/core/colors/amber'
 import Button from '../base-components/Button'
 import getInput from '../lib/get-input'
-import ChildrenInput from '../Inputs/ChildrenInput'
+// import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
 import { H1 } from '../base-components/Headers'
 
@@ -33,7 +33,7 @@ const styles = {
   `,
   resetButton: css`
     margin-top: 24px;
-  `
+  `,
 }
 
 export default function PropsDrawer({
@@ -47,18 +47,21 @@ export default function PropsDrawer({
   if (!propObjects) return null
 
   const entries = Object.entries(propObjects)
-  const inputs = entries.reduce((acc, [propName, propInfo]) => {
-    if (!propInfo) return acc
-    if (!propInfo.type) {
-      acc.missingPropTypes.push([propName, propInfo])
+  const inputs = entries.reduce(
+    (acc, [propName, propInfo]) => {
+      if (!propInfo) return acc
+      if (!propInfo.type) {
+        acc.missingPropTypes.push([propName, propInfo])
+        return acc
+      }
+      if (!acc[propInfo.type.name]) acc[propInfo.type.name] = []
+      acc[propInfo.type.name].push([propName, propInfo])
       return acc
+    },
+    {
+      missingPropTypes: [],
     }
-    if (!acc[propInfo.type.name]) acc[propInfo.type.name] = []
-    acc[propInfo.type.name].push([propName, propInfo])
-    return acc
-  }, {
-    missingPropTypes: []
-  })
+  )
 
   const style = {
     display: open ? 'block' : 'none',
@@ -81,13 +84,14 @@ export default function PropsDrawer({
           {inputs.array && inputs.array.map(getInputProp)}
           {inputs.shape && inputs.shape.map(getInputProp)}
           {inputs.exact && inputs.exact.map(getInputProp)}
+          {inputs.func && inputs.func.map(getInputProp)}
           {inputs.bool && inputs.bool.map(getInputProp)}
 
           {/* MISSING PROP TYPES */}
           {inputs.missingPropTypes.map(([propName, propInfo]) => (
             <ErrorBox label={propName} error="Missing PropType" />
           ))}
-          
+
           <div css={styles.resetButton}>
             <Button size="small" color="primary" onClick={resetToDefaults}>
               Reset to Defaults

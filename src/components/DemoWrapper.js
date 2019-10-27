@@ -62,6 +62,8 @@ export default function DemoWrapper({
   propStates,
   setPropStates,
   resetToDefaults,
+  componentTree,
+  updateSelectedComponent,
 }) {
   const [drawerIsOpen, setDrawerIsOpen] = useLocalStorage('drawerIsOpen', true)
   const [drawerView, setDrawerView] = useLocalStorage('drawerView', true)
@@ -90,9 +92,8 @@ export default function DemoWrapper({
 
       {/* SIDEBAR */}
       <SideBar open={drawerIsOpen}>
-
         {/* PROPS VIEW */}
-        {drawerView === 'props' &&
+        {drawerView === 'props' && (
           <PropsDrawer
             propStates={propStates}
             open={drawerIsOpen && drawerView === 'props'}
@@ -101,21 +102,25 @@ export default function DemoWrapper({
             updatePropState={updatePropState}
             resetToDefaults={resetToDefaults}
           />
-        }
-        
+        )}
+
         {/* EXPLORER VIEW */}
-        {drawerView === 'explorer' && <Explorer />}
-        
+        {drawerView === 'explorer' && (
+          <Explorer
+            componentTree={componentTree}
+            updateSelectedComponent={updateSelectedComponent}
+          />
+        )}
+
         {/* SETTINGS VIEW */}
         {drawerView === 'settings' && <Settings />}
-
       </SideBar>
 
       {/* DEMO */}
       <div
         css={styles.wrapper}
         style={{
-          padding: settings.demoPadding + 'px',
+          padding: `${settings.demoPadding}px`,
           backgroundColor: settings.backgroundColor || '#fff',
         }}
       >

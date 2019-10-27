@@ -14,9 +14,5 @@ const drawerCss = css`
 `
 
 export default function SideBar({ open, children }) {
-  return open ? (
-    <div css={drawerCss}>
-      {children}
-    </div> 
-  ) : null
+  return open ? <div css={drawerCss}>{children}</div> : null
 }

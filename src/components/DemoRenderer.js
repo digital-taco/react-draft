@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
-import DemoComponent from 'DemoFile' //eslint-disable-line
+import * as Components from 'ExportsList' //eslint-disable-line
 import DemoWrapper from './DemoWrapper'
 import { isJson, removeQuotes } from '../lib/helpers'
 import useLocalStorage from '../useLocalStorage'
@@ -10,7 +10,6 @@ import ErrorBox from './ErrorBox'
 import SettingsProvider from './Settings/SettingsProvider'
 
 import '../global.css'
-
 
 // Add the app container so react can render
 const container = document.createElement('div')
@@ -23,8 +22,8 @@ babelStandalone.setAttribute('src', 'https://unpkg.com/@babel/standalone/babel.m
 babelStandalone.setAttribute('data-presets', 'es2015,react')
 document.head.appendChild(babelStandalone)
 
-// Make React available in the browser globally
-window.React = React
+const componentEntries = Object.entries(Components)
+const componentTree = Components.default
 
 /**
  * Gets the default states for the props
@@ -59,69 +58,72 @@ function getPropStateDefaults(props) {
   }, {})
 }
 
+/** Identifies the component with the shortest path */
+function getDefaultSelectedComponent() {
+  const getCount = path => (path.match(/(\/|\\)/g) || []).length
+  const component = componentEntries.reduce((acc, [hashedName, Component]) => {
+    if (!Component.meta) return acc
+    if (getCount(acc.meta.filePath) > getCount(Component.meta.filePath)) {
+      acc = Component
+    }
+    return acc
+  }, componentEntries[0][1])
+
+  // Must return a function that returns the component, since it is going directly into useState
+  return () => component
+}
+
 function ComponentDemo() {
-  const [componentInfo, setComponentInfo] = useState()
+  const [SelectedComponent, setSelectedComponent] = useState(getDefaultSelectedComponent())
   const [propStates, setPropStates, setKey] = useLocalStorage()
 
   function resetToDefaults() {
-    setPropStates(getPropStateDefaults(componentInfo.props))
+    setPropStates(getPropStateDefaults(SelectedComponent.meta.props))
   }
 
-  // WEB SOCKET
-  useEffect(() => {
-    const socket = new WebSocket(`ws://${window.location.hostname}:8001`)
-    socket.addEventListener('message', e => {
-      const message = JSON.parse(e.data)
-      setComponentInfo(message)
+  function updateSelectedComponent(filePath) {
+    const [hashedName, Component] = componentEntries.find(([hashedName, Component]) => {
+      return Component.meta.filePath === filePath
     })
-
-    // Let the server know we're ready for the component info
-    socket.onopen = () => {
-      socket.send('CONNECTED')
-    }
-
-    return socket.close
-  }, [])
+    console.log('LOG: updateSelectedComponent -> Component', Component)
+    setSelectedComponent(() => Component)
+  }
 
   useEffect(() => {
-    if (!componentInfo) return
-    const key = `${componentInfo.displayName}_props`
+    const key = `${SelectedComponent.meta.displayName}_props`
     setKey(key)
     const storedValues = JSON.parse(localStorage.getItem(key)) || {}
-    const defaultValues = getPropStateDefaults(componentInfo.props)
+    const defaultValues = getPropStateDefaults(SelectedComponent.meta.props)
     const currentValues = Object.entries(storedValues).reduce((acc, [propName, value]) => {
       if (value) acc[propName] = value
       return acc
     }, defaultValues)
 
     setPropStates(currentValues)
-  }, [componentInfo])
+  }, [SelectedComponent])
 
-  const canRenderComponent = componentInfo && canRender(componentInfo.props, propStates)
+  console.log('LOG: ComponentDemo -> SelectedComponent', SelectedComponent)
+  const canRenderComponent = propStates && canRender(SelectedComponent.meta.props, propStates)
 
   return (
     <SettingsProvider>
-      {componentInfo && propStates && (
+      {canRenderComponent && (
         <DemoWrapper
-          displayName={componentInfo.displayName}
-          propObjects={componentInfo.props}
+          displayName={SelectedComponent.meta.displayName}
+          propObjects={SelectedComponent.meta.props}
           propStates={propStates}
           setPropStates={setPropStates}
           resetToDefaults={resetToDefaults}
+          componentTree={componentTree}
+          updateSelectedComponent={updateSelectedComponent}
         >
           {/* DEMO COMPONENT */}
-          {canRenderComponent && (
-            <DemoComponent {...propStates}>
-              <ChildrenRenderer value={propStates.children} />
-            </DemoComponent>
-          )}
+          <SelectedComponent {...propStates}>
+            <ChildrenRenderer value={propStates.children} />
+          </SelectedComponent>
 
           {/* MISSING REQUIRED PROPS */}
-          {!canRenderComponent && (
-            <ErrorBox>
-              All required props must be given a value
-            </ErrorBox>
-          )}
+          {!canRenderComponent && <ErrorBox>All required props must be given a value</ErrorBox>}
         </DemoWrapper>
       )}
     </SettingsProvider>
