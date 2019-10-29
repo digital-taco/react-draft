@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import * as Components from 'ExportsList' //eslint-disable-line
+import * as Components from '../../out/master-exports.js' //eslint-disable-line
 import DemoWrapper from './DemoWrapper'
 import { isJson, removeQuotes } from '../lib/helpers'
 import useLocalStorage from '../useLocalStorage'

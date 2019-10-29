@@ -26,8 +26,6 @@ module.exports = {
 
   resolve: {
     alias: {
-      // Resolve the path to the target demo
-      ExportsList: path.resolve(__dirname, 'out', 'master-exports.js'),
       // Resolve the path to React so we don't import multiple react versions
       react: path.resolve(__dirname, './node_modules/react'),
     },
