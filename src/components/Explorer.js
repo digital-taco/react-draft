@@ -12,6 +12,7 @@ import CodeIcon from '../svgs/CodeIcon'
 const styles = {
   file: css`
     cursor: pointer;
+    user-select: none;
     padding-left: 15px;
     border-left: 1px solid grey;
     padding: 2px;
@@ -43,6 +44,8 @@ const styles = {
   folderName: css`
     color: white;
     padding: 2px;
+    cursor: pointer;
+    user-select: none;
     & svg {
       margin-right: 5px;
       margin-left: -2px;
@@ -51,7 +54,45 @@ const styles = {
       fill: var(--color-text-selected);
       vertical-align: bottom;
     }
+    &:hover {
+      background-color: var(--color-background-highlight);
+    }
   `,
+}
+
+function ExportedComponent ({selected, onClick, displayName}) {
+  return (
+    <div
+      css={styles.file}
+      data-selected={selected}
+      onClick={onClick}
+    >
+      <CodeIcon />
+      {displayName}
+    </div>
+  )
+}
+
+function FolderFile ({isFile, path, tree, SelectedComponent, updateSelectedComponent}) {
+  const [isOpen, setOpen] = React.useState(true)
+  return (
+    <div css={styles.folder}>
+      <div css={styles.folderName} onClick={() => setOpen(o => !o)}>
+        {isFile ? <FileIcon fill="#fff" /> : isOpen ? <FolderOpenIcon /> : <FolderIcon />}
+        {path}
+      </div>
+      {isOpen && (
+        <div css={styles.folderContents}>
+          <RecursiveFileSystem
+            tree={tree}
+            displayComponents={isFile}
+            SelectedComponent={SelectedComponent}
+            updateSelectedComponent={updateSelectedComponent}
+          />
+        </div>
+      )}
+    </div>
+  )
 }
 
 const RecursiveFileSystem = ({
@@ -70,35 +111,26 @@ const RecursiveFileSystem = ({
       const [filePath, components] = value
       components.forEach(component => {
         children.push(
-          <div
-            css={styles.file}
-            data-selected={
+          <ExportedComponent 
+            displayName={component.displayName}
+            selected={
               SelectedComponent.meta.filePath === filePath &&
               SelectedComponent.meta.displayName === component.displayName
             }
             onClick={() => updateSelectedComponent(filePath, component.displayName)}
-          >
-            <CodeIcon />
-            {component.displayName}
-          </div>
+          />
         )
       })
     } else {
       children.push(
-        <div css={styles.folder}>
-          <div css={styles.folderName}>
-            {isFile ? <FileIcon fill="#fff" /> : <FolderOpenIcon />}
-            {path}
-          </div>
-          <div css={styles.folderContents}>
-            <RecursiveFileSystem
-              tree={isFile ? { [path]: value } : value}
-              displayComponents={isFile}
-              SelectedComponent={SelectedComponent}
-              updateSelectedComponent={updateSelectedComponent}
-            />
-          </div>
-        </div>
+        <FolderFile
+          isFile={isFile}
+          path={path}
+          tree={isFile ? { [path]: value } : value}
+          displayComponents={isFile}
+          SelectedComponent={SelectedComponent}
+          updateSelectedComponent={updateSelectedComponent}
+        />
       )
     }
   })
