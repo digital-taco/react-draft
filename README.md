@@ -1,4 +1,4 @@
-# react-draft
+# React Draft
 📝 WIP: Develop your React components in isolation without any configuration
 
 ## Installation
@@ -46,4 +46,5 @@ Run draft in the sandbox. Any changes made in `react-draft` will be picked up.
 ## Authors
 
 Zach Williams (@zachintosh)
+
 Kyle West (@kyle-west)
