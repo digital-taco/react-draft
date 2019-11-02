@@ -1,19 +1,22 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 
 import FolderIcon from '../svgs/FolderIcon'
+import FileIcon from '../svgs/FileIcon'
 import FolderOpenIcon from '../svgs/FolderOpenIcon'
 import CodeIcon from '../svgs/CodeIcon'
 
-let styles = {
+const styles = {
   file: css`
     cursor: pointer;
     padding-left: 15px;
     border-left: 1px solid grey;
     padding: 2px;
 
-    &[data-selected="true"] {
+    &[data-selected='true'] {
       background-color: var(--color-text-selected);
       color: var(--color-background);
       font-weight: bold;
@@ -31,10 +34,8 @@ let styles = {
       fill: var(--color-text-accent);
       vertical-align: bottom;
     }
-    `,
-  folder: css`
-    
   `,
+  folder: css``,
   folderContents: css`
     padding-left: 15px;
     border-left: 1px solid grey;
@@ -47,87 +48,72 @@ let styles = {
       margin-left: -2px;
       width: 16px;
       height: 16px;
-      fill: var(--color-text-selected);;
+      fill: var(--color-text-selected);
       vertical-align: bottom;
     }
   `,
 }
 
-const RecursiveFileSystem = ({ tree }) => {
-  let children = []
-  Object.keys(tree).forEach(item => {
-    let type = typeof tree[item]
-    let selected = tree[item].selected
-    if (type === 'function') { // function is onClick for optimization reasons
-      children.push(
-        <div css={styles.file} data-selected={selected} onClick={tree[item]}>
-          <CodeIcon />
-          {item}
-        </div>
-      )
+const RecursiveFileSystem = ({
+  tree,
+  SelectedComponent,
+  updateSelectedComponent,
+  displayComponents,
+}) => {
+  const children = []
+
+  Object.entries(tree).forEach(([path, value]) => {
+    const isFile = Array.isArray(value)
+
+    if (isFile && displayComponents) {
+      // function is onClick for optimization reasons
+      const [filePath, components] = value
+      components.forEach(component => {
+        children.push(
+          <div
+            css={styles.file}
+            data-selected={
+              SelectedComponent.meta.filePath === filePath &&
+              SelectedComponent.meta.displayName === component.displayName
+            }
+            onClick={() => updateSelectedComponent(filePath, component.displayName)}
+          >
+            <CodeIcon />
+            {component.displayName}
+          </div>
+        )
+      })
     } else {
       children.push(
         <div css={styles.folder}>
           <div css={styles.folderName}>
-            <FolderOpenIcon />
-            {item}
+            {isFile ? <FileIcon fill="#fff" /> : <FolderOpenIcon />}
+            {path}
           </div>
           <div css={styles.folderContents}>
-            <RecursiveFileSystem tree={tree[item]} />
+            <RecursiveFileSystem
+              tree={isFile ? { [path]: value } : value}
+              displayComponents={isFile}
+              SelectedComponent={SelectedComponent}
+              updateSelectedComponent={updateSelectedComponent}
+            />
           </div>
         </div>
       )
     }
   })
 
-  return (
-    <>
-      {children}
-    </>
-  )
+  return <>{children}</>
 }
 
-const evaluateFiles = (fileStructure) => {
-  let { files, currentlySelected, cwd } = fileStructure
-
-  let fileTree = {}
-
-  files.forEach(file => {
-    let paths = file.split(/[\\/]/).filter(x => x)
-    let fileName = paths[paths.length - 1];
-    paths = paths.slice(0, paths.length - 1)
-    
-    let lastNode = fileTree
-    paths.forEach((path, idx) => {
-      lastNode[path] = lastNode[path] || {}
-      if (idx === paths.length - 1) {
-        lastNode[fileName] = () => {
-          // send the selected file off to the server
-          window.fetch(`/change-selected-file?newPath=${file}`, { method:'post' }).then(() => {
-            window.location.reload()
-          })
-        }
-        lastNode[fileName].selected = file === currentlySelected;
-      } else {
-        lastNode = lastNode[path]
-      }
-    })
-  });
-
-  return { fileTree: <RecursiveFileSystem tree={fileTree} />, currentlySelected, cwd }
-}
-
-export default function Explorer({}) {
-  const [files, setFiles] = React.useState({})
-  const { fileTree, currentlySelected, cwd } = files;
-
-  React.useEffect(() => {
-    window.fetch('/files').then(x => x.json()).then(x => setFiles(evaluateFiles(x)))
-  }, [currentlySelected])
-  
+export default function Explorer({ componentTree, SelectedComponent, updateSelectedComponent }) {
   return (
     <div>
-      {fileTree}
+      <RecursiveFileSystem
+        tree={componentTree}
+        SelectedComponent={SelectedComponent}
+        updateSelectedComponent={updateSelectedComponent}
+      />
     </div>
   )
 }

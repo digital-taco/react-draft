@@ -1,13 +1,13 @@
 import React, { useContext } from 'react'
 /** @jsx jsx */
-import { Global, css, jsx } from '@emotion/core'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
-import IconButton from '@material-ui/core/IconButton'
-import MenuIcon from '@material-ui/icons/Settings'
+import { css, jsx } from '@emotion/core'
+// import AppBar from '@material-ui/core/AppBar'
+// import Toolbar from '@material-ui/core/Toolbar'
+// import IconButton from '@material-ui/core/IconButton'
+// import MenuIcon from '@material-ui/icons/Settings'
 import PropsDrawer from './PropsDrawer'
 import useLocalStorage from '../useLocalStorage'
-import EditDrawer from './EditDrawer'
+// import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
 import Explorer from './Explorer'
@@ -62,6 +62,9 @@ export default function DemoWrapper({
   propStates,
   setPropStates,
   resetToDefaults,
+  componentTree,
+  SelectedComponent,
+  updateSelectedComponent,
 }) {
   const [drawerIsOpen, setDrawerIsOpen] = useLocalStorage('drawerIsOpen', true)
   const [drawerView, setDrawerView] = useLocalStorage('drawerView', true)
@@ -90,9 +93,8 @@ export default function DemoWrapper({
 
       {/* SIDEBAR */}
       <SideBar open={drawerIsOpen}>
-
         {/* PROPS VIEW */}
-        {drawerView === 'props' &&
+        {drawerView === 'props' && (
           <PropsDrawer
             propStates={propStates}
             open={drawerIsOpen && drawerView === 'props'}
@@ -101,21 +103,26 @@ export default function DemoWrapper({
             updatePropState={updatePropState}
             resetToDefaults={resetToDefaults}
           />
-        }
-        
+        )}
+
         {/* EXPLORER VIEW */}
-        {drawerView === 'explorer' && <Explorer />}
-        
+        {drawerView === 'explorer' && (
+          <Explorer
+            componentTree={componentTree}
+            SelectedComponent={SelectedComponent}
+            updateSelectedComponent={updateSelectedComponent}
+          />
+        )}
+
         {/* SETTINGS VIEW */}
         {drawerView === 'settings' && <Settings />}
-
       </SideBar>
 
       {/* DEMO */}
       <div
         css={styles.wrapper}
         style={{
-          padding: settings.demoPadding + 'px',
+          padding: `${settings.demoPadding}px`,
           backgroundColor: settings.backgroundColor || '#fff',
         }}
       >

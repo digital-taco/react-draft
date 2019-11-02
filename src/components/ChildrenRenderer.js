@@ -18,7 +18,7 @@ export default function ChildrenRenderer({ value }) {
     console.log('TCL: ChildrenInput -> transpiled', transpiled)
     return transpiled || ''
   } catch (err) {
-    console.log("TCL: ChildrenRenderer -> err", err)
+    console.log('TCL: ChildrenRenderer -> err', err)
     return value
   }
 }

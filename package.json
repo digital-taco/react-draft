@@ -34,6 +34,7 @@
     "html-webpack-tags-plugin": "^2.0.13",
     "i18next": "^17.0.6",
     "imports-loader": "^0.8.0",
+    "module-mapping-webpack-plugin": "^1.1.1",
     "open": "^6.4.0",
     "parse-prop-types": "^0.3.0",
     "react": "^16.8.6",
@@ -49,10 +50,17 @@
     "webpack-dev-middleware": "^3.7.0",
     "webpack-dev-server": "^3.7.2",
     "webpack-hot-middleware": "^2.25.0",
-    "webpack-node-externals": "^1.7.2",
-    "ws": "^7.1.1"
+    "webpack-node-externals": "^1.7.2"
   },
   "bin": {
     "draft": "./bin/launch.js"
+  },
+  "devDependencies": {
+    "eslint-plugin-babel": "^5.3.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^2.2.0"
   }
 }

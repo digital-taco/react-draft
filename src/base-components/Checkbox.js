@@ -10,8 +10,9 @@ const containerCss = css`
   align-items: center;
   height: 34px;
   padding: 16px 0;
-  
-  & > *, & label {
+
+  & > *,
+  & label {
     cursor: pointer;
   }
 
@@ -27,11 +28,11 @@ const checkboxCss = css`
   border: solid 2px var(--color-background-accent);
   box-sizing: border-box;
   padding: 2px;
-  transition: all .1s ease-out;
+  transition: all 0.1s ease-out;
   border-radius: 3px;
 
   &::before {
-    content: "";
+    content: '';
     height: 100%;
     width: 100%;
     font-size: 20px;
@@ -41,7 +42,7 @@ const checkboxCss = css`
     display: grid;
     align-items: center;
     border-radius: 3px;
-    transition: all .1s ease-out;
+    transition: all 0.1s ease-out;
   }
 
   &:checked {
@@ -58,7 +59,7 @@ const checkboxCss = css`
   }
 
   &:checked::before {
-    content: "✓";
+    content: '✓';
     background-color: var(--color-text-selected);
   }
   &:checked:hover::before {
@@ -73,7 +74,7 @@ const checkboxCss = css`
   }
 `
 
-export default function Button({checked, onChange, label, id, ...props}) {
+export default function Button({ checked, onChange, label, id, ...props }) {
   return (
     <div css={containerCss}>
       <input

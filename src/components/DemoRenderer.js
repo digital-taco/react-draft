@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
-import DemoComponent from 'DemoFile' //eslint-disable-line
+import * as Components from '../../out/master-exports.js' //eslint-disable-line
 import DemoWrapper from './DemoWrapper'
 import { isJson, removeQuotes } from '../lib/helpers'
 import useLocalStorage from '../useLocalStorage'
@@ -10,7 +10,6 @@ import ErrorBox from './ErrorBox'
 import SettingsProvider from './Settings/SettingsProvider'
 
 import '../global.css'
-
 
 // Add the app container so react can render
 const container = document.createElement('div')
@@ -23,8 +22,8 @@ babelStandalone.setAttribute('src', 'https://unpkg.com/@babel/standalone/babel.m
 babelStandalone.setAttribute('data-presets', 'es2015,react')
 document.head.appendChild(babelStandalone)
 
-// Make React available in the browser globally
-window.React = React
+const componentEntries = Object.entries(Components)
+const componentTree = Components.default
 
 /**
  * Gets the default states for the props
@@ -59,69 +58,74 @@ function getPropStateDefaults(props) {
   }, {})
 }
 
-function ComponentDemo() {
-  const [componentInfo, setComponentInfo] = useState()
-  const [propStates, setPropStates, setKey] = useLocalStorage()
-
-  function resetToDefaults() {
-    setPropStates(getPropStateDefaults(componentInfo.props))
-  }
-
-  // WEB SOCKET
-  useEffect(() => {
-    const socket = new WebSocket(`ws://${window.location.hostname}:8001`)
-    socket.addEventListener('message', e => {
-      const message = JSON.parse(e.data)
-      setComponentInfo(message)
-    })
-
-    // Let the server know we're ready for the component info
-    socket.onopen = () => {
-      socket.send('CONNECTED')
+/** Identifies the component with the shortest path */
+function getDefaultSelectedComponent() {
+  const getCount = path => (path.match(/(\/|\\)/g) || []).length
+  const component = componentEntries.reduce((acc, [, Component]) => {
+    if (!Component.meta) return acc
+    if (getCount(acc.meta.filePath) > getCount(Component.meta.filePath)) {
+      acc = Component
     }
+    return acc
+  }, componentEntries[0][1])
 
-    return socket.close
-  }, [])
+  // Must return a function that returns the component, since it is going directly into useState
+  return () => component
+}
 
-  useEffect(() => {
-    if (!componentInfo) return
-    const key = `${componentInfo.displayName}_props`
-    setKey(key)
-    const storedValues = JSON.parse(localStorage.getItem(key)) || {}
-    const defaultValues = getPropStateDefaults(componentInfo.props)
-    const currentValues = Object.entries(storedValues).reduce((acc, [propName, value]) => {
+function ComponentDemo() {
+  const [SelectedComponent, setSelectedComponent] = useState(getDefaultSelectedComponent())
+
+  // Using the component hash guarantees a key unique to the component
+  // Using the component display name in the key makes storage keys more human readable
+  const storageKey = `${SelectedComponent.meta.componentHash}_${SelectedComponent.meta.displayName}_props`
+  const [propStates, setPropStates] = useLocalStorage(storageKey, getPropStates())
+
+  /** Combines what's in local storage with the default values from the component information */
+  function getPropStates() {
+    const storedValues = JSON.parse(localStorage.getItem(storageKey)) || {}
+    const defaultValues = getPropStateDefaults(SelectedComponent.meta.props)
+    return Object.entries(storedValues).reduce((acc, [propName, value]) => {
       if (value) acc[propName] = value
       return acc
     }, defaultValues)
+  }
 
-    setPropStates(currentValues)
-  }, [componentInfo])
+  /** Resets all props to their default values */
+  function resetToDefaults() {
+    setPropStates(getPropStateDefaults(SelectedComponent.meta.props))
+  }
 
-  const canRenderComponent = componentInfo && canRender(componentInfo.props, propStates)
+  /** Updates the currently selected component, identified by filepath */
+  function updateSelectedComponent(filePath, displayName) {
+    const componentEntry = componentEntries.find(([, Component]) => {
+      return Component.meta.filePath === filePath && Component.meta.displayName === displayName
+    })
+    setSelectedComponent(() => componentEntry[1])
+  }
+
+  const canRenderComponent = propStates && canRender(SelectedComponent.meta.props, propStates)
 
   return (
     <SettingsProvider>
-      {componentInfo && propStates && (
+      {canRenderComponent && (
         <DemoWrapper
-          displayName={componentInfo.displayName}
-          propObjects={componentInfo.props}
+          displayName={SelectedComponent.meta.displayName}
+          propObjects={SelectedComponent.meta.props}
           propStates={propStates}
           setPropStates={setPropStates}
           resetToDefaults={resetToDefaults}
+          componentTree={componentTree}
+          SelectedComponent={SelectedComponent}
+          updateSelectedComponent={updateSelectedComponent}
         >
           {/* DEMO COMPONENT */}
-          {canRenderComponent && (
-            <DemoComponent {...propStates}>
-              <ChildrenRenderer value={propStates.children} />
-            </DemoComponent>
-          )}
+          <SelectedComponent {...propStates}>
+            <ChildrenRenderer value={propStates.children} />
+          </SelectedComponent>
 
           {/* MISSING REQUIRED PROPS */}
-          {!canRenderComponent && (
-            <ErrorBox>
-              All required props must be given a value
-            </ErrorBox>
-          )}
+          {!canRenderComponent && <ErrorBox>All required props must be given a value</ErrorBox>}
         </DemoWrapper>
       )}
     </SettingsProvider>

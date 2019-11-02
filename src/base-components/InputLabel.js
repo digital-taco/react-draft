@@ -21,15 +21,13 @@ const metaCss = css`
   margin-top: 8px;
 `
 
-export default function InputLabel({label, htmlFor, metaText}) {
+export default function InputLabel({ label, htmlFor, metaText }) {
   return (
     <div css={containerCss}>
       <label css={labelCss} htmlFor={htmlFor}>
         {label}
       </label>
-      <div css={metaCss}>
-        {metaText}
-      </div>
+      <div css={metaCss}>{metaText}</div>
     </div>
   )
 }

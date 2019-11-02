@@ -27,8 +27,8 @@ const styles = {
   `,
 }
 
-export const H1 = ({children}) => <h1 css={styles.h1}>{children}</h1>
-export const H2 = ({children}) => <h2 css={styles.h2}>{children}</h2>
-export const H3 = ({children}) => <h3 css={styles.h3}>{children}</h3>
-export const H4 = ({children}) => <h4 css={styles.h4}>{children}</h4>
-export const H5 = ({children}) => <h5 css={styles.h5}>{children}</h5>
+export const H1 = ({ children }) => <h1 css={styles.h1}>{children}</h1>
+export const H2 = ({ children }) => <h2 css={styles.h2}>{children}</h2>
+export const H3 = ({ children }) => <h3 css={styles.h3}>{children}</h3>
+export const H4 = ({ children }) => <h4 css={styles.h4}>{children}</h4>
+export const H5 = ({ children }) => <h5 css={styles.h5}>{children}</h5>

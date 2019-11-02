@@ -4,6 +4,7 @@ import BooleanInput from '../Inputs/BooleanInput'
 import EnumInput from '../Inputs/EnumInput'
 import ObjectInput from '../Inputs/ObjectInput'
 import ShapeInput from '../Inputs/ShapeInput'
+import FunctionInput from '../Inputs/FunctionInput'
 
 export default function getInput([propName, propObj], propStates, updatePropState, setEditItem) {
   const inputMap = {
@@ -41,10 +42,20 @@ export default function getInput([propName, propObj], propStates, updatePropStat
       />
     ),
     object: (
-      <ObjectInput propName={propName} value={propStates[propName]} setEditItem={setEditItem} />
+      <ObjectInput
+        propName={propName}
+        value={propStates[propName]}
+        setEditItem={setEditItem}
+        valueType="object"
+      />
     ),
     array: (
-      <ObjectInput propName={propName} value={propStates[propName]} setEditItem={setEditItem} />
+      <ObjectInput
+        propName={propName}
+        value={propStates[propName]}
+        setEditItem={setEditItem}
+        valueType="array"
+      />
     ),
     shape: (
       <ShapeInput
@@ -52,6 +63,7 @@ export default function getInput([propName, propObj], propStates, updatePropStat
         value={propStates[propName]}
         propObj={propObj}
         setEditItem={setEditItem}
+        valueType="object"
       />
     ),
     exact: (
@@ -60,6 +72,17 @@ export default function getInput([propName, propObj], propStates, updatePropStat
         value={propStates[propName]}
         propObj={propObj}
         setEditItem={setEditItem}
+        valueType="object"
+        strict
+      />
+    ),
+    func: (
+      <FunctionInput
+        propName={propName}
+        value={propStates[propName]}
+        propObj={propObj}
+        setEditItem={setEditItem}
+        valueType="function"
         strict
       />
     ),

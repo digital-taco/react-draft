@@ -1,48 +1,33 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const fs = require('fs')
-const reactDocs = require('react-docgen')
-
-// Read Package JSON and parse component information
-let componentInfo, filePath
-
-try {
-  const packageJson = require(path.resolve('.', 'package.json'))
-  filePath = path.resolve(packageJson.main)
-  const fileContents = fs.readFileSync(filePath, 'utf8')
-  componentInfo = reactDocs.parse(fileContents)
-} catch (err) {
-  throw err
-}
+const BuildExportsList = require('./lib/BuildExportsList')
 
 module.exports = {
-  context: path.resolve('.', 'src'), // TODO: Find the nearest parent package.json from current dir
+  context: path.resolve('.', 'src'),
   mode: 'production',
   cache: true,
 
   // Enables source maps
   devtool: 'source-map',
 
+  // Our main entry point
   entry: {
     'render-demo': path.resolve(__dirname, 'src/components/DemoRenderer.js'),
   },
 
   plugins: [
     // Generates the HTML file for the demo
-    new HtmlWebpackPlugin({ title: componentInfo.displayName }),
+    new HtmlWebpackPlugin({ title: 'React Draft' }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new BuildExportsList(),
   ],
 
   resolve: {
-    // symlinks: false,
     alias: {
-      // Resolve the path to the target demo
-      DemoFile: filePath,
       // Resolve the path to React so we don't import multiple react versions
       react: path.resolve(__dirname, './node_modules/react'),
-      'parse-prop-types': path.resolve(__dirname, 'node_modules', 'parse-prop-types'),
     },
   },
 
@@ -84,10 +69,7 @@ module.exports = {
     rules: [
       {
         test: /(\.js|\.jsx)$/,
-        include: [
-          path.resolve('.'),
-          path.resolve(__dirname, 'src'),
-        ],
+        include: [path.resolve('.'), path.resolve(__dirname, 'src')],
         exclude: /node_modules/,
         use: [
           'cache-loader',
@@ -99,9 +81,7 @@ module.exports = {
                 '@babel/preset-react',
                 ['@babel/preset-env', { targets: { node: 'current' } }],
               ],
-              plugins: [
-                '@babel/plugin-syntax-dynamic-import',
-              ],
+              plugins: ['@babel/plugin-syntax-dynamic-import'],
             },
           },
         ],
@@ -118,20 +98,17 @@ module.exports = {
             loader: 'css-loader',
             options: {
               importLoaders: 1,
-              modules: true
-            }
-          }
+              modules: true,
+            },
+          },
         ],
-        include: /\.module\.css$/
+        include: /\.module\.css$/,
       },
       {
         test: /\.css$/,
-        use: [
-          'style-loader',
-          'css-loader'
-        ],
-        exclude: /\.module\.css$/
-      }
+        use: ['style-loader', 'css-loader'],
+        exclude: /\.module\.css$/,
+      },
     ],
   },
 }

@@ -1,9 +1,9 @@
 export function isJson(str) {
   try {
-      const parsed = JSON.parse(str);
-      return parsed
+    const parsed = JSON.parse(str)
+    return parsed
   } catch (e) {
-      return false;
+    return false
   }
 }
 
