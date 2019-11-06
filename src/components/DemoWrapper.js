@@ -101,6 +101,7 @@ export default function DemoWrapper({
             propObjects={propObjects}
             setEditItem={setEditItem}
             updatePropState={updatePropState}
+            SelectedComponent={SelectedComponent}
             resetToDefaults={resetToDefaults}
           />
         )}

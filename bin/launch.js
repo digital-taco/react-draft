@@ -1,17 +1,26 @@
 #!/usr/bin/env node
 
 const path = require('path')
+const fs = require('fs')
 const find = require('find')
 const webpack = require('webpack')
 const middleware = require('webpack-dev-middleware')
 const express = require('express')
 const open = require('open')
-const config = require('../webpack.config')
+const buildWebpackConfig = require('../webpack.config')
 
 const buildComponentTree = require('../lib/build-component-tree.js')
 const buildMasterExports = require('../lib/build-master-exports.js')
 
-const files = find.fileSync(/\.js$/, path.resolve('.')).filter(x => !x.includes('node_modules/'))
+const reactConfigPath = path.resolve('.', 'draft.config.js')
+const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
+
+const files = find.fileSync(/\.js$/, path.resolve('.')).filter(x => {
+  return !['node_modules/', ...(draftConfig.filesToIgnore || [])].some(ignorePath => {
+    return x.includes(ignorePath)
+  })
+})
+
 const cwd = path.resolve('.')
 const fileStructure = {
   files: files.map(x => x.replace(cwd, '')),
@@ -26,7 +35,7 @@ buildMasterExports(componentTree)
 // Set up webpack, websockets, express
 const app = express()
 const port = 8080
-const compiler = webpack(config)
+const compiler = webpack(buildWebpackConfig(draftConfig))
 
 // Whenever the compilation goes invalid (something changed), rebuild the master exports
 compiler.hooks.invalid.tap('BuildExportsList', () => {

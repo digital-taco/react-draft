@@ -43,6 +43,7 @@ export default function PropsDrawer({
   setEditItem,
   updatePropState,
   resetToDefaults,
+  SelectedComponent,
 }) {
   if (!propObjects) return null
 
@@ -73,7 +74,7 @@ export default function PropsDrawer({
 
   return (
     <>
-      <H1>Props</H1>
+      <H1>{SelectedComponent.meta.displayName} Props</H1>
       <div css={styles.propsDrawer} style={style} className="demo-font">
         <div css={styles.propsContainer}>
           {/* <ChildrenInput value={propStates.children} setEditItem={setEditItem} /> */}
@@ -88,7 +89,7 @@ export default function PropsDrawer({
           {inputs.bool && inputs.bool.map(getInputProp)}
 
           {/* MISSING PROP TYPES */}
-          {inputs.missingPropTypes.map(([propName, propInfo]) => (
+          {inputs.missingPropTypes.map(([propName]) => (
             <ErrorBox label={propName} error="Missing PropType" />
           ))}
 

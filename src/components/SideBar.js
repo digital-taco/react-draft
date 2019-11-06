@@ -11,8 +11,13 @@ const drawerCss = css`
   width: 385px;
   color: var(--color-text);
   box-sizing: border-box;
+  overflow-y: scroll;
 `
 
 export default function SideBar({ open, children }) {
-  return open ? <div css={drawerCss}>{children}</div> : null
+  return open ? (
+    <div css={drawerCss} className="demo-font">
+      {children}
+    </div>
+  ) : null
 }
