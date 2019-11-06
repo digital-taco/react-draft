@@ -123,11 +123,12 @@ module.exports = draftConfig => {
     },
   }
 
+  // Maybe we'll need something like this later?
   // if (draftConfig.filesToIgnore) {
-  config.module.rules.push({
-    test: /(\.stories\.js$|\.mdx$)/,
-    loader: 'ignore-loader',
-  })
+  // config.module.rules.push({
+  //   test: /(\.stories\.js$|\.mdx$)/,
+  //   loader: 'ignore-loader',
+  // })
   // }
 
   return config
