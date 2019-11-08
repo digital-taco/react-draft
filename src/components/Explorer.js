@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React from 'react'
+import React, { useContext } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 
@@ -8,6 +8,7 @@ import FolderIcon from '../svgs/FolderIcon'
 import FileIcon from '../svgs/FileIcon'
 import FolderOpenIcon from '../svgs/FolderOpenIcon'
 import CodeIcon from '../svgs/CodeIcon'
+import { SelectedContext } from './SelectedProvider'
 
 const styles = {
   file: css`
@@ -106,7 +107,9 @@ const RecursiveFileSystem = ({
   return <>{children}</>
 }
 
-export default function Explorer({ componentTree, SelectedComponent, updateSelectedComponent }) {
+export default function Explorer({ componentTree }) {
+  const { SelectedComponent, updateSelectedComponent } = useContext(SelectedContext)
+
   return (
     <div>
       <RecursiveFileSystem

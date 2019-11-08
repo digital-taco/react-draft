@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import amber from '@material-ui/core/colors/amber'
@@ -7,6 +7,7 @@ import getInput from '../lib/get-input'
 // import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
 import { H1 } from '../base-components/Headers'
+import { SelectedContext } from './SelectedProvider'
 
 const styles = {
   propsContainer: css`
@@ -36,15 +37,12 @@ const styles = {
   `,
 }
 
-export default function PropsDrawer({
-  propObjects,
-  propStates,
-  open,
-  setEditItem,
-  updatePropState,
-  resetToDefaults,
-}) {
+export default function PropsDrawer({ propObjects, open, setEditItem }) {
   if (!propObjects) return null
+
+  const { SelectedComponent, propStates, resetToDefaults, updatePropState } = useContext(
+    SelectedContext
+  )
 
   const entries = Object.entries(propObjects)
   const inputs = entries.reduce(
@@ -73,7 +71,7 @@ export default function PropsDrawer({
 
   return (
     <>
-      <H1>Props</H1>
+      <H1>{SelectedComponent.meta.displayName} Props</H1>
       <div css={styles.propsDrawer} style={style} className="demo-font">
         <div css={styles.propsContainer}>
           {/* <ChildrenInput value={propStates.children} setEditItem={setEditItem} /> */}
@@ -88,7 +86,7 @@ export default function PropsDrawer({
           {inputs.bool && inputs.bool.map(getInputProp)}
 
           {/* MISSING PROP TYPES */}
-          {inputs.missingPropTypes.map(([propName, propInfo]) => (
+          {inputs.missingPropTypes.map(([propName]) => (
             <ErrorBox label={propName} error="Missing PropType" />
           ))}
 

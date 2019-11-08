@@ -1,15 +1,15 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import ReactDOM from 'react-dom'
-import * as Components from '../../out/master-exports.js' //eslint-disable-line
+import Components from '../../out/master-exports'
 import DemoWrapper from './DemoWrapper'
-import { isJson, removeQuotes } from '../lib/helpers'
-import useLocalStorage from '../useLocalStorage'
 import canRender from '../lib/can-render'
 import ChildrenRenderer from './ChildrenRenderer'
 import ErrorBox from './ErrorBox'
 import SettingsProvider from './Settings/SettingsProvider'
+import ErrorBoundary from './ErrorBoundary'
+import SelectedProvider, { SelectedContext } from './SelectedProvider'
 
-import '../global.css'
+import '../global.css' //eslint-disable-line
 
 // Add the app container so react can render
 const container = document.createElement('div')
@@ -23,102 +23,20 @@ babelStandalone.setAttribute('data-presets', 'es2015,react')
 document.head.appendChild(babelStandalone)
 
 const componentEntries = Object.entries(Components)
-const componentTree = Components.default
-
-/**
- * Gets the default states for the props
- * @param {} props
- */
-function getPropStateDefaults(props) {
-  if (!props) return {}
-  return Object.entries(props).reduce((acc, [propName, propObj]) => {
-    let defaultValue = propObj.defaultValue && propObj.defaultValue.value
-    // Remove extra quotes around strings
-    if (defaultValue && typeof defaultValue === 'string') {
-      defaultValue = removeQuotes(defaultValue)
-    }
-
-    // Switch back to booleans from strings
-    if (defaultValue === 'false' || defaultValue === 'true') {
-      defaultValue = defaultValue !== 'false'
-    }
-
-    defaultValue = isJson(defaultValue) || defaultValue
-
-    if (
-      typeof defaultValue === 'string' &&
-      defaultValue[0] === '{' &&
-      defaultValue[defaultValue.length - 1] === '}'
-    ) {
-      defaultValue = eval(`() => (${defaultValue})`)() //eslint-disable-line
-    }
-
-    acc[propName] = defaultValue
-    return acc
-  }, {})
-}
-
-/** Identifies the component with the shortest path */
-function getDefaultSelectedComponent() {
-  const getCount = path => (path.match(/(\/|\\)/g) || []).length
-  const component = componentEntries.reduce((acc, [, Component]) => {
-    if (!Component.meta) return acc
-    if (getCount(acc.meta.filePath) > getCount(Component.meta.filePath)) {
-      acc = Component
-    }
-    return acc
-  }, componentEntries[0][1])
-
-  // Must return a function that returns the component, since it is going directly into useState
-  return () => component
-}
+const { componentTree } = Components
 
 function ComponentDemo() {
-  const [SelectedComponent, setSelectedComponent] = useState(getDefaultSelectedComponent())
+  const { SelectedComponent, propStates } = useContext(SelectedContext)
 
-  // Using the component hash guarantees a key unique to the component
-  // Using the component display name in the key makes storage keys more human readable
-  const storageKey = `${SelectedComponent.meta.componentHash}_${SelectedComponent.meta.displayName}_props`
-  const [propStates, setPropStates] = useLocalStorage(storageKey, getPropStates())
+  const { meta } = SelectedComponent
+  const { displayName, props } = meta
 
-  /** Combines what's in local storage with the default values from the component information */
-  function getPropStates() {
-    const storedValues = JSON.parse(localStorage.getItem(storageKey)) || {}
-    const defaultValues = getPropStateDefaults(SelectedComponent.meta.props)
-    return Object.entries(storedValues).reduce((acc, [propName, value]) => {
-      if (value) acc[propName] = value
-      return acc
-    }, defaultValues)
-  }
-
-  /** Resets all props to their default values */
-  function resetToDefaults() {
-    setPropStates(getPropStateDefaults(SelectedComponent.meta.props))
-  }
-
-  /** Updates the currently selected component, identified by filepath */
-  function updateSelectedComponent(filePath, displayName) {
-    const componentEntry = componentEntries.find(([, Component]) => {
-      return Component.meta.filePath === filePath && Component.meta.displayName === displayName
-    })
-    setSelectedComponent(() => componentEntry[1])
-  }
-
-  const canRenderComponent = propStates && canRender(SelectedComponent.meta.props, propStates)
+  const canRenderComponent = propStates && canRender(props, propStates)
 
   return (
-    <SettingsProvider>
+    <DemoWrapper displayName={displayName} propObjects={props} componentTree={componentTree}>
       {canRenderComponent && (
-        <DemoWrapper
-          displayName={SelectedComponent.meta.displayName}
-          propObjects={SelectedComponent.meta.props}
-          propStates={propStates}
-          setPropStates={setPropStates}
-          resetToDefaults={resetToDefaults}
-          componentTree={componentTree}
-          SelectedComponent={SelectedComponent}
-          updateSelectedComponent={updateSelectedComponent}
-        >
+        <ErrorBoundary key={meta.componentHash}>
           {/* DEMO COMPONENT */}
           <SelectedComponent {...propStates}>
             <ChildrenRenderer value={propStates.children} />
@@ -126,11 +44,18 @@ function ComponentDemo() {
 
           {/* MISSING REQUIRED PROPS */}
           {!canRenderComponent && <ErrorBox>All required props must be given a value</ErrorBox>}
-        </DemoWrapper>
+        </ErrorBoundary>
       )}
-    </SettingsProvider>
+    </DemoWrapper>
   )
 }
 
 // Render the demo in the dom
-ReactDOM.render(<ComponentDemo />, document.getElementById('app'))
+ReactDOM.render(
+  <SelectedProvider componentEntries={componentEntries}>
+    <SettingsProvider>
+      <ComponentDemo />
+    </SettingsProvider>
+  </SelectedProvider>,
+  document.getElementById('app')
+)

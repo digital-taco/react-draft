@@ -1,13 +1,9 @@
 import React, { useContext } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
-// import AppBar from '@material-ui/core/AppBar'
-// import Toolbar from '@material-ui/core/Toolbar'
-// import IconButton from '@material-ui/core/IconButton'
-// import MenuIcon from '@material-ui/icons/Settings'
 import PropsDrawer from './PropsDrawer'
 import useLocalStorage from '../useLocalStorage'
-// import EditDrawer from './EditDrawer'
+import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
 import Explorer from './Explorer'
@@ -55,17 +51,7 @@ const styles = {
   `,
 }
 
-export default function DemoWrapper({
-  propObjects,
-  displayName,
-  children,
-  propStates,
-  setPropStates,
-  resetToDefaults,
-  componentTree,
-  SelectedComponent,
-  updateSelectedComponent,
-}) {
+export default function DemoWrapper({ propObjects, displayName, children, componentTree }) {
   const [drawerIsOpen, setDrawerIsOpen] = useLocalStorage('drawerIsOpen', true)
   const [drawerView, setDrawerView] = useLocalStorage('drawerView', true)
 
@@ -73,13 +59,6 @@ export default function DemoWrapper({
   const [editItem, setEditItem] = useLocalStorage(`${displayName}_editItem`, null)
 
   const { settings } = useContext(SettingsContext)
-
-  function updatePropState(propName, newState) {
-    setPropStates(oldPropStates => ({
-      ...oldPropStates,
-      [propName]: newState,
-    }))
-  }
 
   return (
     <div css={styles.grid}>
@@ -96,23 +75,14 @@ export default function DemoWrapper({
         {/* PROPS VIEW */}
         {drawerView === 'props' && (
           <PropsDrawer
-            propStates={propStates}
             open={drawerIsOpen && drawerView === 'props'}
             propObjects={propObjects}
             setEditItem={setEditItem}
-            updatePropState={updatePropState}
-            resetToDefaults={resetToDefaults}
           />
         )}
 
         {/* EXPLORER VIEW */}
-        {drawerView === 'explorer' && (
-          <Explorer
-            componentTree={componentTree}
-            SelectedComponent={SelectedComponent}
-            updateSelectedComponent={updateSelectedComponent}
-          />
-        )}
+        {drawerView === 'explorer' && <Explorer componentTree={componentTree} />}
 
         {/* SETTINGS VIEW */}
         {drawerView === 'settings' && <Settings />}
@@ -128,6 +98,15 @@ export default function DemoWrapper({
       >
         {children}
       </div>
+
+      {editDrawerOpen && (
+        <EditDrawer
+          open={editDrawerOpen}
+          setOpen={setEditDrawerOpen}
+          editItem={editItem}
+          setEditItem={setEditItem}
+        />
+      )}
     </div>
   )
 }
