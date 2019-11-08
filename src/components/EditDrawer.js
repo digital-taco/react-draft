@@ -1,54 +1,52 @@
-import React, { useState, useEffect } from 'react'
-import { css } from '@emotion/core'
-import CloseIcon from '@material-ui/icons/Close'
-import IconButton from '@material-ui/core/IconButton'
+import React, { useState, useEffect, useContext } from 'react'
+/** @jsx jsx */
+import { css, jsx } from '@emotion/core'
 import AceEditor from 'react-ace'
-import Divider from '@material-ui/core/Divider'
-import indigo from '@material-ui/core/colors/indigo'
-import amber from '@material-ui/core/colors/amber'
-import Collapse from '@material-ui/core/Collapse'
+import { SelectedContext } from './SelectedProvider'
 import 'brace/mode/json'
-import 'brace/theme/github'
+import 'brace/theme/tomorrow_night_bright'
 
 const styles = {
   editDrawer: css`
-    border: solid 1px rgba(0, 0, 0, 0.12);
-    border-left: none;
-    border-right: none;
-    background-color: #fcfcfc;
+    background-color: var(--color-background);
+    color: var(--color-text);
     transition: margin-right 0.2s ease-in-out;
+    position: absolute;
+    right: 0;
+    box-shadow: 0 0 8px #333;
 
     & .ace_editor {
-      width: 100% !important;
-      height: 50vh !important;
-      max-height: 50vh !important;
+      width: 33vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
       box-sizing: border-box;
-      font-family: monospace;
-      font-weight: 500;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+      font-weight: 600;
+      font-size: 16px;
     }
   `,
   header: css`
-    padding: 8px 12px;
+    padding: 16px;
+    background-color: var(--color-background-secondary);
   `,
   titleBar: css`
-    color: ${indigo[500]};
     font-size: 16px;
     display: flex;
     align-items: center;
-
     & > span {
       flex-grow: 2;
     }
 
-    & > h4 {
+    & > .title {
       padding: 0;
       margin: 0;
+      font-weight: 600;
     }
   `,
   warningsLabel: css`
     font-size: 12px;
     margin-left: 16px;
-    color: ${amber[800]};
+    color: orange;
     cursor: pointer;
 
     &:hover {
@@ -57,7 +55,6 @@ const styles = {
   `,
   warnings: css`
     margin: 0;
-    /* padding-left: 8px; */
     max-width: 100%;
     overflow-x: scroll;
   `,
@@ -72,9 +69,10 @@ const styles = {
 }
 
 /** A bottom-opening drawer containing an editor. Allows the user to edit the prop state for objects, shapes, and exact shapes. */
-export default function EditDrawer({ open, setOpen, editItem, updatePropState, setEditItem }) {
+export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
   if (!editItem) return null
   const [warningsOpen, setWarningsOpen] = useState(false)
+  const { updatePropState } = useContext(SelectedContext)
   const editorRef = React.useRef()
   const warningLength = editItem.warnings.length
   const pluralWarnings = warningLength > 1
@@ -110,7 +108,9 @@ export default function EditDrawer({ open, setOpen, editItem, updatePropState, s
       <div css={styles.header}>
         {/* TITLE */}
         <div css={styles.titleBar}>
-          <h4 className="demo-font">{editItem.propName}</h4>
+          <div className="title demo-font">{editItem.propName}</div>
+
+          {/* Warnings */}
           {warningLength > 0 && (
             // eslint-disable-next-line
             <div css={styles.warningsLabel} onClick={() => setWarningsOpen(!warningsOpen)}>
@@ -120,24 +120,21 @@ export default function EditDrawer({ open, setOpen, editItem, updatePropState, s
           <span />
 
           {/* CLOSE BUTTON */}
-          <IconButton size="small" onClick={handleClose}>
+          {/* <IconButton size="small" onClick={handleClose}>
             <CloseIcon fontSize="small" />
-          </IconButton>
+          </IconButton> */}
+          <button onClick={handleClose}>Close</button>
         </div>
 
         {/* WARNINGS */}
         {warningLength > 0 && (
-          <Collapse in={warningsOpen}>
-            <div css={styles.warnings}>
-              {editItem.warnings.map(warning => (
-                <div css={styles.warning}>{warning}</div>
-              ))}
-            </div>
-          </Collapse>
+          <div css={styles.warnings}>
+            {editItem.warnings.map(warning => (
+              <div css={styles.warning}>{warning}</div>
+            ))}
+          </div>
         )}
       </div>
-
-      <Divider />
 
       {/* EDITOR */}
       <AceEditor
@@ -152,7 +149,7 @@ export default function EditDrawer({ open, setOpen, editItem, updatePropState, s
             ? JSON.stringify(editItem.value, null, 4)
             : editItem.value
         }
-        theme="github"
+        theme="tomorrow_night_bright"
         name="test editor"
         onChange={newText => {
           try {
@@ -161,12 +158,11 @@ export default function EditDrawer({ open, setOpen, editItem, updatePropState, s
             if (editItem.valueType === 'jsx') {
               // transform the JSX here
               // eslint-disable-next-line no-undef
-              // newText = Babel.transform(newText, {
-              //   presets: ['es2015', 'react'],
-              //   parserOpts: { sourceType: 'script', minified: true },
-              // }).code
-              // console.log('TCL: EditDrawer -> newText', newText)
-              // newValue = newText ? eval(newText) : undefined // eslint-disable-line
+              newText = Babel.transform(newText, {
+                presets: ['es2015', 'react'],
+                parserOpts: { sourceType: 'script', minified: true },
+              }).code
+              newValue = newText ? eval(newText) : undefined // eslint-disable-line
               newValue = newText
             } else {
               newValue = newText ? eval(`() => (${newText})`)() : undefined // eslint-disable-line

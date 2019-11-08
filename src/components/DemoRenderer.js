@@ -26,13 +26,7 @@ const componentEntries = Object.entries(Components)
 const { componentTree } = Components
 
 function ComponentDemo() {
-  const {
-    SelectedComponent,
-    updateSelectedComponent,
-    propStates,
-    setPropStates,
-    resetToDefaults,
-  } = useContext(SelectedContext)
+  const { SelectedComponent, propStates } = useContext(SelectedContext)
 
   const { meta } = SelectedComponent
   const { displayName, props } = meta
@@ -40,16 +34,7 @@ function ComponentDemo() {
   const canRenderComponent = propStates && canRender(props, propStates)
 
   return (
-    <DemoWrapper
-      displayName={displayName}
-      propObjects={props}
-      propStates={propStates}
-      setPropStates={setPropStates}
-      resetToDefaults={resetToDefaults}
-      componentTree={componentTree}
-      SelectedComponent={SelectedComponent}
-      updateSelectedComponent={updateSelectedComponent}
-    >
+    <DemoWrapper displayName={displayName} propObjects={props} componentTree={componentTree}>
       {canRenderComponent && (
         <ErrorBoundary key={meta.componentHash}>
           {/* DEMO COMPONENT */}

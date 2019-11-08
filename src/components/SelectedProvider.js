@@ -56,6 +56,9 @@ export default function SelectedProvider({ children, componentEntries }) {
     getDefaultSelectedComponent(componentEntries)
   )
 
+  const [propStates, setPropStates] = useState(getPropStateDefaults(SelectedComponent.meta.props))
+
+  /** Updates the currently selected component, identified by filepath */
   function updateSelectedComponent(filePath, displayName) {
     const componentEntry = componentEntries.find(([, Component]) => {
       return Component.meta.filePath === filePath && Component.meta.displayName === displayName
@@ -63,7 +66,17 @@ export default function SelectedProvider({ children, componentEntries }) {
     setSelectedComponent(() => componentEntry[1])
   }
 
-  const [propStates, setPropStates] = useState(getPropStateDefaults(SelectedComponent.meta.props))
+  /** Resets all props to their default values */
+  function resetToDefaults() {
+    setPropStates(getPropStateDefaults(SelectedComponent.meta.props))
+  }
+
+  function updatePropState(propName, newState) {
+    setPropStates(oldPropStates => ({
+      ...oldPropStates,
+      [propName]: newState,
+    }))
+  }
 
   return (
     <SelectedContext.Provider
@@ -72,6 +85,8 @@ export default function SelectedProvider({ children, componentEntries }) {
         updateSelectedComponent,
         propStates,
         setPropStates,
+        resetToDefaults,
+        updatePropState,
       }}
     >
       {children}

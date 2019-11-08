@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import amber from '@material-ui/core/colors/amber'
@@ -7,6 +7,7 @@ import getInput from '../lib/get-input'
 // import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
 import { H1 } from '../base-components/Headers'
+import { SelectedContext } from './SelectedProvider'
 
 const styles = {
   propsContainer: css`
@@ -36,16 +37,12 @@ const styles = {
   `,
 }
 
-export default function PropsDrawer({
-  propObjects,
-  propStates,
-  open,
-  setEditItem,
-  updatePropState,
-  resetToDefaults,
-  SelectedComponent,
-}) {
+export default function PropsDrawer({ propObjects, open, setEditItem }) {
   if (!propObjects) return null
+
+  const { SelectedComponent, propStates, resetToDefaults, updatePropState } = useContext(
+    SelectedContext
+  )
 
   const entries = Object.entries(propObjects)
   const inputs = entries.reduce(
