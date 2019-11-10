@@ -1,5 +1,5 @@
 # React Draft
-📝 WIP: Develop your React components in isolation without any configuration
+📝 WIP: Develop your React components in isolation without any configuration.
 
 **Note:** This tool is not built for server-side rendering.
 
