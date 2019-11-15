@@ -8,6 +8,7 @@ import ErrorBox from './ErrorBox'
 import SettingsProvider from './Settings/SettingsProvider'
 import ErrorBoundary from './ErrorBoundary'
 import SelectedProvider, { SelectedContext } from './SelectedProvider'
+import StorageProvider from './StorageContext'
 
 import '../global.css' //eslint-disable-line
 
@@ -22,19 +23,18 @@ babelStandalone.setAttribute('src', 'https://unpkg.com/@babel/standalone/babel.m
 babelStandalone.setAttribute('data-presets', 'es2015,react')
 document.head.appendChild(babelStandalone)
 
-const componentEntries = Object.entries(Components)
 const { componentTree } = Components
 
 function ComponentDemo() {
   const { SelectedComponent, propStates } = useContext(SelectedContext)
 
   const { meta } = SelectedComponent
-  const { displayName, props } = meta
+  const { props } = meta
 
   const canRenderComponent = propStates && canRender(props, propStates)
 
   return (
-    <DemoWrapper displayName={displayName} propObjects={props} componentTree={componentTree}>
+    <DemoWrapper propObjects={props} componentTree={componentTree}>
       {canRenderComponent && (
         <ErrorBoundary key={meta.componentHash}>
           {/* DEMO COMPONENT */}
@@ -52,10 +52,12 @@ function ComponentDemo() {
 
 // Render the demo in the dom
 ReactDOM.render(
-  <SelectedProvider componentEntries={componentEntries}>
-    <SettingsProvider>
-      <ComponentDemo />
-    </SettingsProvider>
-  </SelectedProvider>,
+  <StorageProvider>
+    <SelectedProvider components={Components}>
+      <SettingsProvider>
+        <ComponentDemo />
+      </SettingsProvider>
+    </SelectedProvider>
+  </StorageProvider>,
   document.getElementById('app')
 )

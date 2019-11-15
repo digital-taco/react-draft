@@ -2,13 +2,13 @@ import React, { useContext } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import PropsDrawer from './PropsDrawer'
-import useLocalStorage from '../useLocalStorage'
 import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
 import Explorer from './Explorer'
 import Settings from './Settings/Settings'
 import { SettingsContext } from './Settings/SettingsProvider'
+import { StorageContext } from './StorageContext'
 
 const styles = {
   grid: css`
@@ -51,27 +51,26 @@ const styles = {
   `,
 }
 
-export default function DemoWrapper({ propObjects, displayName, children, componentTree }) {
-  const [drawerIsOpen, setDrawerIsOpen] = useLocalStorage('drawerIsOpen', true)
-  const [drawerView, setDrawerView] = useLocalStorage('drawerView', true)
+export default function DemoWrapper({ propObjects, children, componentTree }) {
+  const { getItem, setItem } = useContext(StorageContext)
 
-  const [editDrawerOpen, setEditDrawerOpen] = useLocalStorage('editDrawerOpen', true)
-  const [editItem, setEditItem] = useLocalStorage(`${displayName}_editItem`, null)
+  const drawerView = getItem('DRAFT_drawer_view', 'explorer')
+  const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
+
+  const editDrawerOpen = getItem('DRAFT_edit_drawer_open', true)
+  const editItem = getItem('DRAFT_edit_item', { warnings: [] })
+
+  const setEditItem = newEditItem => setItem('DRAFT_edit_item', newEditItem)
 
   const { settings } = useContext(SettingsContext)
 
   return (
     <div css={styles.grid}>
       {/* APP BAR */}
-      <ActivityBar
-        drawerIsOpen={drawerIsOpen}
-        setDrawerIsOpen={setDrawerIsOpen}
-        drawerView={drawerView}
-        setDrawerView={setDrawerView}
-      />
+      <ActivityBar />
 
       {/* SIDEBAR */}
-      <SideBar open={drawerIsOpen}>
+      <SideBar>
         {/* PROPS VIEW */}
         {drawerView === 'props' && (
           <PropsDrawer
@@ -102,7 +101,7 @@ export default function DemoWrapper({ propObjects, displayName, children, compon
       {editDrawerOpen && (
         <EditDrawer
           open={editDrawerOpen}
-          setOpen={setEditDrawerOpen}
+          setOpen={newValue => setItem('DRAFT_edit_drawer_open', newValue)}
           editItem={editItem}
           setEditItem={setEditItem}
         />

@@ -1,6 +1,7 @@
-import React from 'react'
-/** @jsx jsx */
+import React, { useContext } from 'react'
 import { css, jsx } from '@emotion/core'
+import { StorageContext } from './StorageContext'
+/** @jsx jsx */
 
 const drawerCss = css`
   padding: 16px;
@@ -14,8 +15,11 @@ const drawerCss = css`
   overflow-y: scroll;
 `
 
-export default function SideBar({ open, children }) {
-  return open ? (
+export default function SideBar({ children }) {
+  const { getItem } = useContext(StorageContext)
+
+  const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
+  return drawerIsOpen ? (
     <div css={drawerCss} className="demo-font">
       {children}
     </div>

@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useContext } from 'react'
 import { removeQuotes, isJson } from '../lib/helpers'
+import { StorageContext } from './StorageContext'
 
 /**
  * Gets the default states for the props
@@ -35,7 +36,8 @@ function getPropStateDefaults(props) {
 }
 
 /** Identifies the component with the shortest path */
-function getDefaultSelectedComponent(componentEntries) {
+function getDefaultSelectedComponent(components) {
+  const componentEntries = Object.entries(components)
   const getCount = path => (path.match(/(\/|\\)/g) || []).length
   const component = componentEntries.reduce((acc, [, Component]) => {
     if (!Component.meta) return acc
@@ -46,36 +48,49 @@ function getDefaultSelectedComponent(componentEntries) {
   }, componentEntries[0][1])
 
   // Must return a function that returns the component, since it is going directly into useState
-  return () => component
+  return component
 }
 
 export const SelectedContext = React.createContext()
 
-export default function SelectedProvider({ children, componentEntries }) {
-  const [SelectedComponent, setSelectedComponent] = useState(
-    getDefaultSelectedComponent(componentEntries)
+export default function SelectedProvider({ children, components }) {
+  const { getItem, setItem } = useContext(StorageContext)
+
+  const selectedComponentHash = getItem(
+    'DRAFT_Selected_Component_Hash',
+    getDefaultSelectedComponent(components).meta.componentHash
   )
 
-  const [propStates, setPropStates] = useState(getPropStateDefaults(SelectedComponent.meta.props))
+  // Find the corresponding component
+  const SelectedComponent = components[selectedComponentHash]
+
+  const selectedPropStatesKey = `DRAFT_${selectedComponentHash}_Prop_States`
+
+  // Get/set the selected component's prop values from storage
+  const propStates = getItem(
+    selectedPropStatesKey,
+    getPropStateDefaults(SelectedComponent.meta.props)
+  )
 
   /** Updates the currently selected component, identified by filepath */
   function updateSelectedComponent(filePath, displayName) {
-    const componentEntry = componentEntries.find(([, Component]) => {
+    const componentEntry = Object.entries(components).find(([, Component]) => {
       return Component.meta.filePath === filePath && Component.meta.displayName === displayName
     })
-    setSelectedComponent(() => componentEntry[1])
+    setItem('DRAFT_Selected_Component_Hash', componentEntry[0])
   }
 
   /** Resets all props to their default values */
   function resetToDefaults() {
-    setPropStates(getPropStateDefaults(SelectedComponent.meta.props))
+    setItem(selectedPropStatesKey, getPropStateDefaults(SelectedComponent.meta.props))
   }
 
+  /** Updates a specific prop state */
   function updatePropState(propName, newState) {
-    setPropStates(oldPropStates => ({
-      ...oldPropStates,
+    setItem(selectedPropStatesKey, {
+      ...propStates,
       [propName]: newState,
-    }))
+    })
   }
 
   return (
@@ -84,9 +99,10 @@ export default function SelectedProvider({ children, componentEntries }) {
         SelectedComponent,
         updateSelectedComponent,
         propStates,
-        setPropStates,
         resetToDefaults,
         updatePropState,
+        getItem,
+        setItem,
       }}
     >
       {children}

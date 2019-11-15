@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useContext } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
-import SettingsIcon from '../svgs/SettingsIcon.js'
-import FolderIcon from '../svgs/FolderIcon.js'
-import PropsIcon from '../svgs/PropsIcon.js'
+import SettingsIcon from '../svgs/SettingsIcon'
+import FolderIcon from '../svgs/FolderIcon'
+import PropsIcon from '../svgs/PropsIcon'
+import { StorageContext } from './StorageContext'
 
 const activityBarCss = css`
   height: 100vh;
@@ -35,23 +36,29 @@ const activityBarCss = css`
   }
 `
 
-export default function ActivityBar({ drawerIsOpen, setDrawerIsOpen, drawerView, setDrawerView }) {
+export default function ActivityBar() {
+  const { getItem, setItem } = useContext(StorageContext)
+
+  const drawerView = getItem('DRAFT_drawer_view', 'explorer')
+  const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
+
   function handleClick(drawerType) {
-    setDrawerView(drawerType)
-    if (drawerView === drawerType || !drawerIsOpen) {
-      setDrawerIsOpen(prev => !prev)
+    setItem('DRAFT_drawer_view', drawerType)
+    const isOpen = getItem('DRAFT_drawer_is_open', true)
+    if (drawerView === drawerType || !isOpen) {
+      setItem('DRAFT_drawer_is_open', !isOpen)
     }
   }
 
   return (
     <div css={activityBarCss}>
-      <PropsIcon
-        data-selected={drawerView === 'props' ? '' : undefined}
-        onClick={() => handleClick('props')}
-      />
       <FolderIcon
         data-selected={drawerView === 'explorer' ? '' : undefined}
         onClick={() => handleClick('explorer')}
+      />
+      <PropsIcon
+        data-selected={drawerView === 'props' ? '' : undefined}
+        onClick={() => handleClick('props')}
       />
       <SettingsIcon
         data-selected={drawerView === 'settings' ? '' : undefined}
