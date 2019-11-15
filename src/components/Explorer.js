@@ -14,16 +14,21 @@ import { StorageContext } from './StorageContext'
 const explorerCss = css`
   letter-spacing: 0.5px;
   font-size: 14px;
+
+  & svg {
+    width: 16px;
+    height: 16px;
+  }
 `
 
 const itemContainerCss = css`
   display: flex;
   align-items: center;
+  overflow-x: hidden;
 `
 
 const iconContainerCss = css`
   ${itemContainerCss}
-  display: inline-block;
   margin-right: 8px;
 `
 
@@ -47,8 +52,6 @@ const componentCss = css`
   }
 
   & svg {
-    width: 16px;
-    height: 16px;
     fill: var(--color-text-accent);
     vertical-align: bottom;
   }
@@ -67,8 +70,6 @@ const folderNameCss = css`
   user-select: none;
 
   & svg {
-    width: 16px;
-    height: 16px;
     vertical-align: bottom;
   }
 
@@ -154,8 +155,21 @@ const RecursiveFileSystem = ({
 }) => {
   const children = []
 
+  const { getItem, setItem } = useContext(StorageContext)
+  const tabs = getItem('DRAFT_tabs', [])
+
+  function handleComponentClick(filePath, name) {
+    if (
+      SelectedComponent.meta.filePath === filePath &&
+      SelectedComponent.meta.displayName === name &&
+      !tabs.find(t => t.name === name && t.filePath === filePath)
+    ) {
+      setItem('DRAFT_tabs', [...tabs, { filePath, name }])
+    }
+    updateSelectedComponent(filePath, name)
+  }
+
   Object.entries(tree).forEach(([path, value]) => {
-    console.log('LOG: path', path)
     const isFile = Array.isArray(value)
 
     if (isFile && displayComponents) {
@@ -169,7 +183,7 @@ const RecursiveFileSystem = ({
               SelectedComponent.meta.filePath === filePath &&
               SelectedComponent.meta.displayName === component.displayName
             }
-            onClick={() => updateSelectedComponent(filePath, component.displayName)}
+            onClick={() => handleComponentClick(filePath, component.displayName)}
           />
         )
       })
@@ -189,7 +203,7 @@ const RecursiveFileSystem = ({
     }
   })
 
-  return <>{children}</>
+  return children
 }
 
 export default function Explorer({ componentTree }) {
