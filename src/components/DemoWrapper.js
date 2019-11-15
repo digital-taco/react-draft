@@ -57,7 +57,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
   const drawerView = getItem('DRAFT_drawer_view', 'explorer')
   const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
 
-  const editDrawerOpen = getItem('DRAFT_edit_drawer_open', true)
+  const editDrawerOpen = getItem('DRAFT_edit_drawer_open', false)
   const editItem = getItem('DRAFT_edit_item', { warnings: [] })
 
   const setEditItem = newEditItem => setItem('DRAFT_edit_item', newEditItem)

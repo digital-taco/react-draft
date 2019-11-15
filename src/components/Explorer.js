@@ -99,17 +99,30 @@ function ExportedComponent({ selected, onClick, displayName }) {
   )
 }
 
-function FolderFile({ isFile, path, tree, SelectedComponent, updateSelectedComponent }) {
+function ExpandableItem({
+  isFile,
+  path,
+  tree,
+  filePath,
+  components = [],
+  SelectedComponent,
+  updateSelectedComponent,
+}) {
   const { getItem, setItem } = useContext(StorageContext)
   const storageKey = `DRAFT_${path}`
   const isOpen = getItem(storageKey, false)
+
+  function handleFileClick() {
+    // If there is only one component in the file and the file is about to expand, then select the one component
+    if (!isOpen && isFile && components.length === 1) {
+      updateSelectedComponent(filePath, components[0].displayName)
+    }
+    setItem(storageKey, !isOpen)
+  }
+
   return (
     <div>
-      <div
-        is-file={isFile ? '' : undefined}
-        css={folderNameCss}
-        onClick={() => setItem(storageKey, !isOpen)}
-      >
+      <div is-file={isFile ? '' : undefined} css={folderNameCss} onClick={handleFileClick}>
         {/* eslint-disable-next-line no-nested-ternary */}
         <ItemIcons
           Icon={isFile ? FileIcon : FolderIcon}
@@ -142,6 +155,7 @@ const RecursiveFileSystem = ({
   const children = []
 
   Object.entries(tree).forEach(([path, value]) => {
+    console.log('LOG: path', path)
     const isFile = Array.isArray(value)
 
     if (isFile && displayComponents) {
@@ -161,11 +175,13 @@ const RecursiveFileSystem = ({
       })
     } else {
       children.push(
-        <FolderFile
+        <ExpandableItem
           isFile={isFile}
           path={path}
           tree={isFile ? { [path]: value } : value}
           displayComponents={isFile}
+          filePath={isFile ? value[0] : undefined}
+          components={isFile ? value[1] : undefined}
           SelectedComponent={SelectedComponent}
           updateSelectedComponent={updateSelectedComponent}
         />
