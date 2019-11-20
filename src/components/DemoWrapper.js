@@ -9,6 +9,7 @@ import Explorer from './Explorer'
 import Settings from './Settings/Settings'
 import { SettingsContext } from './Settings/SettingsProvider'
 import { StorageContext } from './StorageContext'
+import Tabs from './Tabs'
 
 const styles = {
   grid: css`
@@ -87,15 +88,20 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
         {drawerView === 'settings' && <Settings />}
       </SideBar>
 
-      {/* DEMO */}
-      <div
-        css={styles.wrapper}
-        style={{
-          padding: `${settings.demoPadding}px`,
-          backgroundColor: settings.backgroundColor || '#fff',
-        }}
-      >
-        {children}
+      <div css={styles.wrapper}>
+        {/* TABS */}
+        <Tabs />
+
+        {/* DEMO */}
+        <div
+          css={styles.wrapper}
+          style={{
+            padding: `${settings.demoPadding}px`,
+            backgroundColor: settings.backgroundColor || '#fff',
+          }}
+        >
+          {children}
+        </div>
       </div>
 
       {editDrawerOpen && (
