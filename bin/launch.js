@@ -5,6 +5,7 @@ const fs = require('fs')
 const find = require('find')
 const webpack = require('webpack')
 const middleware = require('webpack-dev-middleware')
+const hotMiddleware = require('webpack-hot-middleware')
 const express = require('express')
 const open = require('open')
 const buildWebpackConfig = require('../webpack.config')
@@ -68,6 +69,8 @@ const devMiddleware = middleware(compiler, {
   },
 })
 app.use(devMiddleware)
+
+app.use(hotMiddleware(compiler))
 
 // Must be added _after_ the dev middleware
 app.use('/', (req, res, next) => {
