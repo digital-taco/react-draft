@@ -27,7 +27,6 @@ const { componentTree } = Components
 
 function ComponentDemo() {
   const { SelectedComponent, propStates } = useContext(SelectedContext)
-
   const { meta } = SelectedComponent
   const { props } = meta
 

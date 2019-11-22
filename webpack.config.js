@@ -3,6 +3,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const BuildExportsList = require('./lib/BuildExportsList')
 
+const hotMiddlewareScript =
+  'node_modules/webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+
 module.exports = draftConfig => {
   const config = {
     context: path.resolve('.', 'src'),
@@ -11,14 +14,14 @@ module.exports = draftConfig => {
 
     // Enables source maps
     devtool: 'source-map',
-
-    // Our main entry point
     entry: {
-      'render-demo': path.resolve(__dirname, 'src/components/DemoRenderer.js'),
+      'render-demo': [
+        path.resolve(__dirname, 'src/components/DemoRenderer.js'),
+        path.resolve(__dirname, hotMiddlewareScript),
+      ],
     },
 
     plugins: [
-      // Generates the HTML file for the demo
       new HtmlWebpackPlugin({ title: draftConfig.title || 'React Draft' }),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
