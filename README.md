@@ -8,7 +8,7 @@
 In your project's root directory, run:
 
 ```bash
-npm i @js-draft/react-draft
+npm i @digital-taco/react-draft
 ```
 
 In your project's `package.json`, add:
@@ -40,7 +40,7 @@ npm link
 Where you cloned `META-react-draft-sandbox`, run:
 
 ```bash
-npm link @js-draft/react-draft
+npm link @digital-taco/react-draft
 ```
 
 Run draft in the sandbox. Any changes made in `react-draft` will be picked up.

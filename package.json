@@ -1,12 +1,19 @@
 {
-  "name": "@js-draft/react-draft",
-  "version": "1.0.0",
-  "description": "",
+  "name": "@digital-taco/react-draft",
+  "version": "0.1.0",
+  "description": "Develop your React components in isolation without any configuration",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": {
+    "name": "DigitalTaco",
+    "url": "https://github.com/digital-taco"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digital-taco/react-draft.git"
+  },
   "license": "ISC",
   "dependencies": {
     "@babel/plugin-transform-runtime": "^7.5.0",
