@@ -1,13 +1,14 @@
 import React, { useContext } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
-import amber from '@material-ui/core/colors/amber'
 import Button from '../base-components/Button'
 import getInput from '../lib/get-input'
 // import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
 import { H1 } from '../base-components/Headers'
 import { SelectedContext } from './SelectedProvider'
+import ResetIcon from '../svgs/ResetIcon'
+import IconButton from '../base-components/IconButton'
 
 const styles = {
   propsContainer: css`
@@ -17,16 +18,6 @@ const styles = {
     grid-row-gap: 8px;
     overflow-y: scroll;
     max-height: 100%;
-
-    & .MuiFormControl-root {
-      width: 100%;
-      margin-top: 8px;
-      margin-bottom: 4px;
-    }
-
-    & .Mui-required:not(.MuiFormLabel-filled) {
-      color: ${amber[900]};
-    }
   `,
   propsDrawer: css`
     display: flex;
@@ -36,6 +27,12 @@ const styles = {
     margin-top: 24px;
   `,
 }
+
+const propsTitleCss = css`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
 
 export default function PropsDrawer({ propObjects, open, setEditItem }) {
   if (!propObjects) return null
@@ -71,7 +68,14 @@ export default function PropsDrawer({ propObjects, open, setEditItem }) {
 
   return (
     <>
-      <H1>{SelectedComponent.meta.displayName} Props</H1>
+      <div css={propsTitleCss}>
+        <H1>{SelectedComponent.meta.displayName} Props</H1>
+        <IconButton
+          title="Reset all props to default values"
+          Icon={ResetIcon}
+          onClick={resetToDefaults}
+        />
+      </div>
       <div css={styles.propsDrawer} style={style} className="demo-font">
         <div css={styles.propsContainer}>
           {/* <ChildrenInput value={propStates.children} setEditItem={setEditItem} /> */}
@@ -89,12 +93,6 @@ export default function PropsDrawer({ propObjects, open, setEditItem }) {
           {inputs.missingPropTypes.map(([propName]) => (
             <ErrorBox label={propName} error="Missing PropType" />
           ))}
-
-          <div css={styles.resetButton}>
-            <Button size="small" color="primary" onClick={resetToDefaults}>
-              Reset to Defaults
-            </Button>
-          </div>
         </div>
       </div>
     </>
