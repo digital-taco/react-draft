@@ -40,10 +40,9 @@ const activityBarCss = css`
 
 export default function ActivityBar() {
   const { getItem, setItem } = useContext(StorageContext)
-
   const drawerView = getItem('DRAFT_drawer_view', 'explorer')
   const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
-  // hi
+
   function handleClick(drawerType) {
     setItem('DRAFT_drawer_view', drawerType)
     const isOpen = getItem('DRAFT_drawer_is_open', true)
