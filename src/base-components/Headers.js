@@ -4,10 +4,9 @@ import { css, jsx } from '@emotion/core'
 
 const styles = {
   h1: css`
-    margin: 8px 0 16px;
-    padding-bottom: 8px;
+    margin: 8px 0;
     font-size: 22px;
-    border-bottom: solid 1px var(--color-background-highlight);
+    /* border-bottom: solid 1px var(--color-background-highlight); */
   `,
   h2: css`
     margin: 8px 0;
