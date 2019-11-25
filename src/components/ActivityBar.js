@@ -6,6 +6,8 @@ import FolderIcon from '../svgs/FolderIcon'
 import PropsIcon from '../svgs/PropsIcon'
 import { StorageContext } from './StorageContext'
 
+import ReloadNotification from './ReloadNotification'
+
 const activityBarCss = css`
   height: 100vh;
   width: 60px;
@@ -38,7 +40,6 @@ const activityBarCss = css`
 
 export default function ActivityBar() {
   const { getItem, setItem } = useContext(StorageContext)
-
   const drawerView = getItem('DRAFT_drawer_view', 'explorer')
   const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
 
@@ -52,6 +53,7 @@ export default function ActivityBar() {
 
   return (
     <div css={activityBarCss}>
+      <ReloadNotification />
       <FolderIcon
         data-selected={drawerView === 'explorer' ? '' : undefined}
         onClick={() => handleClick('explorer')}

@@ -34,9 +34,10 @@ const componentTree = buildComponentTree(fileStructure)
 buildMasterExports(componentTree)
 
 // Set up webpack, websockets, express
+const webpackConfig = buildWebpackConfig(draftConfig)
 const app = express()
 const port = 8080
-const compiler = webpack(buildWebpackConfig(draftConfig))
+const compiler = webpack(webpackConfig)
 
 // Whenever the compilation goes invalid (something changed), rebuild the master exports
 compiler.hooks.invalid.tap('BuildExportsList', () => {
@@ -68,8 +69,8 @@ const devMiddleware = middleware(compiler, {
     ignored: /master-exports/,
   },
 })
-app.use(devMiddleware)
 
+app.use(devMiddleware)
 app.use(hotMiddleware(compiler))
 
 // Must be added _after_ the dev middleware

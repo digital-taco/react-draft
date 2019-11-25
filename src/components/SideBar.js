@@ -10,6 +10,7 @@ const drawerCss = css`
   display: flex;
   flex-direction: column;
   width: 385px;
+  min-width: 385px;
   color: var(--color-text);
   box-sizing: border-box;
   overflow-y: scroll;
