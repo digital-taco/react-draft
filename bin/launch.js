@@ -17,7 +17,7 @@ const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
 
 const files = find.fileSync(/\.js$/, path.resolve('.')).filter(x => {
-  return !['node_modules/', ...(draftConfig.filesToIgnore || [])].some(ignorePath => {
+  return !['node_modules/', ...(draftConfig.ignore || [])].some(ignorePath => {
     return x.includes(ignorePath)
   })
 })
@@ -31,7 +31,7 @@ const fileStructure = {
 const componentTree = buildComponentTree(fileStructure)
 
 // Write the exports list on initial load
-buildMasterExports(componentTree)
+buildMasterExports(componentTree, draftConfig)
 
 // Set up webpack, websockets, express
 const webpackConfig = buildWebpackConfig(draftConfig)
@@ -41,7 +41,7 @@ const compiler = webpack(webpackConfig)
 
 // Whenever the compilation goes invalid (something changed), rebuild the master exports
 compiler.hooks.invalid.tap('BuildExportsList', () => {
-  buildMasterExports(componentTree)
+  buildMasterExports(componentTree, draftConfig)
 })
 
 // Must be added _before_ dev middleware
@@ -50,7 +50,7 @@ app.get('/files', (req, res) => {
 })
 
 const devMiddleware = middleware(compiler, {
-  noInfo: true,
+  // noInfo: true,
   publicPath: '/',
   hot: true,
   lazy: false,
@@ -58,8 +58,8 @@ const devMiddleware = middleware(compiler, {
     builtAt: false,
     colors: true,
     timings: true,
-    entrypoints: false,
-    assets: false,
+    entrypoints: true,
+    assets: true,
     modules: false,
     warnings: false,
     version: false,
@@ -85,6 +85,18 @@ app.use('/', (req, res, next) => {
     res.end()
   })
 })
+
+// app.use('/demo', (req, res, next) => {
+//   const indexPath = path.join(compiler.outputPath, 'demo.html')
+
+//   // eslint-disable-next-line consistent-return
+//   compiler.outputFileSystem.readFile(indexPath, (err, result) => {
+//     if (err) return next(err)
+//     res.set('content-type', 'text/html')
+//     res.send(result)
+//     res.end()
+//   })
+// })
 
 /** Start that sucker up */
 app.listen(port, err => {

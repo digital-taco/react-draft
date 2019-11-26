@@ -110,7 +110,7 @@ function ExpandableItem({
   updateSelectedComponent,
 }) {
   const { getItem, setItem } = useContext(StorageContext)
-  const storageKey = `DRAFT_${path}`
+  const storageKey = `DRAFT_expandable_is_open_${path}`
   const isOpen = getItem(storageKey, false)
 
   function handleFileClick() {
