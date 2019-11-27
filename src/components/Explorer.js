@@ -123,7 +123,7 @@ function ExpandableItem({
 
   return (
     <div>
-      <div is-file={isFile ? '' : undefined} css={folderNameCss} onClick={handleFileClick}>
+      <div is-file={isFile ? '' : undefined} css={folderNameCss} onClick={handleFileClick} data-test-path={path}>
         {/* eslint-disable-next-line no-nested-ternary */}
         <ItemIcons
           Icon={isFile ? FileIcon : FolderIcon}

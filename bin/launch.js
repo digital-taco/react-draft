@@ -94,6 +94,6 @@ app.listen(port, err => {
   if (err) {
     console.log(err)
   } else {
-    open(`http://localhost:${port}`)
+    !process.env.CI && open(`http://localhost:${port}`)
   }
 })
