@@ -59,7 +59,7 @@ const devMiddleware = middleware(compiler, {
     colors: true,
     timings: true,
     entrypoints: true,
-    assets: true,
+    assets: false,
     modules: false,
     warnings: false,
     version: false,
@@ -73,30 +73,21 @@ const devMiddleware = middleware(compiler, {
 app.use(devMiddleware)
 app.use(hotMiddleware(compiler))
 
-// Must be added _after_ the dev middleware
-app.use('/', (req, res, next) => {
-  const indexPath = path.join(compiler.outputPath, 'index.html')
+const extractFrom = (webpackCompiler, name) => (req, res, next) => {
+  const indexPath = path.join(webpackCompiler.outputPath, name)
 
   // eslint-disable-next-line consistent-return
-  compiler.outputFileSystem.readFile(indexPath, (err, result) => {
+  webpackCompiler.outputFileSystem.readFile(indexPath, (err, result) => {
     if (err) return next(err)
     res.set('content-type', 'text/html')
     res.send(result)
     res.end()
   })
-})
+}
 
-// app.use('/demo', (req, res, next) => {
-//   const indexPath = path.join(compiler.outputPath, 'demo.html')
-
-//   // eslint-disable-next-line consistent-return
-//   compiler.outputFileSystem.readFile(indexPath, (err, result) => {
-//     if (err) return next(err)
-//     res.set('content-type', 'text/html')
-//     res.send(result)
-//     res.end()
-//   })
-// })
+// Must be added _after_ the dev middleware
+app.use('/demo', extractFrom(compiler, 'demo.html'))
+app.use('/', extractFrom(compiler, 'index.html'))
 
 /** Start that sucker up */
 app.listen(port, err => {

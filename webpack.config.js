@@ -4,7 +4,7 @@ const webpack = require('webpack')
 const BuildExportsList = require('./lib/BuildExportsList')
 
 const hotMiddlewareScript =
-  'node_modules/webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
+  'node_modules/webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true&quiet=true'
 
 module.exports = draftConfig => {
   const includedNodeModules = (draftConfig.additionalReactModules || []).join('|')
@@ -18,25 +18,25 @@ module.exports = draftConfig => {
     // Enables source maps
     devtool: 'source-map',
     entry: {
-      'render-demo': [
-        path.resolve(__dirname, 'src/components/DemoRenderer.js'),
+      'draft-main': [
+        path.resolve(__dirname, 'src/components/Draft.js'),
         path.resolve(__dirname, hotMiddlewareScript),
       ],
-      // demo: [
-      //   path.resolve(__dirname, 'src/components/DemoRenderer.js'),
-      //   path.resolve(__dirname, hotMiddlewareScript),
-      // ],
+      demo: [
+        path.resolve(__dirname, 'src/components/Demo.js'),
+        path.resolve(__dirname, hotMiddlewareScript),
+      ],
     },
 
     plugins: [
       new HtmlWebpackPlugin({
-        fileName: 'index.html',
-        chunks: ['runtime~render-demo', 'render-demo', 'vendors'],
+        filename: 'demo.html',
+        chunks: ['runtime~demo', 'demo', 'vendors', 'demo~draft-main'],
       }),
-      // new HtmlWebpackPlugin({
-      //   fileName: 'demo.html',
-      //   chunks: ['runtime~render-demo', 'render-demo', 'vendors'],
-      // }),
+      new HtmlWebpackPlugin({
+        filename: 'index.html',
+        chunks: ['runtime~draft-main', 'demo~draft-main', 'draft-main', 'vendors'],
+      }),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       new BuildExportsList(),
@@ -47,6 +47,7 @@ module.exports = draftConfig => {
       alias: {
         // Resolve the path to React so we don't import multiple react versions
         react: path.resolve(__dirname, './node_modules/react'),
+        '@emotion/core': path.resolve(__dirname, './node_modules/@emotion/core'),
       },
     },
 
@@ -58,7 +59,7 @@ module.exports = draftConfig => {
     output: {
       path: path.resolve(__dirname, '/'),
       publicPath: '/',
-      filename: '[name].js', // Has to be name for some reason? Anything else doesn't load render-demo
+      filename: '[name].js', // Has to be name for some reason? Anything else doesn't load draft-main
       libraryTarget: 'umd', // make the bundle export
     },
 
@@ -72,11 +73,6 @@ module.exports = draftConfig => {
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
-            chunks: 'all',
-          },
-          targetComponent: {
-            test: path.resolve('.', 'src'),
-            name: 'target-component',
             chunks: 'all',
           },
         },

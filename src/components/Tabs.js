@@ -13,6 +13,8 @@ const tabsCss = css`
   color: var(--color-text);
   display: flex;
   overflow-x: scroll;
+  position: sticky;
+  top: 0;
 `
 
 const tabCss = css`
@@ -21,6 +23,8 @@ const tabCss = css`
   grid-template-columns: max-content 1fr max-content;
   grid-column-gap: 8px;
   cursor: pointer;
+  position: sticky;
+  top: 0;
 
   &:hover {
     background-color: var(--color-background-highlight);

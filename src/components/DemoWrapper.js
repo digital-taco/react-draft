@@ -21,8 +21,12 @@ const styles = {
   `,
   wrapper: css`
     flex-grow: 2;
-    overflow-y: scroll;
     min-height: 0;
+    box-sizing: border-box;
+    height: 100vh;
+    max-height: 100vh;
+    overflow-y: scroll;
+    position: relative;
   `,
   main: css`
     display: flex;
@@ -94,7 +98,6 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
 
         {/* DEMO */}
         <div
-          css={styles.wrapper}
           style={{
             padding: `${settings.demoPadding}px`,
             backgroundColor: settings.backgroundColor || '#fff',
