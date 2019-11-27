@@ -12,7 +12,6 @@ container.setAttribute('id', 'demo')
 function Page() {
   const [SelectedComponent, setSelectedComponent] = useState(null)
   const [propStates, setPropStates] = useState({})
-  const { meta } = SelectedComponent
 
   function receiveMessage(type, data) {
     switch (type) {
@@ -40,7 +39,7 @@ function Page() {
   }, [])
 
   return SelectedComponent ? (
-    <ErrorBoundary key={meta.componentHash}>
+    <ErrorBoundary key={SelectedComponent.meta.componentHash}>
       {SelectedComponent && <SelectedComponent {...propStates} />}
     </ErrorBoundary>
   ) : null
