@@ -19,7 +19,8 @@ const messageCss = css`
 `
 
 const stackCSs = css`
-  white-space: pre;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
 `
 
 export default class ErrorBoundary extends React.Component {
