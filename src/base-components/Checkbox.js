@@ -9,7 +9,7 @@ const containerCss = css`
   grid-column-gap: 8px;
   align-items: center;
   height: 34px;
-  padding: 16px 0;
+  padding: 8px 0;
 
   & > *,
   & label {

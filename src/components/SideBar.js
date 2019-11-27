@@ -4,7 +4,7 @@ import { StorageContext } from './StorageContext'
 /** @jsx jsx */
 
 const drawerCss = css`
-  padding: 16px;
+  padding: 16px 16px 0 16px;
   background-color: var(--color-background-secondary);
   transition: margin-right 0.2s ease-in-out;
   display: flex;

@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
-import Button from '../base-components/Button'
 import getInput from '../lib/get-input'
 // import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
@@ -13,18 +12,12 @@ import IconButton from '../base-components/IconButton'
 const styles = {
   propsContainer: css`
     min-width: 250px;
-    box-sizing: border-box;
     display: grid;
     grid-row-gap: 8px;
-    overflow-y: scroll;
-    max-height: 100%;
   `,
   propsDrawer: css`
-    display: flex;
-    flex-direction: column;
-  `,
-  resetButton: css`
-    margin-top: 24px;
+    overflow-y: scroll;
+    height: 100%;
   `,
 }
 
@@ -98,4 +91,3 @@ export default function PropsDrawer({ propObjects, open, setEditItem }) {
     </>
   )
 }
-//

@@ -23,7 +23,7 @@ babelStandalone.setAttribute('src', 'https://unpkg.com/@babel/standalone/babel.m
 babelStandalone.setAttribute('data-presets', 'es2015,react')
 document.head.appendChild(babelStandalone)
 
-const { componentTree } = Components
+const { componentTree, Wrapper } = Components
 
 function ComponentDemo() {
   const { SelectedComponent, propStates } = useContext(SelectedContext)
@@ -37,10 +37,11 @@ function ComponentDemo() {
       {canRenderComponent && (
         <ErrorBoundary key={meta.componentHash}>
           {/* DEMO COMPONENT */}
-          <SelectedComponent {...propStates}>
-            <ChildrenRenderer value={propStates.children} />
-          </SelectedComponent>
-
+          <Wrapper>
+            <SelectedComponent {...propStates}>
+              <ChildrenRenderer value={propStates.children} />
+            </SelectedComponent>
+          </Wrapper>
           {/* MISSING REQUIRED PROPS */}
           {!canRenderComponent && <ErrorBox>All required props must be given a value</ErrorBox>}
         </ErrorBoundary>

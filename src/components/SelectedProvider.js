@@ -40,7 +40,7 @@ function getDefaultSelectedComponent(components) {
   const componentEntries = Object.entries(components)
   const getCount = path => (path.match(/(\/|\\)/g) || []).length
   const component = componentEntries.reduce((acc, [, Component]) => {
-    if (!Component.meta) return acc
+    if (!Component || !Component.meta) return acc
     if (getCount(acc.meta.filePath) > getCount(Component.meta.filePath)) {
       acc = Component
     }
@@ -50,10 +50,14 @@ function getDefaultSelectedComponent(components) {
   // Must return a function that returns the component, since it is going directly into useState
   return component
 }
-
 export const SelectedContext = React.createContext()
 
 export default function SelectedProvider({ children, components }) {
+  // TEMPORARY: Aliased components do not work, so we'll remove them here
+  Object.entries(components).forEach(([key, c]) => {
+    if (!c) delete components[key]
+  })
+
   const { getItem, setItem } = useContext(StorageContext)
 
   const selectedComponentHash = getItem(

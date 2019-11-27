@@ -7,8 +7,11 @@ const hotMiddlewareScript =
   'node_modules/webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true'
 
 module.exports = draftConfig => {
+  const includedNodeModules = (draftConfig.additionalReactModules || []).join('|')
+  const excludedNodeModules = new RegExp(`node_modules/(?!${includedNodeModules})`)
+
   const config = {
-    context: path.resolve('.', 'src'),
+    context: path.resolve('.'),
     mode: 'production',
     cache: true,
 
@@ -19,10 +22,21 @@ module.exports = draftConfig => {
         path.resolve(__dirname, 'src/components/DemoRenderer.js'),
         path.resolve(__dirname, hotMiddlewareScript),
       ],
+      // demo: [
+      //   path.resolve(__dirname, 'src/components/DemoRenderer.js'),
+      //   path.resolve(__dirname, hotMiddlewareScript),
+      // ],
     },
 
     plugins: [
-      new HtmlWebpackPlugin({ title: draftConfig.title || 'React Draft' }),
+      new HtmlWebpackPlugin({
+        fileName: 'index.html',
+        chunks: ['runtime~render-demo', 'render-demo', 'vendors'],
+      }),
+      // new HtmlWebpackPlugin({
+      //   fileName: 'demo.html',
+      //   chunks: ['runtime~render-demo', 'render-demo', 'vendors'],
+      // }),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
       new BuildExportsList(),
@@ -74,12 +88,13 @@ module.exports = draftConfig => {
       rules: [
         {
           test: /(\.js|\.jsx)$/,
-          // include: [
-          //   path.resolve('.'),
-          //   path.resolve(__dirname, 'src'),
-          //   ...(draftConfig.additionalReactModules || []),
-          // ],
-          exclude: [/node_modules/, /.*\.stories\.js$/],
+          include: [
+            path.resolve('.'),
+            path.resolve(__dirname),
+            path.resolve('.', '..'),
+            // ...(draftConfig.additionalReactModules || []),
+          ],
+          exclude: [excludedNodeModules, /.*\.stories\.js$/],
           use: [
             'cache-loader',
             {
@@ -89,8 +104,14 @@ module.exports = draftConfig => {
                 presets: [
                   '@babel/preset-react',
                   ['@babel/preset-env', { targets: { node: 'current' } }],
+                  require.resolve('@emotion/babel-preset-css-prop'),
+                  // ...(draftConfig.babelPresets || []),
                 ],
-                plugins: ['@babel/plugin-syntax-dynamic-import'],
+                plugins: [
+                  // 'babel-plugin-emotion',
+                  '@babel/plugin-syntax-dynamic-import',
+                  // ...(draftConfig.babelPlugins || []),
+                ],
               },
             },
           ],
@@ -121,6 +142,10 @@ module.exports = draftConfig => {
           test: /\.css$/,
           use: ['style-loader', 'css-loader'],
           exclude: /\.module\.css$/,
+        },
+        {
+          test: /(\.mdx$)/,
+          loader: 'ignore-loader',
         },
       ],
     },

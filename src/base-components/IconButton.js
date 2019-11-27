@@ -15,6 +15,7 @@ const buttonCss = css`
   display: flex;
   align-items: center;
   height: 32px;
+  width: 32px;
 
   & > svg {
     height: 24px;
