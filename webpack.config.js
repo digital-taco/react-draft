@@ -1,4 +1,5 @@
 const path = require('path')
+const fs = require('fs')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const BuildExportsList = require('./lib/BuildExportsList')
@@ -9,6 +10,10 @@ const hotMiddlewareScript =
 module.exports = draftConfig => {
   const includedNodeModules = (draftConfig.additionalReactModules || []).join('|')
   const excludedNodeModules = new RegExp(`node_modules/(?!${includedNodeModules})`)
+
+  // Set the title of the page to the CWD package name
+  const packagePath = path.resolve('.', 'package.json')
+  let { name: packageName } = fs.existsSync(packagePath) ? require(packagePath) : null
 
   const config = {
     context: path.resolve('.'),
@@ -34,6 +39,7 @@ module.exports = draftConfig => {
         chunks: ['runtime~demo', 'demo', 'vendors', 'demo~draft-main'],
       }),
       new HtmlWebpackPlugin({
+        title: `Draft | ${packageName.split('/').pop()}`,
         filename: 'index.html',
         chunks: ['runtime~draft-main', 'demo~draft-main', 'draft-main', 'vendors'],
       }),
