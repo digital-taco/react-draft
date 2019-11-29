@@ -57,14 +57,17 @@ export default function ActivityBar() {
       <FolderIcon
         data-selected={drawerView === 'explorer' ? '' : undefined}
         onClick={() => handleClick('explorer')}
-      />
+        data-test-explorer-icon
+        />
       <PropsIcon
         data-selected={drawerView === 'props' ? '' : undefined}
         onClick={() => handleClick('props')}
-      />
+        data-test-props-icon
+        />
       <SettingsIcon
         data-selected={drawerView === 'settings' ? '' : undefined}
         onClick={() => handleClick('settings')}
+        data-test-settings-icon
       />
     </div>
   )

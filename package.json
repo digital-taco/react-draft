@@ -4,7 +4,9 @@
   "description": "Develop your React components in isolation without any configuration",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "bash test/index.sh",
+    "test:ci": "bash test/index.sh --ci",
+    "jest-tests": "jest"
   },
   "author": {
     "name": "DigitalTaco",
@@ -57,6 +59,8 @@
     "eslint-plugin-jsx-a11y": "^6.2.3",
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.16.0",
-    "eslint-plugin-react-hooks": "^2.2.0"
+    "eslint-plugin-react-hooks": "^2.2.0",
+    "jest": "^24.9.0",
+    "puppeteer": "^2.0.0"
   }
 }
