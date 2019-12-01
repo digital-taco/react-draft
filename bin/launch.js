@@ -58,7 +58,7 @@ const devMiddleware = middleware(compiler, {
     builtAt: false,
     colors: true,
     timings: true,
-    entrypoints: true,
+    entrypoints: false,
     assets: false,
     modules: false,
     warnings: false,

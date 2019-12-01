@@ -38,9 +38,14 @@ function Page() {
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 
+  // Wrap the demo in the provided Wrapper or just a fragment
+  const DemoWrapper = Components.Wrapper || React.Fragment
+
   return SelectedComponent ? (
     <ErrorBoundary key={SelectedComponent.meta.componentHash}>
-      {SelectedComponent && <SelectedComponent {...propStates} />}
+      <DemoWrapper>
+        {SelectedComponent && <SelectedComponent {...propStates} />}
+      </DemoWrapper>
     </ErrorBoundary>
   ) : null
 }
