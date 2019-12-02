@@ -11,6 +11,18 @@ In your project's root directory, run:
 npm i @digital-taco/react-draft
 ```
 
+## Usage
+
+### Using NPX
+
+In your project's root directory, run:
+
+```bash
+npx draft
+```
+
+### Using Node Scripts
+
 In your project's `package.json`, add:
 
 ```json
@@ -19,9 +31,7 @@ In your project's `package.json`, add:
 }
 ```
 
-## Usage
-
-Run the following command in the root of your project:
+Use this command to launch react-draft:
 
 ```bash
 npm run draft
