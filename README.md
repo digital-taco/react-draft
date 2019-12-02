@@ -27,7 +27,7 @@ In your project's `package.json`, add:
 
 ```json
 "scripts": {
-  "draft": "npm run draft"
+  "draft": "draft"
 }
 ```
 
@@ -75,7 +75,7 @@ export default function Wrapper({ children }) {
 
 > **Note**: The function can be named anything. `Wrapper` keeps it consistent across projects.
 
-## Local Development
+## Contributing & Running Locally
 
 For ease of development, a [create-react-app generated application has been created](https://github.com/digital-taco/META-react-draft-sandbox). Developing `react-draft` is made much simpler by npm linking `react-draft` within the development repository. Clone both repositories locally, then follow these steps:
 
@@ -95,6 +95,6 @@ Run draft in the sandbox. Any changes made in `react-draft` will be applied live
 
 ## Authors && Contributors
 
-Zach Williams ([zachintosh](https://github.com/zachintosh))
+Zach Williams ([@zachintosh](https://github.com/zachintosh))
 
-Kyle West ([kyle-west](https://github.com/kyle-west))
+Kyle West ([@kyle-west](https://github.com/kyle-west))
