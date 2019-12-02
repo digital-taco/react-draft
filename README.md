@@ -11,6 +11,18 @@ In your project's root directory, run:
 npm i @digital-taco/react-draft
 ```
 
+## Usage
+
+### Using NPX
+
+In your project's root directory, run:
+
+```bash
+npx draft
+```
+
+### Using Node Scripts
+
 In your project's `package.json`, add:
 
 ```json
@@ -19,17 +31,53 @@ In your project's `package.json`, add:
 }
 ```
 
-## Usage
-
-Run the following command in the root of your project:
+Use this command to launch react-draft:
 
 ```bash
 npm run draft
 ```
 
+## Configuration
+
+An _entirely optional_ file named `draft.config.js` can be placed in the root directory of your project. This file should have the following structure:
+
+```
+module.exports = {
+  optionName: optionValue,
+  ...
+}
+```
+
+Here are the available options:
+
+|Option     |What it do                                               |
+|-----------|---------------------------------------------------------|
+|ignore     |An array of strings to match filenames against to ignore when parsing for react components. This is useful for skipping files that don't contain development components, like `.stories.` files or `.test.` files.|
+|wrapperPath|Path to the `draft.wrapper.js` file, as described below. If not provided, draft will look for one in the current working directory.|
+
+## Wrapper Component
+
+In many cases, additional context is needed for your components to run. This might include providers, service layers, global styling, or similar. To provide these, a wrapper component can be provided that will wrap around each component demo.
+
+To add the wrapper component to your project, add a file named `draft.wrapper.js` to the root directory of the project. You can store it at a different path, as long as that path is specified under the `wrapperPath` option in the `draft.config.js` file.
+
+The wrapper is just a standard react component. It must render any children passed to it. The `children` passed to it contains the component selected in the UI. 
+
+```js
+import React from 'react'
+// import styles, services, providers, etc.
+
+export default function Wrapper({ children }) {
+  // Wrap the children in any providers, services, styles, etc. needed
+  return <div>{children}</div>
+}
+```
+
+> **Note**: The function can be named anything. `Wrapper` keeps it consistent across projects.
+
 ## Local Development
 
-For ease of development, a create-react-app powered repository has been created. Developing `react-draft` is made much simpler by npm linking the repositories. Clone it locally, then follow these steps:
+For ease of development, a [create-react-app generated application has been created](https://github.com/digital-taco/META-react-draft-sandbox). Developing `react-draft` is made much simpler by npm linking `react-draft` within the development repository. Clone both repositories locally, then follow these steps:
 
 Where you cloned `react-draft`, run:
 
@@ -43,10 +91,10 @@ Where you cloned `META-react-draft-sandbox`, run:
 npm link @digital-taco/react-draft
 ```
 
-Run draft in the sandbox. Any changes made in `react-draft` will be picked up.
+Run draft in the sandbox. Any changes made in `react-draft` will be applied live.
 
-## Authors
+## Authors && Contributors
 
-Zach Williams (@zachintosh)
+Zach Williams ([zachintosh](https://github.com/zachintosh))
 
-Kyle West (@kyle-west)
+Kyle West ([kyle-west](https://github.com/kyle-west))

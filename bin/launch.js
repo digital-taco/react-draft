@@ -50,7 +50,7 @@ app.get('/files', (req, res) => {
 })
 
 const devMiddleware = middleware(compiler, {
-  // noInfo: true,
+  noInfo: true,
   publicPath: '/',
   hot: true,
   lazy: false,
