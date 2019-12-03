@@ -88,7 +88,7 @@ export default function Tabs() {
   const tabs = getItem('DRAFT_tabs', [])
 
   return (
-    <div css={tabsCss}>
+    <div css={tabsCss} className="demo-font">
       {tabs.map(tab => (
         <Tab name={tab.name} filePath={tab.filePath} />
       ))}

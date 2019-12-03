@@ -4,7 +4,6 @@ import Select from '../base-components/Select'
 import { removeQuotes } from '../lib/helpers'
 
 export default function EnumInput({ propName, value, propObj, updatePropState }) {
-  console.log('LOG: EnumInput -> value', value)
   return (
     <>
       <InputLabel htmlFor={propName} label={propName} metaText="one of" />

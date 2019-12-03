@@ -17,7 +17,7 @@ module.exports = draftConfig => {
 
   const config = {
     context: path.resolve('.'),
-    mode: 'production',
+    mode: 'development',
     cache: true,
 
     // Enables source maps

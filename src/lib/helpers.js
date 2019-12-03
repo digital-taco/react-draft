@@ -10,7 +10,7 @@ export function isJson(str) {
 const sourceToken = 'react-draft'
 
 export function msg(win, type, data) {
-  return win.postMessage({ source: sourceToken, type, data }, '*')
+  return win && win.postMessage({ source: sourceToken, type, data }, '*')
 }
 
 export function parseMsg(fn) {

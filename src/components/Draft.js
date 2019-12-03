@@ -45,9 +45,11 @@ function Page() {
   const tabs = getItem('DRAFT_tabs', [])
   const canRenderComponent = propStates && canRender(props, propStates)
   const handleMessage = parseMsg(receiveMessage)
+
   const messageSelectedComponent = () =>
-    msg(iframeRef.current.contentWindow, 'SELECTED_COMPONENT', meta)
-  const messagePropStates = () => msg(iframeRef.current.contentWindow, 'PROP_STATES', propStates)
+    msg(iframeRef.current && iframeRef.current.contentWindow, 'SELECTED_COMPONENT', meta)
+
+  const messagePropStates = () => msg(iframeRef.current && iframeRef.current.contentWindow, 'PROP_STATES', propStates)
 
   function receiveMessage(type) {
     if (type === 'DEMO_INITIALIZED') {
@@ -56,14 +58,18 @@ function Page() {
     }
   }
 
-  useEffect(() => messageSelectedComponent(), [SelectedComponent])
-
-  useEffect(() => messagePropStates(), [propStates])
-
   useEffect(() => {
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
   }, [])
+
+  useEffect(() => {
+    messageSelectedComponent(), [SelectedComponent]
+  })
+
+  useEffect(() => {
+    messagePropStates(), [propStates]
+  })
 
   return (
     <DemoWrapper propObjects={props} componentTree={componentTree}>
