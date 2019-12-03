@@ -65,6 +65,13 @@ export default function SelectedProvider({ children, components }) {
     getDefaultSelectedComponent(components).meta.componentHash
   )
 
+  // If the stored hash is not one of the components available, get the default component to show
+  if (!components[selectedComponentHash]) {
+    setItem('DRAFT_Selected_Component_Hash', getDefaultSelectedComponent(components).meta.componentHash)
+    // Return null, since it has to rerender to get the default selected component hash
+    return null
+  }
+
   // Find the corresponding component
   const SelectedComponent = components[selectedComponentHash]
 
