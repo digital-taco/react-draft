@@ -5,6 +5,7 @@ import React, { useContext } from 'react'
 import { css, jsx } from '@emotion/core'
 import { StorageContext } from './StorageContext'
 import { SelectedContext } from './SelectedProvider'
+import Components from '../../out/master-exports'
 import CodeIcon from '../svgs/CodeIcon'
 import CloseIcon from '../svgs/CloseIcon'
 
@@ -48,7 +49,7 @@ const tabCss = css`
   }
 `
 
-export function Tab({ name, filePath }) {
+export function Tab({ name, filePath, componentHash }) {
   const { getItem, setItem } = useContext(StorageContext)
   const { updateSelectedComponent, SelectedComponent } = useContext(SelectedContext)
   const tabs = getItem('DRAFT_tabs')
@@ -57,12 +58,18 @@ export function Tab({ name, filePath }) {
     SelectedComponent.meta.displayName === name && SelectedComponent.meta.filePath === filePath
 
   function removeTab(e) {
-    e.stopPropagation()
-    e.preventDefault()
+    if (e) e.stopPropagation()
+    if (e) e.preventDefault()
     const index = tabs.findIndex(t => t.name === name && t.filePath === filePath)
     if (index !== -1) {
       setItem('DRAFT_tabs', [...tabs.slice(0, index), ...tabs.slice(index + 1, tabs.length)])
     }
+  }
+
+  // If the tab is for a component that isn't in the tree anymore, remove the tab
+  if (!Components[componentHash]) {
+    removeTab()
+    return null
   }
 
   return (
@@ -90,7 +97,7 @@ export default function Tabs() {
   return (
     <div css={tabsCss} className="demo-font">
       {tabs.map(tab => (
-        <Tab name={tab.name} filePath={tab.filePath} />
+        <Tab {...tab} />
       ))}
     </div>
   )

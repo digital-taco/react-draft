@@ -164,7 +164,7 @@ const RecursiveFileSystem = ({
       SelectedComponent.meta.displayName === name &&
       !tabs.find(t => t.name === name && t.filePath === filePath)
     ) {
-      setItem('DRAFT_tabs', [...tabs, { filePath, name }])
+      setItem('DRAFT_tabs', [...tabs, { filePath, name, componentHash: SelectedComponent.meta.componentHash }])
     }
     updateSelectedComponent(filePath, name)
   }
