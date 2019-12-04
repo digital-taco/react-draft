@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import SettingsIcon from '../svgs/SettingsIcon'
@@ -41,15 +41,26 @@ const activityBarCss = css`
 export default function ActivityBar() {
   const { getItem, setItem } = useContext(StorageContext)
   const drawerView = getItem('DRAFT_drawer_view', 'explorer')
-  const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
 
   function handleClick(drawerType) {
-    setItem('DRAFT_drawer_view', drawerType)
     const isOpen = getItem('DRAFT_drawer_is_open', true)
-    if (drawerView === drawerType || !isOpen) {
+    const currentDrawerView = getItem('DRAFT_drawer_view', 'explorer')
+    if (currentDrawerView === drawerType || !isOpen) {
       setItem('DRAFT_drawer_is_open', !isOpen)
     }
+    setItem('DRAFT_drawer_view', drawerType)
   }
+
+  // Add keyboard shortcuts
+  useEffect(() => {
+    function handleKeyShortcut({ keyCode }) {
+      if (keyCode === 65) handleClick('explorer')
+      if (keyCode === 83) handleClick('props')
+      if (keyCode === 68) handleClick('settings')
+    }
+    document.addEventListener('keyup', handleKeyShortcut)
+    return () => document.removeEventListener('keyup', handleKeyShortcut)
+  }, [])
 
   return (
     <div css={activityBarCss}>
