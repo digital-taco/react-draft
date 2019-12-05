@@ -27,7 +27,7 @@ const propsTitleCss = css`
   align-items: center;
 `
 
-export default function PropsDrawer({ propObjects, open, setEditItem }) {
+export default function PropsDrawer({ propObjects, open, setEditItem, openEditDrawer }) {
   if (!propObjects) return null
 
   const { SelectedComponent, propStates, resetToDefaults, updatePropState } = useContext(
@@ -56,7 +56,7 @@ export default function PropsDrawer({ propObjects, open, setEditItem }) {
   }
 
   function getInputProp(entry) {
-    return getInput(entry, propStates, updatePropState, setEditItem)
+    return getInput(entry, propStates, updatePropState, setEditItem, openEditDrawer)
   }
 
   return (
