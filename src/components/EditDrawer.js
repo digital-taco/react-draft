@@ -5,6 +5,7 @@ import AceEditor from 'react-ace'
 import { SelectedContext } from './SelectedProvider'
 import 'brace/mode/json'
 import 'brace/theme/tomorrow_night_bright'
+import { serialize, deserialize } from '../lib/helpers'
 
 const styles = {
   editDrawer: css`
@@ -147,7 +148,7 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
         value={
           typeof editItem.value === 'object'
             ? JSON.stringify(editItem.value, null, 4)
-            : editItem.value
+            : deserialize(editItem.value, false)
         }
         theme="tomorrow_night_bright"
         name="test editor"
@@ -168,8 +169,8 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
               newValue = newText ? eval(`() => (${newText})`)() : undefined // eslint-disable-line
             }
 
-            console.log('TCL: EditDrawer -> newValue', newValue)
-            updatePropState(editItem.propName, newValue) // eslint-disable-line
+            const serialized = serialize(newValue)
+            updatePropState(editItem.propName, serialized) // eslint-disable-line
             setEditItem({ ...editItem, value: newText })
           } catch (e) {
             console.error(e)
@@ -179,3 +180,4 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
     </div>
   )
 }
+// x=>console.log(x)

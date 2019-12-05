@@ -82,6 +82,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
             open={drawerIsOpen && drawerView === 'props'}
             propObjects={propObjects}
             setEditItem={setEditItem}
+            openEditDrawer={() => setItem('DRAFT_edit_drawer_open', true)}
           />
         )}
 

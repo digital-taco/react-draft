@@ -17,7 +17,7 @@ cd test/sandbox
 git clone https://github.com/digital-taco/react-draft-testing
 cd react-draft-testing
 npm install;
-npm link react-draft
+npm link @digital-taco/react-draft
 
 npm run draft&
 

@@ -6,7 +6,7 @@ import ObjectInput from '../Inputs/ObjectInput'
 import ShapeInput from '../Inputs/ShapeInput'
 import FunctionInput from '../Inputs/FunctionInput'
 
-export default function getInput([propName, propObj], propStates, updatePropState, setEditItem) {
+export default function getInput([propName, propObj], propStates, updatePropState, setEditItem, openEditDrawer) {
   const inputMap = {
     string: (
       <StringNumberInput
@@ -82,6 +82,7 @@ export default function getInput([propName, propObj], propStates, updatePropStat
         value={propStates[propName]}
         propObj={propObj}
         setEditItem={setEditItem}
+        openEditDrawer={openEditDrawer}
         valueType="function"
         strict
       />

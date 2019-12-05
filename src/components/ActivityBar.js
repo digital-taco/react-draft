@@ -53,7 +53,8 @@ export default function ActivityBar() {
 
   // Add keyboard shortcuts
   useEffect(() => {
-    function handleKeyShortcut({ keyCode }) {
+    function handleKeyShortcut({ keyCode, target }) {
+      if (['input', 'textarea'].includes(target.tagName.toLowerCase())) return
       if (keyCode === 65) handleClick('explorer')
       if (keyCode === 83) handleClick('props')
       if (keyCode === 68) handleClick('settings')
