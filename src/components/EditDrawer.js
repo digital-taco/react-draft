@@ -156,6 +156,7 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
           try {
             let newValue
 
+            console.log('LOG: editItem.valueType', editItem.valueType)
             if (editItem.valueType === 'jsx') {
               // transform the JSX here
               // eslint-disable-next-line no-undef

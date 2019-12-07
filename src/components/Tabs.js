@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import { StorageContext } from './StorageContext'
@@ -49,6 +49,19 @@ const tabCss = css`
   }
 `
 
+const tabKeyMap = {
+  49: 0,
+  50: 1,
+  51: 2,
+  52: 3,
+  53: 4,
+  54: 5,
+  55: 6,
+  56: 7,
+  57: 8,
+  48: 9,
+}
+
 export function Tab({ name, filePath, componentHash }) {
   const { getItem, setItem } = useContext(StorageContext)
   const { updateSelectedComponent, SelectedComponent } = useContext(SelectedContext)
@@ -91,8 +104,21 @@ export function Tab({ name, filePath, componentHash }) {
 
 export default function Tabs() {
   const { getItem } = useContext(StorageContext)
+  const { updateSelectedComponent } = useContext(SelectedContext)
 
   const tabs = getItem('DRAFT_tabs', [])
+
+  useEffect(() => {
+    const keyToTab = ({ keyCode, target }) => {
+      if (['input', 'textarea'].includes(target.tagName.toLowerCase())) return
+      if (keyCode >= 48 && keyCode <= 57) {
+        const tab = tabs[tabKeyMap[keyCode]]
+        if (tab) updateSelectedComponent(tab.filePath, tab.name)
+      }
+    }
+    document.addEventListener('keyup', keyToTab)
+    return () => document.removeEventListener('keyup', keyToTab)
+  }, [])
 
   return (
     <div css={tabsCss} className="demo-font">
