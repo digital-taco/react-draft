@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 /** @jsx jsx */
 import { css, jsx } from '@emotion/core'
 import { StorageContext } from './StorageContext'
@@ -8,6 +8,7 @@ import { SelectedContext } from './SelectedProvider'
 import Components from '../../out/master-exports'
 import CodeIcon from '../svgs/CodeIcon'
 import CloseIcon from '../svgs/CloseIcon'
+import { TABS } from '../enums/KEYCODES'
 
 const tabsCss = css`
   background-color: var(--color-background);
@@ -91,8 +92,23 @@ export function Tab({ name, filePath, componentHash }) {
 
 export default function Tabs() {
   const { getItem } = useContext(StorageContext)
+  const { updateSelectedComponent } = useContext(SelectedContext)
 
   const tabs = getItem('DRAFT_tabs', [])
+
+  useEffect(() => {
+    const keyToTab = ({ keyCode, target }) => {
+      if (['input', 'textarea'].includes(target.tagName.toLowerCase())) return
+      const indexOfTab = Object.values(TABS).findIndex(k => k === keyCode)
+      console.log('LOG: keyToTab -> indexOfTab', indexOfTab)
+      if (indexOfTab !== -1) {
+        const tab = tabs[indexOfTab]
+        if (tab) updateSelectedComponent(tab.filePath, tab.name)
+      }
+    }
+    document.addEventListener('keyup', keyToTab)
+    return () => document.removeEventListener('keyup', keyToTab)
+  }, [])
 
   return (
     <div css={tabsCss} className="demo-font">
