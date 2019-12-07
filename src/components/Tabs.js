@@ -8,6 +8,7 @@ import { SelectedContext } from './SelectedProvider'
 import Components from '../../out/master-exports'
 import CodeIcon from '../svgs/CodeIcon'
 import CloseIcon from '../svgs/CloseIcon'
+import { TABS } from '../enums/KEYCODES'
 
 const tabsCss = css`
   background-color: var(--color-background);
@@ -48,19 +49,6 @@ const tabCss = css`
     background-color: var(--color-background-secondary);
   }
 `
-
-const tabKeyMap = {
-  49: 0,
-  50: 1,
-  51: 2,
-  52: 3,
-  53: 4,
-  54: 5,
-  55: 6,
-  56: 7,
-  57: 8,
-  48: 9,
-}
 
 export function Tab({ name, filePath, componentHash }) {
   const { getItem, setItem } = useContext(StorageContext)
@@ -111,8 +99,10 @@ export default function Tabs() {
   useEffect(() => {
     const keyToTab = ({ keyCode, target }) => {
       if (['input', 'textarea'].includes(target.tagName.toLowerCase())) return
-      if (keyCode >= 48 && keyCode <= 57) {
-        const tab = tabs[tabKeyMap[keyCode]]
+      const indexOfTab = Object.values(TABS).findIndex(k => k === keyCode)
+      console.log('LOG: keyToTab -> indexOfTab', indexOfTab)
+      if (indexOfTab !== -1) {
+        const tab = tabs[indexOfTab]
         if (tab) updateSelectedComponent(tab.filePath, tab.name)
       }
     }

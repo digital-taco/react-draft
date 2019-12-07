@@ -5,6 +5,7 @@ import SettingsIcon from '../svgs/SettingsIcon'
 import FolderIcon from '../svgs/FolderIcon'
 import PropsIcon from '../svgs/PropsIcon'
 import { StorageContext } from './StorageContext'
+import { ACTIVITY_VIEWS } from '../enums/KEYCODES'
 
 import ReloadNotification from './ReloadNotification'
 
@@ -55,9 +56,9 @@ export default function ActivityBar() {
   useEffect(() => {
     function handleKeyShortcut({ keyCode, target }) {
       if (['input', 'textarea'].includes(target.tagName.toLowerCase())) return
-      if (keyCode === 65) handleClick('explorer')
-      if (keyCode === 83) handleClick('props')
-      if (keyCode === 68) handleClick('settings')
+      if (keyCode === ACTIVITY_VIEWS.EXPLORER_VIEW) handleClick('explorer')
+      if (keyCode === ACTIVITY_VIEWS.PROPS_VIEW) handleClick('props')
+      if (keyCode === ACTIVITY_VIEWS.SETTINGS_VIEW) handleClick('settings')
     }
     document.addEventListener('keyup', handleKeyShortcut)
     return () => document.removeEventListener('keyup', handleKeyShortcut)
