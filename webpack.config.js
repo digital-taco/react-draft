@@ -96,7 +96,7 @@ module.exports = draftConfig => {
             path.resolve('.', '..'),
             // ...(draftConfig.additionalReactModules || []),
           ],
-          exclude: [excludedNodeModules, /.*\.stories\.js$/],
+          exclude: [excludedNodeModules],
           use: [
             'cache-loader',
             {

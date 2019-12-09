@@ -14,11 +14,20 @@ const buildComponentTree = require('../lib/build-component-tree.js')
 const buildMasterExports = require('../lib/build-master-exports.js')
 
 const reactConfigPath = path.resolve('.', 'draft.config.js')
-const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
+const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {
+  middleware: () => {}
+}
 
-const files = find.fileSync(/\.js$/, path.resolve('.')).filter(x => {
-  return !['node_modules/', ...(draftConfig.ignore || [])].some(ignorePath => {
-    return x.includes(ignorePath)
+const files = find.fileSync(/\.js$/, path.resolve('.')).filter(fp => {
+  if (fp.includes('node_modules/')) return false
+  return !draftConfig.ignore.some(ignorePath => {
+    if (ignorePath instanceof RegExp) {
+      return ignorePath.exec(fp)
+    } else if (typeof ignorePath === 'string') {
+      return fp.includes(ignorePath)
+    } else {
+      console.error(`Invalid Configuration: ignore value of ${ignorePath} invalid. Must be a regular expression or a string.`)
+    }
   })
 })
 
@@ -86,6 +95,9 @@ const extractFrom = (webpackCompiler, name) => (req, res, next) => {
 }
 
 // Must be added _after_ the dev middleware
+draftConfig.middleware(app)
+
+// Add demo and index middleware
 app.use('/demo', extractFrom(compiler, 'demo.html'))
 app.use('/', extractFrom(compiler, 'index.html'))
 
