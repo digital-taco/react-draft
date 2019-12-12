@@ -48,6 +48,10 @@ const componentCss = css`
     font-weight: bold;
   }
 
+  &:hover {
+    background-color: var(--color-background-highlight);
+  }
+
   & svg {
     fill: var(--color-text-accent);
     vertical-align: bottom;
