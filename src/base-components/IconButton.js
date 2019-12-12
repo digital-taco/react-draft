@@ -1,13 +1,10 @@
 import React from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 
 const buttonCss = css`
   appearance: none;
   text-transform: uppercase;
   background-color: transparent;
-  /* background-color: var(--color-text-secondary); */
-  /* background-color: var(--color-background-tertiary); */
   padding: 4px;
   border-radius: 40px;
   border: none;

@@ -191,22 +191,13 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
           displayIndentGuides: false,
         }}
         value={editorValue}
-        // value={
-        //   typeof editItem.value === 'object'
-        //     ? JSON.stringify(editItem.value, null, 4)
-        //     : deserialize(editItem.value, false)
-        // }
         theme="tomorrow_night_bright"
         name="test editor"
         onChange={newValue => {
           console.log('LOG: newValue', newValue)
           setEditorValue(newValue)
         }}
-        // onBlur={(event, editor) => {
-          
-        // }}
       />
     </div>
   )
 }
-// x=>console.log(x)
