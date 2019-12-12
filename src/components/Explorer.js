@@ -14,6 +14,7 @@ import { StorageContext } from './StorageContext'
 const explorerCss = css`
   letter-spacing: 0.5px;
   font-size: 14px;
+  padding: 16px 16px 0 16px;
 
   & svg {
     width: 16px;
@@ -41,14 +42,14 @@ const componentCss = css`
   color: white;
   border-radius: 2px;
 
-  &:hover {
-    background-color: var(--color-background-highlight);
-  }
-
   &[data-selected='true'] {
     background-color: var(--color-text-selected);
     color: white;
     font-weight: bold;
+  }
+
+  &:hover {
+    background-color: var(--color-background-highlight);
   }
 
   & svg {
@@ -80,6 +81,15 @@ const folderNameCss = css`
   &:hover {
     background-color: var(--color-background-highlight);
   }
+
+  /* &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    background: red;
+    height: 100%;
+  } */
 `
 
 function ItemIcons({ Icon, color = 'var(--color-text)', isOpen, hideArrow }) {
@@ -169,7 +179,7 @@ const RecursiveFileSystem = ({
     updateSelectedComponent(filePath, name)
   }
 
-  Object.entries(tree).forEach(([path, value]) => {
+  Object.entries(tree).forEach(([path, value], index) => {
     const isFile = Array.isArray(value)
 
     if (isFile && displayComponents) {
@@ -178,6 +188,7 @@ const RecursiveFileSystem = ({
       components.forEach(component => {
         children.push(
           <ExportedComponent
+            key={`ec_${filePath}_${component.displayName}`}
             displayName={component.displayName}
             selected={
               SelectedComponent.meta.filePath === filePath &&
@@ -190,6 +201,7 @@ const RecursiveFileSystem = ({
     } else {
       children.push(
         <ExpandableItem
+          key={`ei_${index}`}
           isFile={isFile}
           path={path}
           tree={isFile ? { [path]: value } : value}

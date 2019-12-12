@@ -50,6 +50,7 @@ app.get('/files', (req, res) => {
 })
 
 const devMiddleware = middleware(compiler, {
+  writeToDisk: !!process.env.WRITE_TO_DISK,
   noInfo: true,
   publicPath: '/',
   hot: true,
@@ -90,10 +91,12 @@ app.use('/demo', extractFrom(compiler, 'demo.html'))
 app.use('/', extractFrom(compiler, 'index.html'))
 
 /** Start that sucker up */
-app.listen(port, err => {
-  if (err) {
-    console.log(err)
-  } else {
-    !process.env.CI && open(`http://localhost:${port}`)
-  }
-})
+if (!process.env.WRITE_TO_DISK) {
+  app.listen(port, err => {
+    if (err) {
+      console.log(err)
+    } else {
+      !process.env.CI && open(`http://localhost:${port}`)
+    }
+  })
+}

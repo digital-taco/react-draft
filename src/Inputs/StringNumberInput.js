@@ -9,14 +9,13 @@ export default function StringNumberInput({
   propObj,
   updatePropState,
 }) {
-  const { defaultValue, required } = propObj
+  const { required } = propObj
   return (
     <>
       <InputLabel htmlFor={propName} label={propName} metaText={type} />
       <TextInput
         id={propName}
         label={propName}
-        defaultValue={defaultValue ? defaultValue.value : ''}
         value={value}
         required={required}
         type={type}

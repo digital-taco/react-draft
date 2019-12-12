@@ -15,6 +15,7 @@ const styles = {
   h3: css`
     margin: 8px 0;
     font-size: 14px;
+    text-transform: uppercase;
   `,
   h4: css`
     margin: 8px 0;

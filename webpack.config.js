@@ -34,14 +34,22 @@ module.exports = draftConfig => {
     },
 
     plugins: [
+      new webpack.EnvironmentPlugin({
+        NODE_ENV: process.env.NODE_ENV || 'development',
+        PUBLIC_PATH: process.env.PUBLIC_PATH,
+        WRITE_TO_DISK: process.env.WRITE_TO_DISK,
+        DEBUG: process.env.DEBUG
+      }),
       new HtmlWebpackPlugin({
         filename: 'demo.html',
         chunks: ['runtime~demo', 'demo', 'vendors', 'demo~draft-main'],
+        template: path.resolve(__dirname, 'templates/demo.html'),
       }),
       new HtmlWebpackPlugin({
         title: `Draft | ${packageName.split('/').pop()}`,
         filename: 'index.html',
         chunks: ['runtime~draft-main', 'demo~draft-main', 'draft-main', 'vendors'],
+        template: path.resolve(__dirname, 'templates/index.html'),
       }),
       new webpack.HotModuleReplacementPlugin(),
       new webpack.NoEmitOnErrorsPlugin(),
@@ -63,8 +71,8 @@ module.exports = draftConfig => {
     },
 
     output: {
-      path: path.resolve(__dirname, '/'),
-      publicPath: '/',
+      path: path.resolve('.', 'draft-build'),
+      publicPath: process.env.PUBLIC_PATH || '/',
       filename: '[name].js', // Has to be name for some reason? Anything else doesn't load draft-main
       libraryTarget: 'umd', // make the bundle export
     },
@@ -119,8 +127,9 @@ module.exports = draftConfig => {
           ],
         },
         {
-          test: /\.(html|jpg|jpeg|png|gif|ttf|ttf2|woff|woff2|svg)$/,
+          test: /\.(jpg|jpeg|png|gif|ttf|ttf2|woff|woff2|svg)$/,
           loader: 'file-loader?name=[name].[ext]',
+          exclude: /draft-build/,
         },
         {
           test: /\.svg$/,
@@ -152,14 +161,6 @@ module.exports = draftConfig => {
       ],
     },
   }
-
-  // Maybe we'll need something like this later?
-  // if (draftConfig.filesToIgnore) {
-  // config.module.rules.push({
-  //   test: /(\.stories\.js$|\.mdx$)/,
-  //   loader: 'ignore-loader',
-  // })
-  // }
 
   return config
 }

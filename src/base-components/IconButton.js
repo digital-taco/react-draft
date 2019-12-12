@@ -1,11 +1,10 @@
 import React from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 
 const buttonCss = css`
   appearance: none;
   text-transform: uppercase;
-  background-color: var(--color-background-highlight);
+  background-color: transparent;
   padding: 4px;
   border-radius: 40px;
   border: none;
@@ -20,16 +19,16 @@ const buttonCss = css`
   & > svg {
     height: 24px;
     width: 24px;
-    fill: var(--color-text-secondary);
+    fill: var(--color-text);
     transition: all 0.1s ease-out;
   }
 
   &:hover > svg {
-    fill: var(--color-text-hover);
+    fill: var(--color-text-accent);
   }
 
   &:hover {
-    background-color: var(--color-background-highlight2);
+    background-color: #fff4;
   }
   &:focus {
     outline: none;

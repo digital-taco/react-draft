@@ -10,8 +10,8 @@ const inputCss = css`
   width: 100%;
   box-sizing: border-box;
   border-radius: 3px;
-  background-color: var(--color-background-highlight);
-  color: var(--color-text);
+  background-color: var(--color-text);
+  color: var(--color-background-secondary);
 `
 
 export default function TextInput(props) {
