@@ -6,10 +6,11 @@ import { SelectedContext } from './SelectedProvider'
 import 'brace/mode/json'
 import 'brace/theme/tomorrow_night_bright'
 import { serialize, deserialize } from '../lib/helpers'
+import ErrorIcon from '../svgs/ErrorIcon'
 
 const styles = {
   editDrawer: css`
-    background-color: var(--color-background);
+    background-color: var(--color-background-primary);
     color: var(--color-text);
     transition: margin-right 0.2s ease-in-out;
     position: absolute;
@@ -42,6 +43,15 @@ const styles = {
       padding: 0;
       margin: 0;
       font-weight: 600;
+      display: flex;
+      min-height: 20px;
+    }
+
+    & svg {
+      height: 20px;
+      width: 20px;
+      fill: var(--color-error-text);
+      margin-left: 8px;
     }
   `,
   warningsLabel: css`
@@ -71,9 +81,14 @@ const styles = {
 
 /** A bottom-opening drawer containing an editor. Allows the user to edit the prop state for objects, shapes, and exact shapes. */
 export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
+  console.log('LOG: EditDrawer -> editItem', editItem)
   if (!editItem) return null
+  const [editorValue, setEditorValue] = useState(deserialize(editItem.value))
   const [warningsOpen, setWarningsOpen] = useState(false)
+  const [hasError, setHasError] = useState(false)
   const { updatePropState } = useContext(SelectedContext)
+
+
   const editorRef = React.useRef()
   const warningLength = editItem.warnings.length
   const pluralWarnings = warningLength > 1
@@ -104,12 +119,42 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
     })
   }, [])
 
+  useEffect(() => {
+    try {
+      let newPropState
+
+      if (editItem.valueType === 'jsx') {
+        // transform the JSX here
+        // eslint-disable-next-line no-undef
+        // newText = Babel.transform(newText, {
+        //   presets: ['es2015', 'react'],
+        //   parserOpts: { sourceType: 'script', minified: true },
+        // }).code
+        // newValue = newText ? eval(newText) : undefined // eslint-disable-line
+        // newValue = newText
+      } else {
+        newPropState = editorValue ? eval(`() => (${editorValue})`)() : undefined // eslint-disable-line
+      }
+
+      const serialized = serialize(newPropState)
+      console.log('LOG: EditDrawer -> serialized', serialized)
+      updatePropState(editItem.propName, serialized) // eslint-disable-line
+      setEditItem({ ...editItem, value: editorValue })
+      if (hasError) {
+        setHasError(false)
+      }
+    } catch (e) {
+      console.error(e)
+      setHasError(true)
+    }
+  }, [editorValue])
+
   return (
     <div css={styles.editDrawer} style={style} className="demo-font">
       <div css={styles.header}>
         {/* TITLE */}
         <div css={styles.titleBar}>
-          <div className="title demo-font">{editItem.propName}</div>
+          <div className="title demo-font">{editItem.propName} {hasError && <ErrorIcon />}</div>
 
           {/* Warnings */}
           {warningLength > 0 && (
@@ -145,38 +190,21 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
         editorProps={{
           displayIndentGuides: false,
         }}
-        value={
-          typeof editItem.value === 'object'
-            ? JSON.stringify(editItem.value, null, 4)
-            : deserialize(editItem.value, false)
-        }
+        value={editorValue}
+        // value={
+        //   typeof editItem.value === 'object'
+        //     ? JSON.stringify(editItem.value, null, 4)
+        //     : deserialize(editItem.value, false)
+        // }
         theme="tomorrow_night_bright"
         name="test editor"
-        onChange={newText => {
-          try {
-            let newValue
-
-            console.log('LOG: editItem.valueType', editItem.valueType)
-            if (editItem.valueType === 'jsx') {
-              // transform the JSX here
-              // eslint-disable-next-line no-undef
-              newText = Babel.transform(newText, {
-                presets: ['es2015', 'react'],
-                parserOpts: { sourceType: 'script', minified: true },
-              }).code
-              newValue = newText ? eval(newText) : undefined // eslint-disable-line
-              newValue = newText
-            } else {
-              newValue = newText ? eval(`() => (${newText})`)() : undefined // eslint-disable-line
-            }
-
-            const serialized = serialize(newValue)
-            updatePropState(editItem.propName, serialized) // eslint-disable-line
-            setEditItem({ ...editItem, value: newText })
-          } catch (e) {
-            console.error(e)
-          }
+        onChange={newValue => {
+          console.log('LOG: newValue', newValue)
+          setEditorValue(newValue)
         }}
+        // onBlur={(event, editor) => {
+          
+        // }}
       />
     </div>
   )

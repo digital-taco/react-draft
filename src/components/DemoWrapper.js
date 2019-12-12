@@ -11,50 +11,53 @@ import { SettingsContext } from './Settings/SettingsProvider'
 import { StorageContext } from './StorageContext'
 import Tabs from './Tabs'
 
-const styles = {
-  grid: css`
-    height: 100vh;
-    box-sizing: border-box;
-    max-height: 100vh;
-    min-height: 100vh;
-    display: flex;
-  `,
-  wrapper: css`
-    flex-grow: 2;
-    min-height: 0;
-    box-sizing: border-box;
-    height: 100vh;
-    max-height: 100vh;
-    overflow-y: scroll;
-    position: relative;
-  `,
-  main: css`
-    display: flex;
-    width: 100%;
-    height: 100%;
-    overflow-y: scroll;
-    min-height: 0;
-    min-width: 0;
+const wrapperCss = css`
+  display: grid;
+  height: 100vh;
+  max-height: 100vh;
+  grid-template-rows: 48px 1fr;
+`
 
-    & > .MuiCard-root {
-      overflow: scroll;
-    }
-  `,
-  contents: css`
-    overflow-y: scroll;
-    flex-grow: 1;
-    display: grid;
-    grid-template-rows: 1fr 1fr;
-    min-height: calc(100vh - 64px);
-  `,
-  appBar: css`
-    z-index: 3000;
-    position: relative;
-    & .MuiIconButton-root {
-      margin-right: 8px;
-    }
-  `,
-}
+const contentCss = css`
+  height: 100%;
+  display: flex;
+  background: #283048;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #859398, #283048);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #859398, #283048); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+`
+
+const barCss = css`
+  display: flex;
+  color: var(--color-text);
+  background-color: var(--color-background-primary);
+`
+
+const titleCss = css`
+  width: 459px;
+  padding-left: 76px;
+  line-height: 48px;
+  text-transform: uppercase;
+  font-weight: bold;
+  box-sizing: border-box;
+`
+
+const boxCss = css`
+  padding: 16px 16px 16px 0;
+  box-sizing: border-box;
+`
+
+const containerCss = css`
+  box-sizing: border-box;
+  box-shadow: 0 0 16px 0 #0009;
+  border-radius: 3px;
+  height: 100%;
+  overflow: hidden;
+`
+
+const displayCss = css`
+  flex-grow: 2;
+`
 
 export default function DemoWrapper({ propObjects, children, componentTree }) {
   const { getItem, setItem } = useContext(StorageContext)
@@ -70,52 +73,65 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
   const { settings } = useContext(SettingsContext)
 
   return (
-    <div css={styles.grid}>
-      {/* APP BAR */}
-      <ActivityBar />
+    <div css={wrapperCss}>
+      <div css={barCss}>
+        {/* TITLE */}
+        <div css={titleCss} style={{
+          marginLeft: drawerIsOpen ? 0 : -459
+        }}>{drawerView}</div>
 
-      {/* SIDEBAR */}
-      <SideBar>
-        {/* PROPS VIEW */}
-        {drawerView === 'props' && (
-          <PropsDrawer
-            open={drawerIsOpen && drawerView === 'props'}
-            propObjects={propObjects}
-            setEditItem={setEditItem}
-            openEditDrawer={() => setItem('DRAFT_edit_drawer_open', true)}
-          />
-        )}
-
-        {/* EXPLORER VIEW */}
-        {drawerView === 'explorer' && <Explorer componentTree={componentTree} />}
-
-        {/* SETTINGS VIEW */}
-        {drawerView === 'settings' && <Settings />}
-      </SideBar>
-
-      <div css={styles.wrapper}>
         {/* TABS */}
         <Tabs />
+      </div>
+      <div css={contentCss}>
+
+
+        {/* APP BAR */}
+        <ActivityBar />
+
+        {/* SIDEBAR */}
+        <SideBar>
+          {/* PROPS VIEW */}
+          {drawerView === 'props' && (
+            <PropsDrawer
+              open={drawerIsOpen && drawerView === 'props'}
+              propObjects={propObjects}
+              setEditItem={setEditItem}
+              openEditDrawer={() => setItem('DRAFT_edit_drawer_open', true)}
+            />
+          )}
+
+          {/* EXPLORER VIEW */}
+          {drawerView === 'explorer' && <Explorer componentTree={componentTree} />}
+
+          {/* SETTINGS VIEW */}
+          {drawerView === 'settings' && <Settings />}
+        </SideBar>
 
         {/* DEMO */}
-        <div
-          style={{
-            padding: `${settings.demoPadding}px`,
-            backgroundColor: settings.backgroundColor || '#fff',
-          }}
-        >
-          {children}
+        <div css={displayCss}>
+          <div css={boxCss} style={{paddingLeft: drawerIsOpen ? 16 : 0}}>
+            <div
+              css={containerCss}
+              style={{
+                padding: `${settings.demoPadding}px`,
+                backgroundColor: settings.backgroundColor || '#fff',
+              }}
+            >
+              {children}
+            </div>
+          </div>
         </div>
-      </div>
 
-      {editDrawerOpen && (
-        <EditDrawer
-          open={editDrawerOpen}
-          setOpen={newValue => setItem('DRAFT_edit_drawer_open', newValue)}
-          editItem={editItem}
-          setEditItem={setEditItem}
-        />
-      )}
+        {editDrawerOpen && (
+          <EditDrawer
+            open={editDrawerOpen}
+            setOpen={newValue => setItem('DRAFT_edit_drawer_open', newValue)}
+            editItem={editItem}
+            setEditItem={setEditItem}
+          />
+        )}
+      </div>
     </div>
   )
 }
