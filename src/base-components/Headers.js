@@ -1,6 +1,5 @@
 import React from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 
 const styles = {
   h1: css`
@@ -15,6 +14,7 @@ const styles = {
   h3: css`
     margin: 8px 0;
     font-size: 14px;
+    text-transform: uppercase;
   `,
   h4: css`
     margin: 8px 0;

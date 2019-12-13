@@ -1,13 +1,16 @@
 import React, { useContext } from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import getInput from '../lib/get-input'
 // import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
-import { H1 } from '../base-components/Headers'
+import { H2 } from '../base-components/Headers'
 import { SelectedContext } from './SelectedProvider'
 import ResetIcon from '../svgs/ResetIcon'
 import IconButton from '../base-components/IconButton'
+
+const propsDrawerCss = css`
+  padding: 16px 16px 0 16px;
+`
 
 const styles = {
   propsContainer: css`
@@ -27,14 +30,23 @@ const propsTitleCss = css`
   align-items: center;
 `
 
+const noPropsCss = css`
+font-size: 12px;
+padding: 32px 0;
+  text-align: center;
+  text-transform: uppercase;
+`
+
 export default function PropsDrawer({ propObjects, open, setEditItem, openEditDrawer }) {
-  if (!propObjects) return null
+  if (!propObjects) return <div css={noPropsCss}>No props available</div>
 
   const { SelectedComponent, propStates, resetToDefaults, updatePropState } = useContext(
     SelectedContext
   )
 
   const entries = Object.entries(propObjects)
+
+
   const inputs = entries.reduce(
     (acc, [propName, propInfo]) => {
       if (!propInfo) return acc
@@ -60,9 +72,9 @@ export default function PropsDrawer({ propObjects, open, setEditItem, openEditDr
   }
 
   return (
-    <>
+    <div css={propsDrawerCss}>
       <div css={propsTitleCss}>
-        <H1>{SelectedComponent.meta.displayName} Props</H1>
+        <H2>{SelectedComponent.meta.displayName} Props</H2>
         <IconButton
           title="Reset all props to default values"
           Icon={ResetIcon}
@@ -88,6 +100,6 @@ export default function PropsDrawer({ propObjects, open, setEditItem, openEditDr
           ))}
         </div>
       </div>
-    </>
+    </div>
   )
 }

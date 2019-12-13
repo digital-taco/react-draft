@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import SettingsIcon from '../svgs/SettingsIcon'
 import FolderIcon from '../svgs/FolderIcon'
 import PropsIcon from '../svgs/PropsIcon'
@@ -10,9 +9,8 @@ import { ACTIVITY_VIEWS } from '../enums/KEYCODES'
 import ReloadNotification from './ReloadNotification'
 
 const activityBarCss = css`
-  height: 100vh;
+  height: calc(100vh - 48px);
   width: 60px;
-  background-color: var(--color-background);
   color: white;
   display: grid;
   grid-template-rows: 40px 40px 40px;
@@ -42,6 +40,7 @@ const activityBarCss = css`
 export default function ActivityBar() {
   const { getItem, setItem } = useContext(StorageContext)
   const drawerView = getItem('DRAFT_drawer_view', 'explorer')
+  const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
 
   function handleClick(drawerType) {
     const isOpen = getItem('DRAFT_drawer_is_open', true)
@@ -68,17 +67,17 @@ export default function ActivityBar() {
     <div css={activityBarCss}>
       <ReloadNotification />
       <FolderIcon
-        data-selected={drawerView === 'explorer' ? '' : undefined}
+        data-selected={drawerIsOpen && drawerView === 'explorer' ? '' : undefined}
         onClick={() => handleClick('explorer')}
         data-test-explorer-icon
         />
       <PropsIcon
-        data-selected={drawerView === 'props' ? '' : undefined}
+        data-selected={drawerIsOpen && drawerView === 'props' ? '' : undefined}
         onClick={() => handleClick('props')}
         data-test-props-icon
         />
       <SettingsIcon
-        data-selected={drawerView === 'settings' ? '' : undefined}
+        data-selected={drawerIsOpen && drawerView === 'settings' ? '' : undefined}
         onClick={() => handleClick('settings')}
         data-test-settings-icon
       />

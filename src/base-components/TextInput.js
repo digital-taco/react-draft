@@ -1,6 +1,5 @@
 import React from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 
 const inputCss = css`
   appearance: none;
@@ -10,8 +9,8 @@ const inputCss = css`
   width: 100%;
   box-sizing: border-box;
   border-radius: 3px;
-  background-color: var(--color-background-highlight);
-  color: var(--color-text);
+  background-color: var(--color-text);
+  color: var(--color-background-secondary);
 `
 
 export default function TextInput(props) {

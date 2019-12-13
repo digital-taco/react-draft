@@ -8,30 +8,14 @@ import SettingsProvider from './Settings/SettingsProvider'
 import SelectedProvider, { SelectedContext } from './SelectedProvider'
 import StorageProvider, { StorageContext } from './StorageContext'
 import { msg, parseMsg } from '../lib/helpers'
+import '../global.css' //eslint-disable-line
 
 const frameCss = css`
   width: 100%;
-  height: 100vh;
   border: none;
   display: block;
-
-  &[data-tabsopen] {
-    height: calc(100vh - 47px);
-  }
+  height: calc(100vh - 80px);
 `
-
-import '../global.css' //eslint-disable-line
-
-// Add the app container so react can render
-const container = document.createElement('div')
-document.body.appendChild(container)
-container.setAttribute('id', 'app')
-
-// Add the babel standalone script so we can transpile jsx live
-const babelStandalone = document.createElement('script')
-babelStandalone.setAttribute('src', 'https://unpkg.com/@babel/standalone/babel.min.js')
-babelStandalone.setAttribute('data-presets', 'es2015,react')
-document.head.appendChild(babelStandalone)
 
 const { componentTree } = Components
 
@@ -52,6 +36,7 @@ function Page() {
   const messagePropStates = () => msg(iframeRef.current && iframeRef.current.contentWindow, 'PROP_STATES', propStates)
 
   function receiveMessage(type) {
+    if (process.env.DEBUG) console.log('DRAFT | Message Received: ', type)
     if (type === 'DEMO_INITIALIZED') {
       messageSelectedComponent()
       messagePropStates()
@@ -82,7 +67,7 @@ function Page() {
           }}
           data-tabsopen={tabs.length > 0 ? '' : undefined}
           title="demo"
-          src="/demo"
+          src={`${process.env.PUBLIC_PATH || '/'}demo`}
         />
       )}
     </DemoWrapper>

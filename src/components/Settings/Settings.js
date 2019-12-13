@@ -1,14 +1,19 @@
 import React, { useContext } from 'react'
 import { SettingsContext } from './SettingsProvider'
-
+import { css } from '@emotion/core'
 import TextInput from '../../base-components/TextInput'
 import InputLabel from '../../base-components/InputLabel'
+import { H3 } from '../../base-components/Headers'
+
+const settingsCss = css`
+  padding: 8px 16px 0;
+`
 
 export default function Settings() {
   const { settings, updateSetting } = useContext(SettingsContext)
 
   return (
-    <div>
+    <div css={settingsCss}>
       <InputLabel htmlFor="setting_demoPadding" label="Demo Padding" metaText="px" />
       <TextInput
         id="setting_demoPadding"

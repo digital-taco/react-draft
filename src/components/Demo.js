@@ -4,11 +4,6 @@ import { msg, parseMsg, deserialize } from '../lib/helpers'
 import Components from '../../out/master-exports'
 import ErrorBoundary from './ErrorBoundary'
 
-// Add the app container so react can render
-const container = document.createElement('div')
-document.body.appendChild(container)
-container.setAttribute('id', 'demo')
-
 function deserializeAll(states) {
   return Object.fromEntries(Object.entries(states).map(([s,v]) => [s, deserialize(v)]))
 }
@@ -18,6 +13,7 @@ function Page() {
   const [propStates, setPropStates] = useState({})
 
   function receiveMessage(type, data) {
+    if (process.env.DEBUG) console.log('DEMO | Message Received: ', type, data)
     switch (type) {
       // When a new component is selected in the explorer
       case 'SELECTED_COMPONENT':
@@ -43,13 +39,13 @@ function Page() {
   }, [])
 
   // Wrap the demo in the provided Wrapper or just a fragment
-  const DemoWrapper = Components.Wrapper || React.Fragment
+  const Wrapper = Components.Wrapper || React.Fragment
 
   return SelectedComponent ? (
     <ErrorBoundary key={SelectedComponent.meta.componentHash}>
-      <DemoWrapper>
+      <Wrapper>
         {SelectedComponent && <SelectedComponent {...deserializeAll(propStates)} />}
-      </DemoWrapper>
+      </Wrapper>
     </ErrorBoundary>
   ) : null
 }

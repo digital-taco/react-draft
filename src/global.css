@@ -1,12 +1,13 @@
 body {
   margin: 0;
 
-  --color-background: #26292e;
+  --color-background-primary: #26292e;
   --color-background-secondary: #31353c;
+  --color-background-tertiary: #434348;
   --color-background-highlight: #4d535c;
   --color-background-highlight2: #535963;
   --color-background-accent: #767d8a;
-  --color-text: #e9e9e9;
+  --color-text: #f9f9f9;
   --color-text-secondary: #d9d9d9;
   --color-text-hover: #009dff;
   --color-text-selected: #009dff;

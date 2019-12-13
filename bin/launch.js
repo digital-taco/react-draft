@@ -9,10 +9,8 @@ const hotMiddleware = require('webpack-hot-middleware')
 const express = require('express')
 const open = require('open')
 const buildWebpackConfig = require('../webpack.config')
-
 const buildComponentTree = require('../lib/build-component-tree.js')
 const buildMasterExports = require('../lib/build-master-exports.js')
-
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {
   middleware: () => {}
@@ -58,7 +56,9 @@ app.get('/files', (req, res) => {
   res.json({ files: fileStructure.files })
 })
 
+const joinedIncludedNodesModules = babelModules.join('|')
 const devMiddleware = middleware(compiler, {
+  writeToDisk: !!process.env.WRITE_TO_DISK,
   noInfo: true,
   publicPath: '/',
   hot: true,
@@ -75,7 +75,7 @@ const devMiddleware = middleware(compiler, {
     hash: false,
   },
   watchOptions: {
-    ignored: /master-exports/,
+    ignored: new RegExp(`(master-exports|draft-build|node_modules/${joinedIncludedNodesModules && `(?!(${joinedIncludedNodesModules}))`})`),
   },
 })
 
@@ -102,10 +102,12 @@ app.use('/demo', extractFrom(compiler, 'demo.html'))
 app.use('/', extractFrom(compiler, 'index.html'))
 
 /** Start that sucker up */
-app.listen(port, err => {
-  if (err) {
-    console.log(err)
-  } else {
-    !process.env.CI && open(`http://localhost:${port}`)
-  }
-})
+if (!process.env.WRITE_TO_DISK) {
+  app.listen(port, err => {
+    if (err) {
+      console.log(err)
+    } else {
+      !process.env.CI && open(`http://localhost:${port}`)
+    }
+  })
+}
