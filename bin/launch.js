@@ -9,15 +9,14 @@ const hotMiddleware = require('webpack-hot-middleware')
 const express = require('express')
 const open = require('open')
 const buildWebpackConfig = require('../webpack.config')
-
 const buildComponentTree = require('../lib/build-component-tree.js')
 const buildMasterExports = require('../lib/build-master-exports.js')
-
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
+const { babelModules = [], ignore = [] } = draftConfig
 
 const files = find.fileSync(/\.js$/, path.resolve('.')).filter(x => {
-  return !['node_modules/', ...(draftConfig.ignore || [])].some(ignorePath => {
+  return !['node_modules/', ...ignore].some(ignorePath => {
     return x.includes(ignorePath)
   })
 })
@@ -49,6 +48,7 @@ app.get('/files', (req, res) => {
   res.json({ files: fileStructure.files })
 })
 
+const joinedIncludedNodesModules = babelModules.join('|')
 const devMiddleware = middleware(compiler, {
   writeToDisk: !!process.env.WRITE_TO_DISK,
   noInfo: true,
@@ -67,7 +67,7 @@ const devMiddleware = middleware(compiler, {
     hash: false,
   },
   watchOptions: {
-    ignored: /master-exports/,
+    ignored: new RegExp(`(master-exports|draft-build|node_modules/${joinedIncludedNodesModules && `(?!(${joinedIncludedNodesModules}))`})`),
   },
 })
 

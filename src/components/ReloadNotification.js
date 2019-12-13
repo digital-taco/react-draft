@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import ReloadingIcon from '../svgs/ReloadingIcon'
 
 const notificationCss = css`

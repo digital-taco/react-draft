@@ -1,6 +1,6 @@
 {
   "name": "@digital-taco/react-draft",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Develop your React components in isolation without any configuration",
   "main": "index.js",
   "scripts": {
@@ -42,13 +42,12 @@
     "react-docgen": "^4.1.1",
     "react-dom": "^16.8.6",
     "style-loader": "^1.0.0",
-    "svg-inline-loader": "^0.8.0",
+    "thread-loader": "^2.1.3",
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.6",
     "webpack-dev-middleware": "^3.7.0",
     "webpack-dev-server": "^3.7.2",
-    "webpack-hot-middleware": "^2.25.0",
-    "webpack-node-externals": "^1.7.2"
+    "webpack-hot-middleware": "^2.25.0"
   },
   "bin": {
     "draft": "./bin/launch.js"
