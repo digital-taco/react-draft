@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useContext } from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import AceEditor from 'react-ace'
 import { SelectedContext } from './SelectedProvider'
 import 'brace/mode/json'

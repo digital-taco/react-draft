@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import PropsDrawer from './PropsDrawer'
 import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import SettingsIcon from '../svgs/SettingsIcon'
 import FolderIcon from '../svgs/FolderIcon'
 import PropsIcon from '../svgs/PropsIcon'

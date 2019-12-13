@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import getInput from '../lib/get-input'
 // import ChildrenInput from '../Inputs/ChildrenInput'
 import ErrorBox from './ErrorBox'
