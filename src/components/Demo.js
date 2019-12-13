@@ -13,10 +13,10 @@ function Page() {
   const [propStates, setPropStates] = useState({})
 
   function receiveMessage(type, data) {
-    if (process.env.DEBUG) console.log('DEMO | Message Received: ', type, data)
     switch (type) {
       // When a new component is selected in the explorer
       case 'SELECTED_COMPONENT':
+        if (process.env.DEBUG) console.log('DEMO | Message Received: ', type, data)
         setSelectedComponent(() => Components[data.componentHash])
         break
 
@@ -47,7 +47,7 @@ function Page() {
         {SelectedComponent && <SelectedComponent {...deserializeAll(propStates)} />}
       </Wrapper>
     </ErrorBoundary>
-  ) : null
+  ) : <div>No demo, son</div>
 }
 
 // Render the demo in the dom

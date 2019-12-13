@@ -80,15 +80,6 @@ const folderNameCss = css`
   &:hover {
     background-color: var(--color-background-highlight);
   }
-
-  /* &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 100%;
-    background: red;
-    height: 100%;
-  } */
 `
 
 function ItemIcons({ Icon, color = 'var(--color-text)', isOpen, hideArrow }) {
@@ -125,7 +116,20 @@ function ExpandableItem({
   function handleFileClick() {
     // If there is only one component in the file and the file is about to expand, then select the one component
     if (!isOpen && isFile && components.length === 1) {
-      updateSelectedComponent(filePath, components[0].displayName)
+      const tempTab = getItem('DRAFT_temp_tab', [])
+      const tabs = getItem('DRAFT_tabs', [])
+      const name = components[0].displayName
+      
+      const isInTabs = tabs.find(t => t.name === name && t.filePath === filePath)
+      const isTempTab = tempTab.filePath === filePath && tempTab.name === name
+  
+      if (!isTempTab && !isInTabs) {
+        setItem('DRAFT_temp_tab', { filePath, name, componentHash: SelectedComponent.meta.componentHash })
+      } else if (isTempTab && !isInTabs) {
+        setItem('DRAFT_temp_tab', null)
+        setItem('DRAFT_tabs', [{ filePath, name, componentHash: SelectedComponent.meta.componentHash }, ...tabs])
+      }
+      updateSelectedComponent(filePath, name)
     }
     setItem(storageKey, !isOpen)
   }
@@ -165,15 +169,19 @@ const RecursiveFileSystem = ({
   const children = []
 
   const { getItem, setItem } = useContext(StorageContext)
-  const tabs = getItem('DRAFT_tabs', [])
-
+  
   function handleComponentClick(filePath, name) {
-    if (
-      SelectedComponent.meta.filePath === filePath &&
-      SelectedComponent.meta.displayName === name &&
-      !tabs.find(t => t.name === name && t.filePath === filePath)
-    ) {
-      setItem('DRAFT_tabs', [...tabs, { filePath, name, componentHash: SelectedComponent.meta.componentHash }])
+    const tempTab = getItem('DRAFT_temp_tab', [])
+    const tabs = getItem('DRAFT_tabs', [])
+    
+    const isInTabs = tabs.find(t => t.name === name && t.filePath === filePath)
+    const isTempTab = tempTab.filePath === filePath && tempTab.name === name
+
+    if (!isTempTab && !isInTabs) {
+      setItem('DRAFT_temp_tab', { filePath, name, componentHash: SelectedComponent.meta.componentHash })
+    } else if (isTempTab && !isInTabs) {
+      setItem('DRAFT_temp_tab', null)
+      setItem('DRAFT_tabs', [{ filePath, name, componentHash: SelectedComponent.meta.componentHash }, ...tabs])
     }
     updateSelectedComponent(filePath, name)
   }

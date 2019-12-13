@@ -85,10 +85,13 @@ export default function SelectedProvider({ children, components }) {
 
   /** Updates the currently selected component, identified by filepath */
   function updateSelectedComponent(filePath, displayName) {
-    const componentEntry = Object.entries(components).find(([, Component]) => {
-      return Component.meta.filePath === filePath && Component.meta.displayName === displayName
-    })
-    setItem('DRAFT_Selected_Component_Hash', componentEntry[0])
+    if (filePath === null) setItem('DRAFT_Selected_Component_Hash', 'none')
+    else {
+      const componentEntry = Object.entries(components).find(([, Component]) => {
+        return Component.meta.filePath === filePath && Component.meta.displayName === displayName
+      })
+      setItem('DRAFT_Selected_Component_Hash', componentEntry[0])
+    }
   }
 
   /** Resets all props to their default values */

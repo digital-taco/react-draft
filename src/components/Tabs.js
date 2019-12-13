@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { css } from '@emotion/core'
 import { StorageContext } from './StorageContext'
 import { SelectedContext } from './SelectedProvider'
@@ -58,6 +58,10 @@ const tabCss = css`
   &[data-selected] svg[data-close] {
     fill: var(--color-text);
   }
+
+  & div[temp] {
+    font-style: italic;
+  }
 `
 
 const closeIconCss = css`
@@ -73,20 +77,29 @@ const closeIconCss = css`
   }
 `
 
-export function Tab({ name, filePath, componentHash }) {
+export function Tab({ temp, name, filePath, componentHash }) {
   const { getItem, setItem } = useContext(StorageContext)
   const { updateSelectedComponent, SelectedComponent } = useContext(SelectedContext)
-  const tabs = getItem('DRAFT_tabs')
-
+  
   const isSelected =
-    SelectedComponent.meta.displayName === name && SelectedComponent.meta.filePath === filePath
-
+  SelectedComponent && SelectedComponent.meta.displayName === name && SelectedComponent.meta.filePath === filePath
+  
   function removeTab(e) {
     if (e) e.stopPropagation()
     if (e) e.preventDefault()
+    const tabs = getItem('DRAFT_tabs')
+    const tempTab = getItem('DRAFT_temp_tab')
+
     const index = tabs.findIndex(t => t.name === name && t.filePath === filePath)
-    if (index !== -1) {
+    if (tempTab && tempTab.componentHash === componentHash) {
+      setItem('DRAFT_temp_tab', null)
+    } else if (index !== -1) {
       setItem('DRAFT_tabs', [...tabs.slice(0, index), ...tabs.slice(index + 1, tabs.length)])
+    }
+    if (isSelected) {
+      const newSelectedTab = index > 0 ? tabs[index - 1] : tabs[1]
+      if (newSelectedTab) updateSelectedComponent(newSelectedTab.filePath, newSelectedTab.name)
+      else updateSelectedComponent(null)
     }
   }
 
@@ -103,7 +116,7 @@ export function Tab({ name, filePath, componentHash }) {
       onClick={() => updateSelectedComponent(filePath, name)}
     >
       <CodeIcon fill="var(--color-text-accent)" />
-      <div>{name}</div>
+      <div temp={temp ? '' : undefined}>{name}</div>
       {/* eslint-disable*/}
       <div css={closeIconCss} role="button" onClick={removeTab}>
         <CloseIcon data-close fill="var(--color-text)" />
@@ -118,6 +131,7 @@ export default function Tabs() {
   const { updateSelectedComponent } = useContext(SelectedContext)
 
   const tabs = getItem('DRAFT_tabs', [])
+  const tempTab = getItem('DRAFT_temp_tab', null)
 
   useEffect(() => {
     const keyToTab = ({ keyCode, target }) => {
@@ -134,6 +148,7 @@ export default function Tabs() {
 
   return (
     <div css={tabsCss} className="demo-font">
+      {tempTab && <Tab temp {...tempTab} />}
       {tabs.map((tab) => (
         <Tab key={tab.componentHash} {...tab} />
       ))}
