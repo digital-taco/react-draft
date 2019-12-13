@@ -1,6 +1,5 @@
 import React from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 
 const styles = {
   h1: css`

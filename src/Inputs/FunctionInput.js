@@ -1,6 +1,5 @@
 import React from 'react'
-/** @jsx jsx */
-import { css, jsx } from '@emotion/core'
+import { css } from '@emotion/core'
 import Button from '../base-components/Button'
 import InputLabel from '../base-components/InputLabel'
 
