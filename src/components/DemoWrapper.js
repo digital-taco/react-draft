@@ -10,6 +10,8 @@ import Settings from './Settings/Settings'
 import { SettingsContext } from './Settings/SettingsProvider'
 import { StorageContext } from './StorageContext'
 import Tabs from './Tabs'
+import BadRenderMessage from './BadRenderMessage'
+import SideBarTitle from './SideBarTitle'
 
 const wrapperCss = css`
   display: grid;
@@ -23,22 +25,13 @@ const contentCss = css`
   display: flex;
   background: #283048;
   background: linear-gradient(to left, #859398, #283048);
-
+  max-height: calc(100vh - 48px);
 `
 
 const barCss = css`
   display: flex;
   color: var(--color-text);
   background-color: var(--color-background-primary);
-`
-
-const titleCss = css`
-  width: 459px;
-  padding-left: 76px;
-  line-height: 48px;
-  text-transform: uppercase;
-  font-weight: bold;
-  box-sizing: border-box;
 `
 
 const boxCss = css`
@@ -52,6 +45,7 @@ const containerCss = css`
   border-radius: 3px;
   height: 100%;
   overflow: hidden;
+  position: relative;
 `
 
 const displayCss = css`
@@ -75,9 +69,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
     <div css={wrapperCss}>
       <div css={barCss}>
         {/* TITLE */}
-        <div css={titleCss} style={{
-          marginLeft: drawerIsOpen ? 0 : -459
-        }}>{drawerView}</div>
+        <SideBarTitle drawerIsOpen={drawerIsOpen} drawerView={drawerView} />
 
         {/* TABS */}
         <Tabs />
@@ -114,11 +106,14 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
               css={containerCss}
               style={{
                 padding: `${settings.demoPadding}px`,
-                backgroundColor: settings.backgroundColor || '#fff',
+                backgroundColor: settings.hideBackground ? 'transparent' : settings.backgroundColor || '#fff',
               }}
             >
               {children}
             </div>
+            {!children && (
+               <BadRenderMessage />
+            )}
           </div>
         </div>
 

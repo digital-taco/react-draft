@@ -8,6 +8,7 @@ import SettingsProvider from './Settings/SettingsProvider'
 import SelectedProvider, { SelectedContext } from './SelectedProvider'
 import StorageProvider, { StorageContext } from './StorageContext'
 import { msg, parseMsg } from '../lib/helpers'
+import '../global.css' //eslint-disable-line
 
 const frameCss = css`
   width: 100%;
@@ -15,8 +16,6 @@ const frameCss = css`
   display: block;
   height: calc(100vh - 80px);
 `
-
-import '../global.css' //eslint-disable-line
 
 const { componentTree } = Components
 

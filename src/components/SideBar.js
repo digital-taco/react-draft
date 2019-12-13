@@ -10,6 +10,7 @@ const drawerCss = css`
   overflow-y: scroll;
   min-width: 385px;
   width: 385px;
+  max-height: 100%;
 `
 
 export default function SideBar({ children }) {
