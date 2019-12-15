@@ -1,6 +1,6 @@
 import React from 'react'
-import TextInput from '../base-components/TextInput'
-import InputLabel from '../base-components/InputLabel'
+import TextInput from '../common/TextInput'
+import InputLabel from '../common/InputLabel'
 
 export default function StringNumberInput({
   type,

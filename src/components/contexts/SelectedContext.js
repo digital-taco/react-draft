@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
-import { removeQuotes, isJson } from '../lib/helpers'
+import { removeQuotes, isJson } from '../../lib/helpers'
 import { StorageContext } from './StorageContext'
+import { SELECTED_COMPONENT_HASH } from '../../constants/STORAGE_KEYS'
 
 /**
  * Gets the default states for the props
@@ -61,13 +62,13 @@ export default function SelectedProvider({ children, components }) {
   const { getItem, setItem } = useContext(StorageContext)
 
   const selectedComponentHash = getItem(
-    'DRAFT_Selected_Component_Hash',
+    SELECTED_COMPONENT_HASH,
     getDefaultSelectedComponent(components).meta.componentHash
   )
 
   // If the stored hash is not one of the components available, get the default component to show
   if (!components[selectedComponentHash]) {
-    setItem('DRAFT_Selected_Component_Hash', getDefaultSelectedComponent(components).meta.componentHash)
+    setItem(SELECTED_COMPONENT_HASH, getDefaultSelectedComponent(components).meta.componentHash)
     // Return null, since it has to rerender to get the default selected component hash
     return null
   }
@@ -83,12 +84,17 @@ export default function SelectedProvider({ children, components }) {
     getPropStateDefaults(SelectedComponent.meta.props)
   )
 
+  function getComponent(name, filePath) {
+    const entry = Object.entries(components).find(([, Component]) => {
+      return Component.meta.filePath === filePath && Component.meta.displayName === name
+    })
+    return entry ? entry[1] : null
+  }
+
   /** Updates the currently selected component, identified by filepath */
   function updateSelectedComponent(filePath, displayName) {
-    const componentEntry = Object.entries(components).find(([, Component]) => {
-      return Component.meta.filePath === filePath && Component.meta.displayName === displayName
-    })
-    setItem('DRAFT_Selected_Component_Hash', componentEntry[0])
+    const component = getComponent(displayName, filePath)
+    setItem(SELECTED_COMPONENT_HASH, component ? component.meta.componentHash : null)
   }
 
   /** Resets all props to their default values */
@@ -109,6 +115,7 @@ export default function SelectedProvider({ children, components }) {
       value={{
         SelectedComponent,
         updateSelectedComponent,
+        getComponent,
         propStates,
         resetToDefaults,
         updatePropState,

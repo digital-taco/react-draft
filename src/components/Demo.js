@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { msg, parseMsg, deserialize } from '../lib/helpers'
 import Components from '../../out/master-exports'
-import ErrorBoundary from './ErrorBoundary'
+import ErrorBoundary from './demo/ErrorBoundary'
 
 function deserializeAll(states) {
   return Object.fromEntries(Object.entries(states).map(([s,v]) => [s, deserialize(v)]))

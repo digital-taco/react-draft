@@ -1,5 +1,5 @@
 import React from 'react'
-import Checkbox from '../base-components/Checkbox'
+import Checkbox from '../../common/Checkbox'
 
 export default function BooleanInput({ propName, value = '', updatePropState }) {
   return (

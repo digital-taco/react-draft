@@ -1,10 +1,10 @@
 import React from 'react'
-import StringNumberInput from '../Inputs/StringNumberInput'
-import BooleanInput from '../Inputs/BooleanInput'
-import EnumInput from '../Inputs/EnumInput'
-import ObjectInput from '../Inputs/ObjectInput'
-import ShapeInput from '../Inputs/ShapeInput'
-import FunctionInput from '../Inputs/FunctionInput'
+import StringNumberInput from '../components/prop-inputs/StringNumberInput'
+import BooleanInput from '../components/prop-inputs/BooleanInput'
+import EnumInput from '../components/prop-inputs/EnumInput'
+import ObjectInput from '../components/prop-inputs/ObjectInput'
+import ShapeInput from '../components/prop-inputs/ShapeInput'
+import FunctionInput from '../components/prop-inputs/FunctionInput'
 
 export default function getInput([propName, propObj], propStates, updatePropState, setEditItem, openEditDrawer) {
   const inputMap = {

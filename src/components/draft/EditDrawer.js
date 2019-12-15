@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { css } from '@emotion/core'
 import AceEditor from 'react-ace'
-import { SelectedContext } from './SelectedProvider'
+import { SelectedContext } from '../contexts/SelectedContext'
 import 'brace/mode/json'
 import 'brace/theme/tomorrow_night_bright'
-import { serialize, deserialize } from '../lib/helpers'
-import ErrorIcon from '../svgs/ErrorIcon'
+import { serialize, deserialize } from '../../lib/helpers'
+import ErrorIcon from '../../svgs/ErrorIcon'
 
 const styles = {
   editDrawer: css`

@@ -1,7 +1,7 @@
 import React from 'react'
 import { css } from '@emotion/core'
-import Button from '../base-components/Button'
-import InputLabel from '../base-components/InputLabel'
+import Button from '../common/Button'
+import InputLabel from '../common/InputLabel'
 
 const styles = {
   objectContainer: css`
