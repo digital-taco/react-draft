@@ -21,7 +21,7 @@ const { babelModules = [], ignore = [] } = draftConfig
 
 const files = find.fileSync(/\.js$/, path.resolve('.')).filter(fp => {
   if (fp.includes('node_modules/')) return false
-  return !draftConfig.ignore.some(ignorePath => {
+  return !ignore.some(ignorePath => {
     if (ignorePath instanceof RegExp) {
       return ignorePath.exec(fp)
     } else if (typeof ignorePath === 'string') {
@@ -69,7 +69,7 @@ const devMiddleware = middleware(compiler, {
   stats: {
     builtAt: false,
     colors: true,
-    timings: true,
+    timings: false,
     entrypoints: false,
     assets: false,
     modules: false,
