@@ -5,12 +5,18 @@ import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
 import Explorer from './Explorer'
-import Settings from './Settings/Settings'
-import { SettingsContext } from './Settings/SettingsProvider'
-import { StorageContext } from './StorageContext'
+import Settings from './Settings'
+import { SettingsContext } from '../contexts/SettingsContext'
+import { StorageContext } from '../contexts/StorageContext'
 import Tabs from './Tabs'
 import BadRenderMessage from './BadRenderMessage'
 import SideBarTitle from './SideBarTitle'
+import {
+  DRAWER_VIEW,
+  DRAWER_IS_OPEN,
+  EDIT_DRAWER_IS_OPEN,
+  EDIT_DRAWER_ITEM
+} from '../../constants/STORAGE_KEYS'
 
 const wrapperCss = css`
   display: grid;
@@ -54,13 +60,13 @@ const displayCss = css`
 export default function DemoWrapper({ propObjects, children, componentTree }) {
   const { getItem, setItem } = useContext(StorageContext)
 
-  const drawerView = getItem('DRAFT_drawer_view', 'explorer')
-  const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
+  const drawerView = getItem(DRAWER_VIEW, 'explorer')
+  const drawerIsOpen = getItem(DRAWER_IS_OPEN, true)
 
-  const editDrawerOpen = getItem('DRAFT_edit_drawer_open', false)
-  const editItem = getItem('DRAFT_edit_item', { warnings: [] })
+  const editDrawerOpen = getItem(EDIT_DRAWER_IS_OPEN, false)
+  const editItem = getItem(EDIT_DRAWER_ITEM, { warnings: [] })
 
-  const setEditItem = newEditItem => setItem('DRAFT_edit_item', newEditItem)
+  const setEditItem = newEditItem => setItem(EDIT_DRAWER_ITEM, newEditItem)
 
   const { settings } = useContext(SettingsContext)
 
@@ -87,7 +93,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
               open={drawerIsOpen && drawerView === 'props'}
               propObjects={propObjects}
               setEditItem={setEditItem}
-              openEditDrawer={() => setItem('DRAFT_edit_drawer_open', true)}
+              openEditDrawer={() => setItem(EDIT_DRAWER_IS_OPEN, true)}
             />
           )}
 
@@ -119,7 +125,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
         {editDrawerOpen && (
           <EditDrawer
             open={editDrawerOpen}
-            setOpen={newValue => setItem('DRAFT_edit_drawer_open', newValue)}
+            setOpen={newValue => setItem(EDIT_DRAWER_IS_OPEN, newValue)}
             editItem={editItem}
             setEditItem={setEditItem}
           />

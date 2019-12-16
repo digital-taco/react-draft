@@ -1,7 +1,7 @@
 import React from 'react'
 import { css } from '@emotion/core'
-import Button from '../base-components/Button'
-import InputLabel from '../base-components/InputLabel'
+import Button from '../../common/Button'
+import InputLabel from '../../common/InputLabel'
 
 const styles = {
   objectContainer: css`
@@ -11,20 +11,22 @@ const styles = {
   `,
 }
 
-export default function ObjectInput({ propName, value, warnings = [], setEditItem, valueType }) {
+export default function FunctionInput({ propName, value, warnings = [], setEditItem, valueType, openEditDrawer }) {
   return (
     <div css={styles.objectContainer}>
       <InputLabel label={propName} metaText={valueType || 'object'} />
       <Button
         variant="text"
         dense
-        onClick={() =>
+        onClick={() => {
           setEditItem({
             propName,
             value,
             warnings,
             valueType,
           })
+          openEditDrawer()
+        }
         }
       >
         Edit

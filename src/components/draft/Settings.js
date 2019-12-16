@@ -1,9 +1,9 @@
 import React, { useContext } from 'react'
-import { SettingsContext } from './SettingsProvider'
+import { SettingsContext } from '../contexts/SettingsContext'
 import { css } from '@emotion/core'
-import TextInput from '../../base-components/TextInput'
-import InputLabel from '../../base-components/InputLabel'
-import { H3 } from '../../base-components/Headers'
+import TextInput from '../common/TextInput'
+import InputLabel from '../common/InputLabel'
+import { H3 } from '../common/Headers'
 
 const settingsCss = css`
   padding: 8px 16px 0;

@@ -1,12 +1,11 @@
 import React, { useContext } from 'react'
 import { css } from '@emotion/core'
-import getInput from '../lib/get-input'
+import getInput from '../../lib/get-input'
 // import ChildrenInput from '../Inputs/ChildrenInput'
-import ErrorBox from './ErrorBox'
-import { H2 } from '../base-components/Headers'
-import { SelectedContext } from './SelectedProvider'
-import ResetIcon from '../svgs/ResetIcon'
-import IconButton from '../base-components/IconButton'
+import { H2 } from '../common/Headers'
+import { SelectedContext } from '../contexts/SelectedContext'
+import ResetIcon from '../../svgs/ResetIcon'
+import IconButton from '../common/IconButton'
 
 const propsDrawerCss = css`
   padding: 16px 16px 0 16px;
@@ -93,11 +92,6 @@ export default function PropsDrawer({ propObjects, open, setEditItem, openEditDr
           {inputs.exact && inputs.exact.map(getInputProp)}
           {inputs.func && inputs.func.map(getInputProp)}
           {inputs.bool && inputs.bool.map(getInputProp)}
-
-          {/* MISSING PROP TYPES */}
-          {inputs.missingPropTypes.map(([propName]) => (
-            <ErrorBox label={propName} error="Missing PropType" />
-          ))}
         </div>
       </div>
     </div>

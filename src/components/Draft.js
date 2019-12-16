@@ -2,11 +2,12 @@ import React, { useContext, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { css } from '@emotion/core'
 import Components from '../../out/master-exports'
-import DemoWrapper from './DemoWrapper'
+import DemoWrapper from './draft/DemoWrapper'
 import canRender from '../lib/can-render'
-import SettingsProvider from './Settings/SettingsProvider'
-import SelectedProvider, { SelectedContext } from './SelectedProvider'
-import StorageProvider, { StorageContext } from './StorageContext'
+import SettingsProvider from './contexts/SettingsContext'
+import SelectedProvider, { SelectedContext } from './contexts/SelectedContext'
+import StorageProvider, { StorageContext } from './contexts/StorageContext'
+import TabsProvider from './contexts/TabsContext'
 import { msg, parseMsg } from '../lib/helpers'
 import '../global.css' //eslint-disable-line
 
@@ -79,7 +80,9 @@ ReactDOM.render(
   <StorageProvider>
     <SelectedProvider components={Components}>
       <SettingsProvider>
-        <Page />
+        <TabsProvider>
+          <Page />
+        </TabsProvider>
       </SettingsProvider>
     </SelectedProvider>
   </StorageProvider>,

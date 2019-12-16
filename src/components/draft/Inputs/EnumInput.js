@@ -1,7 +1,7 @@
 import React from 'react'
-import InputLabel from '../base-components/InputLabel'
-import Select from '../base-components/Select'
-import { removeQuotes } from '../lib/helpers'
+import InputLabel from '../../common/InputLabel'
+import Select from '../../common/Select'
+import { removeQuotes } from '../../../lib/helpers'
 
 export default function EnumInput({ propName, value, propObj, updatePropState }) {
   return (

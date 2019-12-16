@@ -3,12 +3,13 @@
 import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 
-import FolderIcon from '../svgs/FolderIcon'
-import FileIcon from '../svgs/FileIcon'
-import ArrowIcon from '../svgs/ArrowIcon'
-import CodeIcon from '../svgs/CodeIcon'
-import { SelectedContext } from './SelectedProvider'
-import { StorageContext } from './StorageContext'
+import FolderIcon from '../../svgs/FolderIcon'
+import FileIcon from '../../svgs/FileIcon'
+import ArrowIcon from '../../svgs/ArrowIcon'
+import CodeIcon from '../../svgs/CodeIcon'
+import { SelectedContext } from '../contexts/SelectedContext'
+import { StorageContext } from '../contexts/StorageContext'
+import { TabsContext } from '../contexts/TabsContext'
 
 const explorerCss = css`
   letter-spacing: 0.5px;
@@ -119,13 +120,23 @@ function ExpandableItem({
   updateSelectedComponent,
 }) {
   const { getItem, setItem } = useContext(StorageContext)
+  const { addTab, setTempTab } = useContext(TabsContext)
   const storageKey = `DRAFT_expandable_is_open_${path}`
   const isOpen = getItem(storageKey, false)
 
   function handleFileClick() {
     // If there is only one component in the file and the file is about to expand, then select the one component
     if (!isOpen && isFile && components.length === 1) {
-      updateSelectedComponent(filePath, components[0].displayName)
+      const name = components[0].displayName
+      if (
+        SelectedComponent.meta.filePath === filePath &&
+        SelectedComponent.meta.displayName === name &&
+        !tabs.find(t => t.name === name && t.filePath === filePath)
+      ) {
+        addTab(name, filePath)
+      } else {
+        setTempTab(name, filePath)
+      }
     }
     setItem(storageKey, !isOpen)
   }
@@ -162,10 +173,8 @@ const RecursiveFileSystem = ({
   updateSelectedComponent,
   displayComponents,
 }) => {
+  const { addTab, setTempTab, tabs } = useContext(TabsContext)
   const children = []
-
-  const { getItem, setItem } = useContext(StorageContext)
-  const tabs = getItem('DRAFT_tabs', [])
 
   function handleComponentClick(filePath, name) {
     if (
@@ -173,9 +182,10 @@ const RecursiveFileSystem = ({
       SelectedComponent.meta.displayName === name &&
       !tabs.find(t => t.name === name && t.filePath === filePath)
     ) {
-      setItem('DRAFT_tabs', [...tabs, { filePath, name, componentHash: SelectedComponent.meta.componentHash }])
+      addTab(name, filePath)
+    } else {
+      setTempTab(name, filePath)
     }
-    updateSelectedComponent(filePath, name)
   }
 
   Object.entries(tree).forEach(([path, value], index) => {

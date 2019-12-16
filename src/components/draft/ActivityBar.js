@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from 'react'
 import { css } from '@emotion/core'
-import SettingsIcon from '../svgs/SettingsIcon'
-import FolderIcon from '../svgs/FolderIcon'
-import PropsIcon from '../svgs/PropsIcon'
-import { StorageContext } from './StorageContext'
-import { ACTIVITY_VIEWS } from '../enums/KEYCODES'
+import SettingsIcon from '../../svgs/SettingsIcon'
+import FolderIcon from '../../svgs/FolderIcon'
+import PropsIcon from '../../svgs/PropsIcon'
+import { StorageContext } from '../contexts/StorageContext'
+import { ACTIVITY_VIEWS } from '../../constants/KEYCODES'
+import { DRAWER_VIEW, DRAWER_IS_OPEN } from '../../constants/STORAGE_KEYS'
 
 import ReloadNotification from './ReloadNotification'
 
@@ -39,16 +40,16 @@ const activityBarCss = css`
 
 export default function ActivityBar() {
   const { getItem, setItem } = useContext(StorageContext)
-  const drawerView = getItem('DRAFT_drawer_view', 'explorer')
-  const drawerIsOpen = getItem('DRAFT_drawer_is_open', true)
+  const drawerView = getItem(DRAWER_VIEW, 'explorer')
+  const drawerIsOpen = getItem(DRAWER_IS_OPEN, true)
 
   function handleClick(drawerType) {
-    const isOpen = getItem('DRAFT_drawer_is_open', true)
-    const currentDrawerView = getItem('DRAFT_drawer_view', 'explorer')
+    const isOpen = getItem(DRAWER_IS_OPEN, true)
+    const currentDrawerView = getItem(DRAWER_VIEW, 'explorer')
     if (currentDrawerView === drawerType || !isOpen) {
-      setItem('DRAFT_drawer_is_open', !isOpen)
+      setItem(DRAWER_IS_OPEN, !isOpen)
     }
-    setItem('DRAFT_drawer_view', drawerType)
+    setItem(DRAWER_VIEW, drawerType)
   }
 
   // Add keyboard shortcuts
