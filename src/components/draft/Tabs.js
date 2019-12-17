@@ -2,11 +2,10 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext, useEffect } from 'react'
 import { css } from '@emotion/core'
-import { StorageContext } from '../contexts/StorageContext'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { TabsContext } from '../contexts/TabsContext'
 import Tab from './Tab'
-import { TABS } from '../../constants/KEYCODES'
+import { TABS } from '../../constants/STORAGE_KEYS'
 
 const tabsCss = css`
   color: var(--color-text);
@@ -14,6 +13,10 @@ const tabsCss = css`
   overflow-x: scroll;
   height: 48px;
   box-sizing: border-box;
+  position: absolute;
+  margin-left: 16px;
+  left: 0;
+  top: 0;
 `
 
 export default function Tabs() {

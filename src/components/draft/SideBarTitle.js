@@ -11,12 +11,12 @@ const titleCss = css`
 `
 
 /** The title displayed on the app bar above the sidebar (e.g. Settings/Explorer/Props) */
-export default function SideBarTitle({ drawerIsOpen, drawerView }) {
+export default function SideBarTitle({ sideBarIsOpen, sidebarView }) {
   return (
     <div className="demo-font" css={titleCss} style={{
-      marginLeft: drawerIsOpen ? 0 : -459
+      marginLeft: sideBarIsOpen ? 0 : -459
     }}>
-      {drawerView}
+      {sidebarView}
     </div>
   )
 }

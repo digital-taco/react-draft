@@ -1,92 +1,99 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { css } from '@emotion/core'
 import AceEditor from 'react-ace'
-import { SelectedContext } from '../contexts/SelectedContext'
 import 'brace/mode/json'
 import 'brace/theme/tomorrow_night_bright'
 import { serialize, deserialize } from '../../lib/helpers'
+import { SelectedContext } from '../contexts/SelectedContext'
 import ErrorIcon from '../../svgs/ErrorIcon'
+import IconButton from '../common/IconButton'
+import CloseIcon from '../../svgs/CloseIcon'
 
-const styles = {
-  editDrawer: css`
-    background-color: var(--color-background-primary);
-    color: var(--color-text);
-    transition: margin-right 0.2s ease-in-out;
-    position: absolute;
-    right: 0;
-    box-shadow: 0 0 8px #333;
+const editDrawerCss = css`
+  background-color: var(--color-background-primary);
+  color: var(--color-text);
+  transition: margin-right 0.2s ease-in-out;
+  box-shadow: 0 0 8px #333;
+  height: 100%;
 
-    & .ace_editor {
-      width: 33vw !important;
-      height: 100vh !important;
-      max-height: 100vh !important;
+  & .ace_editor {
+      width: 100% !important;
+      max-width: 100% !important;
+      height: calc(100% - 48px) !important;
+      max-height: calc(100% - 48px) !important;
       box-sizing: border-box;
       font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
       font-weight: 600;
       font-size: 16px;
-    }
-  `,
-  header: css`
-    padding: 16px;
-    background-color: var(--color-background-secondary);
-  `,
-  titleBar: css`
-    font-size: 16px;
+  }
+  & .ace_editor {
+    height: 100% !important;
+  }
+`
+
+const headerCss = css`
+  padding: 0 16px;
+  background-color: var(--color-background-tertiary);
+`
+
+const titleBarCss = css`
+  font-size: 16px;
+  display: flex;
+  height: 48px;
+  align-items: center;
+  & > span {
+    flex-grow: 2;
+  }
+
+  & > .title {
+    padding: 0;
+    margin: 0;
+    font-weight: 600;
     display: flex;
-    align-items: center;
-    & > span {
-      flex-grow: 2;
-    }
+    min-height: 20px;
+  }
 
-    & > .title {
-      padding: 0;
-      margin: 0;
-      font-weight: 600;
-      display: flex;
-      min-height: 20px;
-    }
+  & > div.title svg {
+    height: 20px;
+    width: 20px;
+    fill: var(--color-error-text);
+    margin-left: 8px;
+  }
+`
 
-    & svg {
-      height: 20px;
-      width: 20px;
-      fill: var(--color-error-text);
-      margin-left: 8px;
-    }
-  `,
-  warningsLabel: css`
-    font-size: 12px;
-    margin-left: 16px;
-    color: orange;
-    cursor: pointer;
+const warningsLabelCss = css`
+  font-size: 12px;
+  margin-left: 16px;
+  color: orange;
+  cursor: pointer;
 
-    &:hover {
-      text-decoration: underline;
-    }
-  `,
-  warnings: css`
-    margin: 0;
-    max-width: 100%;
-    overflow-x: scroll;
-  `,
-  warning: css`
-    color: red;
-    padding: 4px 0;
-    margin: 0;
-    max-width: 100%;
-    overflow-x: scroll;
-    font-size: 12px;
-  `,
-}
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+const warningsCss = css`
+   margin: 0;
+  max-width: 100%;
+  overflow-x: scroll;
+`
+
+const warningCss = css`
+  color: red;
+  padding: 4px 0;
+  margin: 0;
+  max-width: 100%;
+  overflow-x: scroll;
+  font-size: 12px;
+`
 
 /** A bottom-opening drawer containing an editor. Allows the user to edit the prop state for objects, shapes, and exact shapes. */
 export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
-  console.log('LOG: EditDrawer -> editItem', editItem)
   if (!editItem) return null
   const [editorValue, setEditorValue] = useState(deserialize(editItem.value))
   const [warningsOpen, setWarningsOpen] = useState(false)
   const [hasError, setHasError] = useState(false)
   const { updatePropState } = useContext(SelectedContext)
-
 
   const editorRef = React.useRef()
   const warningLength = editItem.warnings.length
@@ -136,7 +143,6 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
       }
 
       const serialized = serialize(newPropState)
-      console.log('LOG: EditDrawer -> serialized', serialized)
       updatePropState(editItem.propName, serialized) // eslint-disable-line
       setEditItem({ ...editItem, value: editorValue })
       if (hasError) {
@@ -149,33 +155,30 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
   }, [editorValue])
 
   return (
-    <div css={styles.editDrawer} style={style} className="demo-font">
-      <div css={styles.header}>
+    <div css={editDrawerCss} style={style} className="demo-font">
+      <div css={headerCss}>
         {/* TITLE */}
-        <div css={styles.titleBar}>
+        <div css={titleBarCss}>
           <div className="title demo-font">{editItem.propName} {hasError && <ErrorIcon />}</div>
 
           {/* Warnings */}
           {warningLength > 0 && (
             // eslint-disable-next-line
-            <div css={styles.warningsLabel} onClick={() => setWarningsOpen(!warningsOpen)}>
+            <div css={warningsLabelCss} onClick={() => setWarningsOpen(!warningsOpen)}>
               {editItem.warnings.length} warning{pluralWarnings && 's'}
             </div>
           )}
           <span />
 
           {/* CLOSE BUTTON */}
-          {/* <IconButton size="small" onClick={handleClose}>
-            <CloseIcon fontSize="small" />
-          </IconButton> */}
-          <button onClick={handleClose}>Close</button>
+          <IconButton Icon={CloseIcon} onClick={handleClose} />
         </div>
 
         {/* WARNINGS */}
         {warningLength > 0 && (
-          <div css={styles.warnings}>
+          <div css={warningsCss}>
             {editItem.warnings.map(warning => (
-              <div css={styles.warning}>{warning}</div>
+              <div css={warningCss}>{warning}</div>
             ))}
           </div>
         )}

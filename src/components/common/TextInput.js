@@ -8,7 +8,7 @@ const inputCss = css`
   border: none;
   width: 100%;
   box-sizing: border-box;
-  border-radius: 3px;
+  border-radius: 2px;
   background-color: var(--color-text);
   color: var(--color-background-secondary);
 `

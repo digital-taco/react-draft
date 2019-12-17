@@ -13,7 +13,6 @@ const propsDrawerCss = css`
 
 const styles = {
   propsContainer: css`
-    min-width: 250px;
     display: grid;
     grid-row-gap: 8px;
   `,

@@ -1,0 +1,3 @@
+export const DEFAULT_SIDEBAR_WIDTH = 400
+export const DEFAULT_EDIT_DRAWER_HEIGHT = 400
+export const DEFAULT_EDIT_DRAWER_WIDTH = '80%'

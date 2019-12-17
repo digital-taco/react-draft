@@ -10,12 +10,14 @@ import StorageProvider, { StorageContext } from './contexts/StorageContext'
 import TabsProvider from './contexts/TabsContext'
 import { msg, parseMsg } from '../lib/helpers'
 import '../global.css' //eslint-disable-line
+import { TABS } from '../constants/STORAGE_KEYS'
 
 const frameCss = css`
   width: 100%;
   border: none;
   display: block;
-  height: calc(100vh - 80px);
+  height: 100px;
+  height: 100%;
 `
 
 const { componentTree } = Components
@@ -27,7 +29,7 @@ function Page() {
   const { meta } = SelectedComponent
   const { props } = meta
 
-  const tabs = getItem('DRAFT_tabs', [])
+  const tabs = getItem(TABS, [])
   const canRenderComponent = propStates && canRender(props, propStates)
   const handleMessage = parseMsg(receiveMessage)
 

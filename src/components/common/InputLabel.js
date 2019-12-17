@@ -8,10 +8,11 @@ const containerCss = css`
 `
 
 const labelCss = css`
-  font-size: 16px;
+  font-size: 14px;
   color: var(--color-text);
   font-weight: bold;
   margin: 16px 0 8px;
+  letter-spacing: 0.015rem;
 `
 
 const metaCss = css`

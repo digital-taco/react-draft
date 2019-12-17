@@ -4,7 +4,7 @@ import { css } from '@emotion/core'
 const buttonCss = dense => css`
   appearance: none;
   text-transform: uppercase;
-  color: var(--color-text-hover);
+  color: var(--color-text);
   font-weight: bold;
   background-color: var(--color-background-highlight);
   padding: ${dense ? '8px 16px' : '12px 16px'};

@@ -6,6 +6,7 @@ export const SettingsContext = React.createContext()
 export default function SettingsProvider({ children }) {
   const [settings, setSettings] = useLocalStorage('react-draft-settings', {
     demoPadding: 0,
+    editDrawerSide: 'right',
   })
 
   const updateSetting = (settingKey, newValue) => {
