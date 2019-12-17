@@ -5,7 +5,7 @@ const buttonCss = css`
   appearance: none;
   text-transform: uppercase;
   background-color: transparent;
-  padding: 4px;
+  /* padding: 4px; */
   border-radius: 40px;
   border: none;
   font-size: 14px;

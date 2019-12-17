@@ -9,9 +9,8 @@ const drawerCss = css`
   color: var(--color-text);
   box-sizing: border-box;
   overflow-y: scroll;
-  min-width: 385px;
-  width: 385px;
   max-height: 100%;
+  width: 100%;
 `
 
 export default function SideBar({ children }) {

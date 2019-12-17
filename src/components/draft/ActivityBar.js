@@ -5,12 +5,12 @@ import FolderIcon from '../../svgs/FolderIcon'
 import PropsIcon from '../../svgs/PropsIcon'
 import { StorageContext } from '../contexts/StorageContext'
 import { ACTIVITY_VIEWS } from '../../constants/KEYCODES'
-import { DRAWER_VIEW, DRAWER_IS_OPEN } from '../../constants/STORAGE_KEYS'
+import { SIDEBAR_VIEW, SIDEBAR_IS_OPEN } from '../../constants/STORAGE_KEYS'
 
 import ReloadNotification from './ReloadNotification'
 
 const activityBarCss = css`
-  height: calc(100vh - 48px);
+  height: 100%;
   width: 60px;
   color: white;
   display: grid;
@@ -40,16 +40,16 @@ const activityBarCss = css`
 
 export default function ActivityBar() {
   const { getItem, setItem } = useContext(StorageContext)
-  const drawerView = getItem(DRAWER_VIEW, 'explorer')
-  const drawerIsOpen = getItem(DRAWER_IS_OPEN, true)
+  const drawerView = getItem(SIDEBAR_VIEW, 'explorer')
+  const drawerIsOpen = getItem(SIDEBAR_IS_OPEN, true)
 
   function handleClick(drawerType) {
-    const isOpen = getItem(DRAWER_IS_OPEN, true)
-    const currentDrawerView = getItem(DRAWER_VIEW, 'explorer')
+    const isOpen = getItem(SIDEBAR_IS_OPEN, true)
+    const currentDrawerView = getItem(SIDEBAR_VIEW, 'explorer')
     if (currentDrawerView === drawerType || !isOpen) {
-      setItem(DRAWER_IS_OPEN, !isOpen)
+      setItem(SIDEBAR_IS_OPEN, !isOpen)
     }
-    setItem(DRAWER_VIEW, drawerType)
+    setItem(SIDEBAR_VIEW, drawerType)
   }
 
   // Add keyboard shortcuts
