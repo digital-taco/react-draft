@@ -13,9 +13,7 @@ const buildComponentTree = require('../lib/build-component-tree.js')
 const buildMasterExports = require('../lib/build-master-exports.js')
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 
-const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {
-  middleware: () => {}
-}
+const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
 
 const { babelModules = [], ignore = [] } = draftConfig
 
@@ -98,7 +96,7 @@ const extractFrom = (webpackCompiler, name) => (req, res, next) => {
 }
 
 // Must be added _after_ the dev middleware
-draftConfig.middleware(app)
+draftConfig.middleware && draftConfig.middleware(app)
 
 // Add demo and index middleware
 app.use('/demo', extractFrom(compiler, 'demo.html'))

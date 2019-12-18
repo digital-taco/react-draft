@@ -120,13 +120,14 @@ function ExpandableItem({
   updateSelectedComponent,
 }) {
   const { getItem, setItem } = useContext(StorageContext)
-  const { addTab, setTempTab } = useContext(TabsContext)
+  const { tabs, addTab, setTempTab } = useContext(TabsContext)
   const storageKey = `DRAFT_expandable_is_open_${path}`
   const isOpen = getItem(storageKey, false)
-
+  
   function handleFileClick() {
     // If there is only one component in the file and the file is about to expand, then select the one component
     if (!isOpen && isFile && components.length === 1) {
+      console.log('LOG: SelectedComponent', SelectedComponent)
       const name = components[0].displayName
       if (
         SelectedComponent.meta.filePath === filePath &&

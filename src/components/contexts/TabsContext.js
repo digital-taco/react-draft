@@ -14,7 +14,7 @@ export default function TabsProvider({ children }) {
   function addTab(name, filePath) {
     const component = getComponent(name, filePath)
     setItem(TABS, [{ filePath, name, componentHash: component.meta.componentHash }, ...tabs])
-    if (component.meta.componentHash === tempTab.componentHash) {
+    if (tempTab && component.meta.componentHash === tempTab.componentHash) {
       setItem(TEMP_TAB, null)
     }
     updateSelectedComponent(filePath, name)

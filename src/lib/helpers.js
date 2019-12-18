@@ -38,8 +38,10 @@ export function parseMsg(fn) {
 const SERIALIZED_TOKEN = '::SERIALIZED::'
 
 export function serialize(item) {
-  const processed = SERIALIZED_TOKEN + encodeURI(item.toString())
-  return processed
+  if (item) {
+    const processed = SERIALIZED_TOKEN + encodeURI(item.toString())
+    return processed
+  }
 }
 
 export function deserialize (item, evaluate = true) {

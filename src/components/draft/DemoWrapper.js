@@ -93,7 +93,7 @@ const barCss = css`
 `
 
 const paneCss = css`
-  height: 100%;
+  height: calc(100% - 48px);
   display: flex;
 `
 
@@ -158,22 +158,14 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
     },
   } : {}
 
-  const editDrawer = (
-    <EditDrawer
-      side={editDrawerSide}
-      open={editDrawerOpen}
-      setOpen={newValue => setItem(EDIT_DRAWER_IS_OPEN, newValue)}
-      editItem={editItem}
-      setEditItem={setEditItem}
-    />
-  )
-
   useEffect(() => {
-    const pane1 = contentRef.current.querySelector('.Pane1')
-    if (editDrawerSide === 'right') {
-      pane1.style.width = getItem(editDrawerSize, editDrawerSizeDefault) + 'px'
-    } else if (editDrawerSide === 'bottom') {
-      pane1.style.height = getItem(editDrawerSize, editDrawerSizeDefault) + 'px'
+    if (editDrawerOpen) {
+      const pane1 = contentRef.current.querySelector('.Pane1')
+      if (editDrawerSide === 'right') {
+        pane1.style.width = getItem(editDrawerSize, editDrawerSizeDefault) + 'px'
+      } else if (editDrawerSide === 'bottom') {
+        pane1.style.height = getItem(editDrawerSize, editDrawerSizeDefault) + 'px'
+      }
     }
   }, [editDrawerSide])
 
@@ -255,7 +247,15 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
        
 
           {/* EDIT DRAWER */}
-          {editDrawerOpen && editDrawer}
+          {editDrawerOpen && (
+            <EditDrawer
+              side={editDrawerSide}
+              open={editDrawerOpen}
+              setOpen={newValue => setItem(EDIT_DRAWER_IS_OPEN, newValue)}
+              editItem={editItem}
+              setEditItem={setEditItem}
+            />
+          )}
 
          </ContainerTag>
       </div>

@@ -26,8 +26,7 @@ export default function FunctionInput({ propName, value, warnings = [], setEditI
             valueType,
           })
           openEditDrawer()
-        }
-        }
+        }}
       >
         Edit
       </Button>
