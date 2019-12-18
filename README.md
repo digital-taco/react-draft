@@ -55,6 +55,21 @@ Here are the available options:
 |babelModules|An array of strings or regexes to match against additional modules that need to be run through babel that live outside the project's directory or in the project's node_modules.|
 |middleware|A function that is passed the `app` instance of express. This allows adding custom middleware needed for things like authentication.|
 
+#### Custom Middleware
+
+Example:
+
+```js
+// draft.config.js
+module.exports = {
+  middleware: app => {
+    app.use('/flush-ion-cores', (req, res, next) => {
+      // flush the icon cores here
+    })
+  }
+}
+```
+
 ## Wrapper Component
 
 In many cases, additional context is needed for your components to run. This might include providers, service layers, global styling, or similar. To provide these, a wrapper component can be provided that will wrap around each component demo.
