@@ -52,12 +52,12 @@ function Page() {
   }, [])
 
   useEffect(() => {
-    messageSelectedComponent(), [SelectedComponent]
-  })
+    messageSelectedComponent()
+  }, [SelectedComponent])
 
   useEffect(() => {
-    messagePropStates(), [propStates]
-  })
+    messagePropStates()
+  }, [propStates])
 
   return (
     <DemoWrapper propObjects={props} componentTree={componentTree}>
