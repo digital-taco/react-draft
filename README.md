@@ -53,7 +53,6 @@ Here are the available options:
 |ignore     |An array of strings to match filenames against to ignore when parsing for react components. This is useful for skipping files that don't contain development components, like `.stories.` files or `.test.` files.|
 |wrapperPath|Path to the `draft.wrapper.js` file, as described below. If not provided, draft will look for one in the current working directory.|
 |babelModules|An array of strings or regexes to match against additional modules that need to be run through babel that live outside the project's directory or in the project's node_modules.|
-|port|The port to run the local development server on.|
 
 ## Wrapper Component
 
