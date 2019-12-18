@@ -90,7 +90,7 @@ const warningCss = css`
 /** A bottom-opening drawer containing an editor. Allows the user to edit the prop state for objects, shapes, and exact shapes. */
 export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
   if (!editItem) return null
-  const [editorValue, setEditorValue] = useState(deserialize(editItem.value))
+  const [editorValue, setEditorValue] = useState(deserialize(editItem.value, false))
   const [warningsOpen, setWarningsOpen] = useState(false)
   const [hasError, setHasError] = useState(false)
   const { updatePropState } = useContext(SelectedContext)
@@ -196,7 +196,6 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
         theme="tomorrow_night_bright"
         name="test editor"
         onChange={newValue => {
-          console.log('LOG: newValue', newValue)
           setEditorValue(newValue)
         }}
       />
