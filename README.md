@@ -1,8 +1,6 @@
 # React Draft
 📝 WIP: Develop your React components in isolation without any configuration.
 
-**Note:** This tool is not built for server-side rendering.
-
 ## Installation
 
 In your project's root directory, run:
@@ -54,6 +52,8 @@ Here are the available options:
 |-----------|---------------------------------------------------------|
 |ignore     |An array of strings to match filenames against to ignore when parsing for react components. This is useful for skipping files that don't contain development components, like `.stories.` files or `.test.` files.|
 |wrapperPath|Path to the `draft.wrapper.js` file, as described below. If not provided, draft will look for one in the current working directory.|
+|babelModules|An array of strings or regexes to match against additional modules that need to be run through babel that live outside the project's directory or in the project's node_modules.|
+|port|The port to run the local development server on.|
 
 ## Wrapper Component
 
@@ -77,7 +77,7 @@ export default function Wrapper({ children }) {
 
 ## Contributing & Running Locally
 
-For ease of development, a [create-react-app generated application has been created](https://github.com/digital-taco/META-react-draft-sandbox). Developing `react-draft` is made much simpler by npm linking `react-draft` within the development repository. Clone both repositories locally, then follow these steps:
+For ease of development, a [create-react-app generated application has been created](https://github.com/digital-taco/react-draft-sandbox). Developing `react-draft` is made much simpler by npm linking `react-draft` within the development repository. Clone both repositories locally, then follow these steps:
 
 Where you cloned `react-draft`, run:
 
@@ -85,7 +85,7 @@ Where you cloned `react-draft`, run:
 npm link
 ```
 
-Where you cloned `META-react-draft-sandbox`, run:
+Where you cloned `react-draft-sandbox`, run:
 
 ```bash
 npm link @digital-taco/react-draft
