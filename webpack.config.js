@@ -1,5 +1,4 @@
 const path = require('path')
-const fs = require('fs')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const BuildExportsList = require('./lib/BuildExportsList')

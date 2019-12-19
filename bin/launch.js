@@ -15,7 +15,7 @@ const reactConfigPath = path.resolve('.', 'draft.config.js')
 
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
 
-const { babelModules = [], ignore = [] } = draftConfig
+const { babelModules = [], ignore = [], port = 8080 } = draftConfig
 
 const files = find.fileSync(/\.js$/, path.resolve('.')).filter(fp => {
   if (fp.includes('node_modules/')) return false
@@ -44,7 +44,6 @@ buildMasterExports(componentTree, draftConfig)
 // Set up webpack, websockets, express
 const webpackConfig = buildWebpackConfig(draftConfig)
 const app = express()
-const port = 8080
 const compiler = webpack(webpackConfig)
 
 // Whenever the compilation goes invalid (something changed), rebuild the master exports
