@@ -114,22 +114,23 @@ function ExpandableItem({
   const { tabs, tempTab, addTab, setTempTab } = useContext(TabsContext)
   const storageKey = `DRAFT_expandable_is_open_${path}`
   const isOpen = getItem(storageKey, false)
-  
+
   function handleFileClick() {
     // If there is only one component in the file and the file is about to expand, then select the one component
     if (!isOpen && isFile && components.length === 1) {
       const name = components[0].displayName
       if (
-        SelectedComponent.meta.filePath === filePath &&
-        SelectedComponent.meta.displayName === name &&
-        !tabs.find(t => t.name === name && t.filePath === filePath) &&
-        tempTab && tempTab.filePath === filePath &&
-        tempTab && tempTab.name === name
+        tempTab &&
+        tempTab.filePath === filePath &&
+        tempTab.name === name
       ) {
+        // if the tab is the temp tab, make it a persistent tab
         addTab(name, filePath)
-      } else {
+      } else if (!tabs.find(t => t.name === name && t.filePath === filePath)) {
+        // if it is not the temp tab AND it isn't a tab already, make it the temp tab
         setTempTab(name, filePath)
       }
+      updateSelectedComponent(filePath, name)
     }
     setItem(storageKey, !isOpen)
   }
@@ -166,19 +167,20 @@ const RecursiveFileSystem = ({
   updateSelectedComponent,
   displayComponents,
 }) => {
-  const { addTab, setTempTab, tabs } = useContext(TabsContext)
+  const { addTab, setTempTab, tempTab, tabs } = useContext(TabsContext)
   const children = []
 
   function handleComponentClick(filePath, name) {
     if (
-      SelectedComponent.meta.filePath === filePath &&
-      SelectedComponent.meta.displayName === name &&
-      !tabs.find(t => t.name === name && t.filePath === filePath)
+      tempTab &&
+      tempTab.filePath === filePath &&
+      tempTab.name === name
     ) {
       addTab(name, filePath)
-    } else {
+    } else if (!tabs.find(t => t.name === name && t.filePath === filePath)) {
       setTempTab(name, filePath)
     }
+    updateSelectedComponent(filePath, name)
   }
 
   Object.entries(tree).forEach(([path, value], index) => {

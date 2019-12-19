@@ -17,7 +17,6 @@ export default function TabsProvider({ children }) {
     if (tempTab && component.meta.componentHash === tempTab.componentHash) {
       setItem(TEMP_TAB, null)
     }
-    updateSelectedComponent(filePath, name)
   }
   
   function removeTab(componentHash) {
@@ -34,7 +33,6 @@ export default function TabsProvider({ children }) {
   function setTempTab(name, filePath) {
     const component = getComponent(name, filePath)
     setItem(TEMP_TAB, { name, filePath, componentHash: component.meta.componentHash })
-    updateSelectedComponent(filePath, name)
   }
 
   return (
