@@ -5,6 +5,7 @@ import { css } from '@emotion/core'
 import Components from '../../../out/master-exports'
 import CodeIcon from '../../svgs/CodeIcon'
 import CloseIcon from '../../svgs/CloseIcon'
+import { boolAttr } from '../../lib/helpers'
 
 const tabCss = css`
   padding: 10px 16px 7px;
@@ -81,8 +82,8 @@ export default function Tab({ temp, name, filePath, componentHash }) {
   return (
     <div
       css={tabCss}
-      data-selected={isSelected ? '' : undefined}
-      temp={temp ? '' : undefined}
+      data-selected={boolAttr(isSelected)}
+      temp={boolAttr(temp)}
       onClick={() => updateSelectedComponent(filePath, name)}
     >
       <CodeIcon fill="var(--color-text-accent)" />

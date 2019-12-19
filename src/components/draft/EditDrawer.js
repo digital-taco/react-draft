@@ -5,9 +5,12 @@ import 'brace/mode/json'
 import 'brace/theme/tomorrow_night_bright'
 import { serialize, deserialize } from '../../lib/helpers'
 import { SelectedContext } from '../contexts/SelectedContext'
+import { StorageContext } from '../contexts/StorageContext'
 import ErrorIcon from '../../svgs/ErrorIcon'
 import IconButton from '../common/IconButton'
 import CloseIcon from '../../svgs/CloseIcon'
+import { EDIT_DRAWER_IS_OPEN } from '../../constants/STORAGE_KEYS'
+import { boolAttr } from '../../lib/helpers'
 
 const editDrawerCss = css`
   background-color: var(--color-background-primary);
@@ -15,6 +18,7 @@ const editDrawerCss = css`
   transition: margin-right 0.2s ease-in-out;
   box-shadow: 0 0 8px #333;
   height: 100%;
+  display: none;
 
   & .ace_editor {
       width: 100% !important;
@@ -26,8 +30,13 @@ const editDrawerCss = css`
       font-weight: 600;
       font-size: 16px;
   }
+
   & .ace_editor {
     height: 100% !important;
+  }
+
+  &[isopen] {
+    display: block;
   }
 `
 
@@ -94,28 +103,34 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
   const [warningsOpen, setWarningsOpen] = useState(false)
   const [hasError, setHasError] = useState(false)
   const { updatePropState } = useContext(SelectedContext)
-
+  const { getItem } = useContext(StorageContext)
+  const editDrawerIsOpen = getItem(EDIT_DRAWER_IS_OPEN, false)
   const editorRef = React.useRef()
+
   const warningLength = editItem.warnings.length
   const pluralWarnings = warningLength > 1
-  const style = {
-    display: open ? 'block' : 'none',
-  }
 
-  /** Close the drawer and remove the current edit item */
+  /* Close the drawer and remove the current edit item */
   function handleClose() {
     setOpen(false)
     setEditItem(null)
   }
 
-  /** If an editItem was set, and the drawer isn't open, open it */
+  /* Closes the editDrawer if ESC is pressed */
+  function keyboardClose({ keyCode, target }) {
+    if (editDrawerIsOpen && target.tagName.toLowerCase() !== 'input' && keyCode === 27) {
+      setOpen(false)
+    }
+  }
+
+  /* If an editItem was set, and the drawer isn't open, open it */
   useEffect(() => {
     if (!open && editItem) {
       setOpen(true)
     }
   }, [editItem])
 
-  /** Set the ace editor options */
+  /* Set the ace editor options */
   useEffect(() => {
     editorRef.current.editor.setOptions({
       displayIndentGuides: false,
@@ -123,6 +138,12 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
       cursor: 'smooth',
       useWorker: false,
     })
+  }, [])
+
+  /* Add ESC key shortcut to close the editor when open */
+  useEffect(() => {
+    document.addEventListener('keyup', keyboardClose)
+    return () => document.removeEventListener('keyup', keyboardClose)
   }, [])
 
   useEffect(() => {
@@ -155,7 +176,7 @@ export default function EditDrawer({ open, setOpen, editItem, setEditItem }) {
   }, [editorValue])
 
   return (
-    <div css={editDrawerCss} style={style} className="demo-font">
+    <div css={editDrawerCss} isopen={boolAttr(editDrawerIsOpen)} className="demo-font">
       <div css={headerCss}>
         {/* TITLE */}
         <div css={titleBarCss}>

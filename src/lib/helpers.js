@@ -50,3 +50,7 @@ export function deserialize (item, evaluate = true) {
   processed = needsProccessing && evaluate ? eval(`(()=>(${processed}))();`) : processed
   return processed
 }
+
+export function boolAttr(val) {
+  return val ? '' : undefined
+}

@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext, useEffect } from 'react'
 import { css } from '@emotion/core'
 import { SelectedContext } from '../contexts/SelectedContext'
@@ -7,6 +5,7 @@ import { StorageContext } from '../contexts/StorageContext'
 import { TabsContext } from '../contexts/TabsContext'
 import Tab from './Tab'
 import { TABS, SIDEBAR_IS_OPEN } from '../../constants/STORAGE_KEYS'
+import { boolAttr } from '../../lib/helpers'
 
 const tabsCss = css`
   color: var(--color-text);
@@ -44,7 +43,7 @@ export default function Tabs() {
   }, [])
 
   return (
-    <div css={tabsCss} padleft={sideBarIsOpen ? '' : undefined} className="demo-font">
+    <div css={tabsCss} padleft={boolAttr(sideBarIsOpen)} className="demo-font">
       {tempTab && <Tab temp {...tempTab} />}
       {tabs.map((tab) => (
         <Tab key={tab.componentHash} {...tab} />

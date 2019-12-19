@@ -6,6 +6,7 @@ import PropsIcon from '../../svgs/PropsIcon'
 import { StorageContext } from '../contexts/StorageContext'
 import { ACTIVITY_VIEWS } from '../../constants/KEYCODES'
 import { SIDEBAR_VIEW, SIDEBAR_IS_OPEN } from '../../constants/STORAGE_KEYS'
+import { boolAttr } from '../../lib/helpers'
 
 import ReloadNotification from './ReloadNotification'
 
@@ -68,17 +69,17 @@ export default function ActivityBar() {
     <div css={activityBarCss}>
       <ReloadNotification />
       <FolderIcon
-        data-selected={drawerIsOpen && drawerView === 'explorer' ? '' : undefined}
+        data-selected={boolAttr(drawerIsOpen && drawerView === 'explorer')}
         onClick={() => handleClick('explorer')}
         data-test-explorer-icon
         />
       <PropsIcon
-        data-selected={drawerIsOpen && drawerView === 'props' ? '' : undefined}
+        data-selected={boolAttr(drawerIsOpen && drawerView === 'props')}
         onClick={() => handleClick('props')}
         data-test-props-icon
         />
       <SettingsIcon
-        data-selected={drawerIsOpen && drawerView === 'settings' ? '' : undefined}
+        data-selected={boolAttr(drawerIsOpen && drawerView === 'settings')}
         onClick={() => handleClick('settings')}
         data-test-settings-icon
       />

@@ -10,6 +10,7 @@ import CodeIcon from '../../svgs/CodeIcon'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { StorageContext } from '../contexts/StorageContext'
 import { TabsContext } from '../contexts/TabsContext'
+import { boolAttr } from '../../lib/helpers'
 
 const explorerCss = css`
   letter-spacing: 0.5px;
@@ -137,7 +138,7 @@ function ExpandableItem({
 
   return (
     <div>
-      <div is-file={isFile ? '' : undefined} css={folderNameCss} onClick={handleFileClick} data-test-path={path}>
+      <div is-file={boolAttr(isFile)} css={folderNameCss} onClick={handleFileClick} data-test-path={path}>
         {/* eslint-disable-next-line no-nested-ternary */}
         <ItemIcons
           Icon={isFile ? FileIcon : FolderIcon}

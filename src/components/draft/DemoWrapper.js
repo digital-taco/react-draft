@@ -12,6 +12,7 @@ import Tabs from './Tabs'
 import BadRenderMessage from './BadRenderMessage'
 import SideBarTitle from './SideBarTitle'
 import SplitPane from 'react-split-pane'
+import { boolAttr } from '../../lib/helpers'
 import {
   SIDEBAR_VIEW,
   SIDEBAR_IS_OPEN,
@@ -202,7 +203,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
     <div css={wrapperCss}>
 
       {/* CONTENT */}
-      <div ref={contentRef} css={contentCss} non-resizable={!sideBarIsOpen ? '' : undefined}>
+      <div ref={contentRef} css={contentCss} non-resizable={boolAttr(!sideBarIsOpen)}>
 
         <VerticalSplitPane {...verticalSplitPaneProps}>
 

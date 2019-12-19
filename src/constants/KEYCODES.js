@@ -16,3 +16,5 @@ export const ACTIVITY_VIEWS = {
   PROPS_VIEW: 83,
   SETTINGS_VIEW: 68,
 }
+
+export const ESC = 27

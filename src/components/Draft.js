@@ -11,6 +11,7 @@ import TabsProvider from './contexts/TabsContext'
 import { msg, parseMsg } from '../lib/helpers'
 import '../global.css' //eslint-disable-line
 import { TABS } from '../constants/STORAGE_KEYS'
+import { boolAttr } from '../lib/helpers'
 
 const frameCss = css`
   width: 100%;
@@ -68,7 +69,7 @@ function Page() {
           onLoad={() => {
             iframeRef.current.height = `${iframeRef.current.contentDocument.body.scrollHeight}px`
           }}
-          data-tabsopen={tabs.length > 0 ? '' : undefined}
+          data-tabsopen={boolAttr(tabs.length > 0)}
           title="demo"
           src={`${process.env.PUBLIC_PATH || '/'}demo`}
         />
