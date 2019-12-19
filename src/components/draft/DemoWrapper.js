@@ -12,19 +12,20 @@ import Tabs from './Tabs'
 import BadRenderMessage from './BadRenderMessage'
 import SideBarTitle from './SideBarTitle'
 import SplitPane from 'react-split-pane'
-  import {
-    SIDEBAR_VIEW,
-    SIDEBAR_IS_OPEN,
-    EDIT_DRAWER_IS_OPEN,
-    EDIT_DRAWER_ITEM,
-    EDIT_DRAWER_HEIGHT,
-    EDIT_DRAWER_WIDTH,
-    SIDEBAR_WIDTH,
-  } from '../../constants/STORAGE_KEYS'
+import {
+  SIDEBAR_VIEW,
+  SIDEBAR_IS_OPEN,
+  EDIT_DRAWER_IS_OPEN,
+  EDIT_DRAWER_ITEM,
+  EDIT_DRAWER_HEIGHT,
+  EDIT_DRAWER_WIDTH,
+  SIDEBAR_WIDTH,
+} from '../../constants/STORAGE_KEYS'
 
 import {
   DEFAULT_EDIT_DRAWER_HEIGHT,
   DEFAULT_EDIT_DRAWER_WIDTH,
+  DEFAULT_SIDEBAR_WIDTH,
 } from '../../constants/DEFAULTS'
 
 const wrapperCss = css`
@@ -84,6 +85,14 @@ const contentCss = css`
     top: calc(50% + 24px - 15px);
     right: 0;
   }
+
+  &[non-resizable] .verticalResizer {
+    cursor: default
+  }
+
+  &[non-resizable] .verticalResizer::before {
+    display: none;
+  }
 `
 
 const barCss = css`
@@ -126,26 +135,24 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
 
   const sidebarView = getItem(SIDEBAR_VIEW, 'explorer')
   const sideBarIsOpen = getItem(SIDEBAR_IS_OPEN, true)
-  
+
   const editDrawerOpen = getItem(EDIT_DRAWER_IS_OPEN, false)
   const { editDrawerSide } = settings
   const editItem = getItem(EDIT_DRAWER_ITEM, { warnings: [] })
 
-  const sidebarWidth = getItem(SIDEBAR_WIDTH, 400)
+  const sideBarWidth = getItem(SIDEBAR_WIDTH, DEFAULT_SIDEBAR_WIDTH)
   const editDrawerSize = editDrawerSide === 'right' ? EDIT_DRAWER_WIDTH : EDIT_DRAWER_HEIGHT
   const editDrawerSizeDefault = editDrawerSide === 'right' ? DEFAULT_EDIT_DRAWER_WIDTH : DEFAULT_EDIT_DRAWER_HEIGHT
 
   const setEditItem = newEditItem => setItem(EDIT_DRAWER_ITEM, newEditItem)
 
-
-  // const editDrawerLayout = editDrawerOpen && editDrawerSide === 'bottom'
-  const ContainerTag = editDrawerOpen ? SplitPane : 'div'
-  const horizontalSplitProps = editDrawerOpen ? {
+  const VerticalSplitPane = editDrawerOpen ? SplitPane : 'div'
+  const verticalSplitPaneProps = editDrawerOpen ? {
     split: editDrawerSide === 'right' ? 'vertical' : 'horizontal',
     style: { position: 'unset' },
 
     // Only collapse as far as the sidebar's width plus a little bit
-    minSize: editDrawerSide === 'right' ? sidebarWidth + 100 : 200,
+    minSize: editDrawerSide === 'right' ? sideBarWidth + 100 : 200,
     maxSize: -48,
     defaultSize: getItem(editDrawerSize, editDrawerSizeDefault),
     resizerClassName: editDrawerSide === 'right' ? 'verticalResizer' : 'horizontalResizer',
@@ -158,6 +165,22 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
     },
   } : {}
 
+  const horizontalSplitPaneProps = {
+    split: "vertical",
+    className: 'horizontalSplitPane',
+    minSize: sideBarIsOpen ? 300 : 68,
+    maxSize: sideBarIsOpen ? -40 : 68,
+    defaultSize: sideBarWidth,
+    resizerClassName: "verticalResizer",
+    onDragStarted: () => setDemoVisible(false),
+    onDragFinished: newWidth => {
+      setItem(SIDEBAR_WIDTH, newWidth)
+      setDemoVisible(true)
+    }
+  }
+
+
+  // Resizes the vertical pane whenever the edit drawer side changes to keep the state uptodate
   useEffect(() => {
     if (editDrawerOpen) {
       const pane1 = contentRef.current.querySelector('.Pane1')
@@ -169,36 +192,30 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
     }
   }, [editDrawerSide])
 
+  // Resizes the horizontal pane whenever the sidebar is opened or closed so the state stays uptodate
+  useEffect(() => {
+    const pane1 = contentRef.current.querySelector('.horizontalSplitPane > .Pane1')
+    pane1.style.width = sideBarIsOpen ? sideBarWidth + 'px' : '68px'
+  }, [sideBarIsOpen, editDrawerOpen])
+
   return (
     <div css={wrapperCss}>
 
       {/* CONTENT */}
-      <div ref={contentRef} css={contentCss}>
+      <div ref={contentRef} css={contentCss} non-resizable={!sideBarIsOpen ? '' : undefined}>
 
-        <ContainerTag {...horizontalSplitProps}>
-          
+        <VerticalSplitPane {...verticalSplitPaneProps}>
+
           {/* SIDEBAR */}
-          <SplitPane
-            style={{ height: '100%' }}
-            split="vertical"
-            minSize={300}
-            maxSize={-40}
-            defaultSize={sidebarWidth}
-            resizerClassName="verticalResizer"
-            onDragStarted={() => setDemoVisible(false)}
-            onDragFinished={newWidth => {
-              setItem(SIDEBAR_WIDTH, newWidth)
-              setDemoVisible(true)
-            }}
-          >
+          <SplitPane {...horizontalSplitPaneProps}>
 
-            <div style={{height: '100%'}}>
+            <div style={{ height: '100%' }}>
               <div css={barCss}>
                 <SideBarTitle sideBarIsOpen={sideBarIsOpen} sidebarView={sidebarView} />
               </div>
               <div css={paneCss}>
                 <ActivityBar />
-                <SideBar>
+                {sideBarIsOpen && <SideBar>
                   {/* PROPS VIEW */}
                   {sidebarView === 'props' && (
                     <PropsDrawer
@@ -214,18 +231,18 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
 
                   {/* SETTINGS VIEW */}
                   {sidebarView === 'settings' && <Settings />}
-                </SideBar>
+                </SideBar>}
               </div>
             </div>
 
             {/* DEMO */}
-            <div style={{height: '100%'}}>
+            <div style={{ height: '100%' }}>
               {/* TABS */}
               <div css={barCss}>
                 <Tabs />
               </div>
               <div css={displayCss}>
-                <div css={boxCss} style={{paddingLeft: sideBarIsOpen ? 16 : 0}}>
+                <div css={boxCss} style={{ paddingLeft: sideBarIsOpen ? 16 : 0 }}>
                   <div
                     css={containerCss}
                     style={{
@@ -244,7 +261,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
             </div>
           </SplitPane>
 
-       
+
 
           {/* EDIT DRAWER */}
           {editDrawerOpen && (
@@ -257,7 +274,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
             />
           )}
 
-         </ContainerTag>
+        </VerticalSplitPane>
       </div>
     </div>
   )

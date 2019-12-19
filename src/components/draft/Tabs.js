@@ -3,9 +3,10 @@
 import React, { useContext, useEffect } from 'react'
 import { css } from '@emotion/core'
 import { SelectedContext } from '../contexts/SelectedContext'
+import { StorageContext } from '../contexts/StorageContext'
 import { TabsContext } from '../contexts/TabsContext'
 import Tab from './Tab'
-import { TABS } from '../../constants/STORAGE_KEYS'
+import { TABS, SIDEBAR_IS_OPEN } from '../../constants/STORAGE_KEYS'
 
 const tabsCss = css`
   color: var(--color-text);
@@ -14,14 +15,19 @@ const tabsCss = css`
   height: 48px;
   box-sizing: border-box;
   position: absolute;
-  margin-left: 16px;
   left: 0;
   top: 0;
+  
+  &[padleft] {
+    margin-left: 16px;
+  }
 `
 
 export default function Tabs() {
+  const { getItem } = useContext(StorageContext)
   const { updateSelectedComponent } = useContext(SelectedContext)
   const { tabs, tempTab } = useContext(TabsContext)
+  const sideBarIsOpen = getItem(SIDEBAR_IS_OPEN)
 
   // Add keyboard listeners for 1-9 to corresponding tabs
   useEffect(() => {
@@ -38,7 +44,7 @@ export default function Tabs() {
   }, [])
 
   return (
-    <div css={tabsCss} className="demo-font">
+    <div css={tabsCss} padleft={sideBarIsOpen ? '' : undefined} className="demo-font">
       {tempTab && <Tab temp {...tempTab} />}
       {tabs.map((tab) => (
         <Tab key={tab.componentHash} {...tab} />
