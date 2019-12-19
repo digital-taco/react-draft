@@ -24,15 +24,38 @@ threadLoader.warmup(threadLoaderOptions, [
 
 module.exports = draftConfig => {
   const {
-    babelModules = []
+    babelModules = [],
+    babelConfig = {},
   } = draftConfig
+
+  const draftBabelConfig = {
+    ...babelConfig,
+    presets: [
+      ...new Set([
+        ...babelConfig.presets || [],
+        '@babel/preset-react',
+        ['@babel/preset-env', { targets: { node: 'current' } }],
+        require.resolve('@emotion/babel-preset-css-prop'),
+      ])
+    ],
+    plugins: [
+      ...new Set([
+        ...babelConfig.plugins || [],
+        '@babel/plugin-syntax-dynamic-import',
+      ])
+    ],
+  }
 
   // Build an array of regexes or functions to identify files that are in additional modules that need to run through babel
   const includedNodeModules = babelModules.map(m => m instanceof RegExp ? m : path.resolve('.', 'node_modules', m))
 
   // Build a single regex to exclude all node modules except the ones provided in the config babelModules option
-  const joinedIncludedNodesModules = babelModules.join('|')
-  const excludedModules = [/draft-build/, new RegExp(`node_modules/${joinedIncludedNodesModules && `(?!(${joinedIncludedNodesModules}))`}`)]
+  const joinedIncludedNodesModules = ['@digital-taco/react-draft', ...babelModules].join('|')
+
+  const excludedModules = [
+    /draft-build/,
+    new RegExp(`node_modules/${joinedIncludedNodesModules && `(?!(${joinedIncludedNodesModules}))`}`)
+  ]
 
   // All paths that should be included in loaders
   const includedModules = [
@@ -52,6 +75,7 @@ module.exports = draftConfig => {
 
     // Enables source maps - this option is slow for building, but fastest with original code for rebuilding (https://webpack.js.org/guides/build-performance/#devtool)
     devtool: process.env.DISABLE_SOURCE_MAPS ? 'none' : 'cheap-module-eval-source-map',
+
     entry: {
       'draft-main': [
         path.resolve(__dirname, 'src/components/Draft.js'),
@@ -148,14 +172,7 @@ module.exports = draftConfig => {
               loader: 'babel-loader',
               options: {
                 cacheDirectory: true,
-                presets: [
-                  '@babel/preset-react',
-                  ['@babel/preset-env', { targets: { node: 'current' } }],
-                  require.resolve('@emotion/babel-preset-css-prop'),
-                ],
-                plugins: [
-                  '@babel/plugin-syntax-dynamic-import',
-                ],
+                ...draftBabelConfig,
               },
             },
           ],
@@ -163,8 +180,6 @@ module.exports = draftConfig => {
         {
           test: /\.(jpg|jpeg|png|gif|ttf|ttf2|woff|woff2|svg)$/,
           loader: 'file-loader?name=[name].[ext]',
-          include: includedModules,
-          exclude: excludedModules,
         },
         {
           test: /\.css$/,

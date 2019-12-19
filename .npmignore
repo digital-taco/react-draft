@@ -1,1 +1,17 @@
 node_modules/
+build/
+dist/
+package-lock.json
+test/
+
+README.md
+TERMS.md
+.travis.yml
+.github/
+.eslintrc.js
+
+out/*
+
+.DS_Store
+
+test/sandbox
