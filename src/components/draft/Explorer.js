@@ -81,15 +81,6 @@ const folderNameCss = css`
   &:hover {
     background-color: var(--color-background-highlight);
   }
-
-  /* &::before {
-    content: '';
-    position: absolute;
-    left: 0;
-    width: 100%;
-    background: red;
-    height: 100%;
-  } */
 `
 
 function ItemIcons({ Icon, color = 'var(--color-text)', isOpen, hideArrow }) {
@@ -120,19 +111,20 @@ function ExpandableItem({
   updateSelectedComponent,
 }) {
   const { getItem, setItem } = useContext(StorageContext)
-  const { tabs, addTab, setTempTab } = useContext(TabsContext)
+  const { tabs, tempTab, addTab, setTempTab } = useContext(TabsContext)
   const storageKey = `DRAFT_expandable_is_open_${path}`
   const isOpen = getItem(storageKey, false)
   
   function handleFileClick() {
     // If there is only one component in the file and the file is about to expand, then select the one component
     if (!isOpen && isFile && components.length === 1) {
-      console.log('LOG: SelectedComponent', SelectedComponent)
       const name = components[0].displayName
       if (
         SelectedComponent.meta.filePath === filePath &&
         SelectedComponent.meta.displayName === name &&
-        !tabs.find(t => t.name === name && t.filePath === filePath)
+        !tabs.find(t => t.name === name && t.filePath === filePath) &&
+        tempTab && tempTab.filePath === filePath &&
+        tempTab && tempTab.name === name
       ) {
         addTab(name, filePath)
       } else {
