@@ -4,9 +4,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const BuildExportsList = require('./lib/BuildExportsList')
 const threadLoader = require('thread-loader')
-
-const hotMiddlewareScript =
-  'node_modules/webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true&quiet=true'
+const { getHMRPath, getPackageName, getInclusionRules, buildBabelConfig } = require('./lib/config-helpers')
 
 const threadLoaderOptions = {
   workerParallelJobs: 100,
@@ -28,45 +26,10 @@ module.exports = draftConfig => {
     babelConfig = {},
   } = draftConfig
 
-  const draftBabelConfig = {
-    ...babelConfig,
-    presets: [
-      ...new Set([
-        ...babelConfig.presets || [],
-        '@babel/preset-react',
-        ['@babel/preset-env', { targets: { node: 'current' } }],
-        require.resolve('@emotion/babel-preset-css-prop'),
-      ])
-    ],
-    plugins: [
-      ...new Set([
-        ...babelConfig.plugins || [],
-        '@babel/plugin-syntax-dynamic-import',
-      ])
-    ],
-  }
-
-  // Build an array of regexes or functions to identify files that are in additional modules that need to run through babel
-  const includedNodeModules = babelModules.map(m => m instanceof RegExp ? m : path.resolve('.', 'node_modules', m))
-
-  // Build a single regex to exclude all node modules except the ones provided in the config babelModules option
-  const joinedIncludedNodesModules = ['@digital-taco/react-draft', ...babelModules].join('|')
-
-  const excludedModules = [
-    /draft-build/,
-    new RegExp(`node_modules/${joinedIncludedNodesModules && `(?!(${joinedIncludedNodesModules}))`}`)
-  ]
-
-  // All paths that should be included in loaders
-  const includedModules = [
-    path.resolve('.'),
-    path.resolve(__dirname, 'src'),
-    ...includedNodeModules,
-  ]
-
-  // Set the title of the page to the CWD package name
-  const packagePath = path.resolve('.', 'package.json')
-  let { name: packageName } = fs.existsSync(packagePath) ? require(packagePath) : null
+  const draftBabelConfig = buildBabelConfig(babelConfig)
+  const { includedModules, excludedModules } = getInclusionRules(babelModules)
+  const packageName = getPackageName()
+  const hotMiddlewareScriptPath = getHMRPath()
 
   const config = {
     context: path.resolve('.'),
@@ -79,11 +42,11 @@ module.exports = draftConfig => {
     entry: {
       'draft-main': [
         path.resolve(__dirname, 'src/components/Draft.js'),
-        path.resolve(__dirname, hotMiddlewareScript),
+        hotMiddlewareScriptPath,
       ],
       demo: [
         path.resolve(__dirname, 'src/components/Demo.js'),
-        path.resolve(__dirname, hotMiddlewareScript),
+        hotMiddlewareScriptPath,
       ],
     },
 
