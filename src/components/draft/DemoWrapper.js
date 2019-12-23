@@ -236,12 +236,13 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
               </div>
             </div>
 
-            {/* DEMO */}
             <div style={{ height: '100%' }}>
               {/* TABS */}
               <div css={barCss}>
                 <Tabs />
               </div>
+              
+              {/* DEMO */}
               <div css={displayCss}>
                 <div css={boxCss} style={{ paddingLeft: sideBarIsOpen ? 16 : 0 }}>
                   <div

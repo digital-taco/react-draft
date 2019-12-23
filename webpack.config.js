@@ -1,9 +1,14 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const BuildExportsList = require('./lib/BuildExportsList')
 const threadLoader = require('thread-loader')
-const { getHMRPath, getPackageName, getInclusionRules, buildBabelConfig } = require('./lib/config-helpers')
+const BuildExportsList = require('./lib/BuildExportsList')
+const {
+  getHMRPath,
+  getPackageName,
+  getInclusionRules,
+  buildBabelConfig,
+} = require('./lib/config-helpers')
 
 const threadLoaderOptions = {
   workerParallelJobs: 100,
@@ -13,17 +18,10 @@ const threadLoaderOptions = {
   name: 'threads',
 }
 
-threadLoader.warmup(threadLoaderOptions, [
-  'babel-loader',
-  'cache-loader',
-  'file-loader',
-])
+threadLoader.warmup(threadLoaderOptions, ['babel-loader', 'cache-loader', 'file-loader'])
 
 module.exports = draftConfig => {
-  const {
-    babelModules = [],
-    babelConfig = {},
-  } = draftConfig
+  const { babelModules = [], babelConfig = {} } = draftConfig
 
   const draftBabelConfig = buildBabelConfig(babelConfig)
   const { includedModules, excludedModules } = getInclusionRules(babelModules)
@@ -39,14 +37,8 @@ module.exports = draftConfig => {
     devtool: process.env.DISABLE_SOURCE_MAPS ? 'none' : 'cheap-module-eval-source-map',
 
     entry: {
-      'draft-main': [
-        path.resolve(__dirname, 'src/components/Draft.js'),
-        hotMiddlewareScriptPath,
-      ],
-      demo: [
-        path.resolve(__dirname, 'src/components/Demo.js'),
-        hotMiddlewareScriptPath,
-      ],
+      'draft-main': [path.resolve(__dirname, 'src/components/Draft.js'), hotMiddlewareScriptPath],
+      demo: [path.resolve(__dirname, 'src/components/Demo.js'), hotMiddlewareScriptPath],
     },
 
     plugins: [
@@ -54,7 +46,7 @@ module.exports = draftConfig => {
         NODE_ENV: process.env.NODE_ENV || 'development',
         PUBLIC_PATH: process.env.PUBLIC_PATH,
         WRITE_TO_DISK: process.env.WRITE_TO_DISK,
-        DEBUG: process.env.DEBUG
+        DEBUG: process.env.DEBUG,
       }),
       new HtmlWebpackPlugin({
         filename: 'demo.html',
@@ -88,7 +80,7 @@ module.exports = draftConfig => {
       alias: {
         'thread-loader': path.resolve(__dirname, 'node_modules/thread-loader/'),
         'cache-loader': path.resolve(__dirname, 'node_modules/cache-loader/'),
-      }
+      },
     },
 
     output: {

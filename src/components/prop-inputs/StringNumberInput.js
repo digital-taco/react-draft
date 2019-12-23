@@ -1,6 +1,6 @@
 import React from 'react'
 import TextInput from '../common/TextInput'
-import InputLabel from '../common/InputLabel'
+import PropInputBase from './PropInputBase'
 
 export default function StringNumberInput({
   type,
@@ -11,8 +11,8 @@ export default function StringNumberInput({
 }) {
   const { required } = propObj
   return (
-    <>
-      <InputLabel htmlFor={propName} label={propName} metaText={type} />
+    
+    <PropInputBase propName={propName} type={type}>
       <TextInput
         id={propName}
         label={propName}
@@ -21,6 +21,6 @@ export default function StringNumberInput({
         type={type}
         onChange={e => updatePropState(propName, e.target.value)}
       />
-    </>
+    </PropInputBase>
   )
 }
