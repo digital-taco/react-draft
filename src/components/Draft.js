@@ -7,11 +7,11 @@ import canRender from '../lib/can-render'
 import SettingsProvider from './contexts/SettingsContext'
 import SelectedProvider, { SelectedContext } from './contexts/SelectedContext'
 import StorageProvider, { StorageContext } from './contexts/StorageContext'
+import EditDrawerProvider, { EditDrawerContext } from './contexts/EditDrawerContext'
 import TabsProvider from './contexts/TabsContext'
-import { msg, parseMsg } from '../lib/helpers'
+import { msg, parseMsg, boolAttr } from '../lib/helpers'
 import '../global.css' //eslint-disable-line
 import { TABS } from '../constants/STORAGE_KEYS'
-import { boolAttr } from '../lib/helpers'
 
 const frameCss = css`
   width: 100%;
@@ -37,7 +37,8 @@ function Page() {
   const messageSelectedComponent = () =>
     msg(iframeRef.current && iframeRef.current.contentWindow, 'SELECTED_COMPONENT', meta)
 
-  const messagePropStates = () => msg(iframeRef.current && iframeRef.current.contentWindow, 'PROP_STATES', propStates)
+  const messagePropStates = () =>
+    msg(iframeRef.current && iframeRef.current.contentWindow, 'PROP_STATES', propStates)
 
   function receiveMessage(type) {
     if (process.env.DEBUG) console.log('DRAFT | Message Received: ', type)
@@ -82,11 +83,13 @@ function Page() {
 ReactDOM.render(
   <StorageProvider>
     <SelectedProvider components={Components}>
-      <SettingsProvider>
-        <TabsProvider>
-          <Page />
-        </TabsProvider>
-      </SettingsProvider>
+      <EditDrawerProvider>
+        <SettingsProvider>
+          <TabsProvider>
+            <Page />
+          </TabsProvider>
+        </SettingsProvider>
+      </EditDrawerProvider>
     </SelectedProvider>
   </StorageProvider>,
   document.getElementById('app')

@@ -6,7 +6,7 @@ import ObjectInput from '../components/prop-inputs/ObjectInput'
 import ShapeInput from '../components/prop-inputs/ShapeInput'
 import FunctionInput from '../components/prop-inputs/FunctionInput'
 
-export default function getInput([propName, propObj], propStates, updatePropState, setEditItem, openEditDrawer) {
+export default function getInput([propName, propObj], propStates, updatePropState) {
   const inputMap = {
     string: (
       <StringNumberInput
@@ -41,28 +41,13 @@ export default function getInput([propName, propObj], propStates, updatePropStat
         value={propStates[propName]}
       />
     ),
-    object: (
-      <ObjectInput
-        propName={propName}
-        value={propStates[propName]}
-        setEditItem={setEditItem}
-        valueType="object"
-      />
-    ),
-    array: (
-      <ObjectInput
-        propName={propName}
-        value={propStates[propName]}
-        setEditItem={setEditItem}
-        valueType="array"
-      />
-    ),
+    object: <ObjectInput propName={propName} value={propStates[propName]} valueType="object" />,
+    array: <ObjectInput propName={propName} value={propStates[propName]} valueType="array" />,
     shape: (
       <ShapeInput
         propName={propName}
         value={propStates[propName]}
         propObj={propObj}
-        setEditItem={setEditItem}
         valueType="object"
       />
     ),
@@ -71,7 +56,6 @@ export default function getInput([propName, propObj], propStates, updatePropStat
         propName={propName}
         value={propStates[propName]}
         propObj={propObj}
-        setEditItem={setEditItem}
         valueType="object"
         strict
       />
@@ -81,8 +65,6 @@ export default function getInput([propName, propObj], propStates, updatePropStat
         propName={propName}
         value={propStates[propName]}
         propObj={propObj}
-        setEditItem={setEditItem}
-        openEditDrawer={openEditDrawer}
         valueType="function"
         strict
       />

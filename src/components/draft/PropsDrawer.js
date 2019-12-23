@@ -29,13 +29,13 @@ const propsTitleCss = css`
 `
 
 const noPropsCss = css`
-font-size: 12px;
-padding: 32px 0;
+  font-size: 12px;
+  padding: 32px 0;
   text-align: center;
   text-transform: uppercase;
 `
 
-export default function PropsDrawer({ propObjects, open, setEditItem, openEditDrawer }) {
+export default function PropsDrawer({ propObjects, open }) {
   if (!propObjects) return <div css={noPropsCss}>No props available</div>
 
   const { SelectedComponent, propStates, resetToDefaults, updatePropState } = useContext(
@@ -43,7 +43,6 @@ export default function PropsDrawer({ propObjects, open, setEditItem, openEditDr
   )
 
   const entries = Object.entries(propObjects)
-
 
   const inputs = entries.reduce(
     (acc, [propName, propInfo]) => {
@@ -66,7 +65,7 @@ export default function PropsDrawer({ propObjects, open, setEditItem, openEditDr
   }
 
   function getInputProp(entry) {
-    return getInput(entry, propStates, updatePropState, setEditItem, openEditDrawer)
+    return getInput(entry, propStates, updatePropState)
   }
 
   return (

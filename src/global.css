@@ -11,6 +11,7 @@ body {
   --color-text-secondary: #d9d9d9;
   --color-text-hover: #009dff;
   --color-text-selected: #009dff;
+  --color-text-selected-half: #60c2ff;
   --color-text-accent: #00FFB7;
   --color-error-text: rgb(255, 98, 98);
   --color-warning-text: rgb(255, 182, 98);

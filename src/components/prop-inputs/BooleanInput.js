@@ -1,9 +1,9 @@
 import React from 'react'
-import Checkbox from '../common/Checkbox'
+import Toggle from '../common/Toggle'
 
 export default function BooleanInput({ propName, value = '', updatePropState }) {
   return (
-    <Checkbox
+    <Toggle
       label={propName}
       checked={value}
       onChange={e => updatePropState(propName, e.target.checked)}

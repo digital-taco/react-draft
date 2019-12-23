@@ -73,7 +73,7 @@ const checkboxCss = css`
   }
 `
 
-export default function Button({ checked, onChange, label, id, ...props }) {
+export default function Checkbox({ checked, onChange, label, id, ...props }) {
   return (
     <div css={containerCss}>
       <input

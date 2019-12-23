@@ -11,7 +11,6 @@ export default function StringNumberInput({
 }) {
   const { required } = propObj
   return (
-    
     <PropInputBase propName={propName} type={type}>
       <TextInput
         id={propName}
