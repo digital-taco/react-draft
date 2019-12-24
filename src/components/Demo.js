@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
+import reactElementToJSXString from 'react-element-to-jsx-string'
 import { msg, parseMsg, deserialize } from '../lib/helpers'
 import Components from '../../out/master-exports'
 import ErrorBoundary from './demo/ErrorBoundary'
 
 function deserializeAll(states) {
-  return Object.fromEntries(Object.entries(states).map(([s,v]) => [s, deserialize(v)]))
+  return Object.fromEntries(Object.entries(states).map(([s, v]) => [s, deserialize(v)]))
 }
 
 function Page() {
@@ -40,6 +41,11 @@ function Page() {
 
   // Wrap the demo in the provided Wrapper or just a fragment
   const Wrapper = Components.Wrapper || React.Fragment
+
+  console.log(
+    SelectedComponent &&
+      reactElementToJSXString(<SelectedComponent {...deserializeAll(propStates)} />)
+  )
 
   return SelectedComponent ? (
     <ErrorBoundary key={SelectedComponent.meta.componentHash}>

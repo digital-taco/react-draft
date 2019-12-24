@@ -11,6 +11,7 @@ const open = require('open')
 const buildWebpackConfig = require('../webpack.config')
 const buildComponentTree = require('../lib/build-component-tree.js')
 const buildMasterExports = require('../lib/build-master-exports.js')
+
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
@@ -22,11 +23,13 @@ const files = find.fileSync(/\.js$/, path.resolve('.')).filter(fp => {
   return !ignore.some(ignorePath => {
     if (ignorePath instanceof RegExp) {
       return ignorePath.exec(fp)
-    } else if (typeof ignorePath === 'string') {
-      return fp.includes(ignorePath)
-    } else {
-      console.error(`Invalid Configuration: ignore value of ${ignorePath} invalid. Must be a regular expression or a string.`)
     }
+    if (typeof ignorePath === 'string') {
+      return fp.includes(ignorePath)
+    }
+    console.error(
+      `Invalid Configuration: ignore value of ${ignorePath} invalid. Must be a regular expression or a string.`
+    )
   })
 })
 
@@ -75,7 +78,10 @@ const devMiddleware = middleware(compiler, {
     hash: false,
   },
   watchOptions: {
-    ignored: new RegExp(`(master-exports|draft-build|node_modules/${joinedIncludedNodesModules && `(?!(${joinedIncludedNodesModules}))`})`),
+    ignored: new RegExp(
+      `(master-exports|draft-build|node_modules/${joinedIncludedNodesModules &&
+        `(?!(${joinedIncludedNodesModules}))`})`
+    ),
   },
 })
 

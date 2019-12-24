@@ -41,6 +41,7 @@
     "react-ace": "^7.0.2",
     "react-docgen": "^4.1.1",
     "react-dom": "^16.8.6",
+    "react-element-to-jsx-string": "^14.1.0",
     "react-split-pane": "^0.1.89",
     "react-view": "^2.0.2",
     "stringify-object": "^3.3.0",

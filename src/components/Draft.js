@@ -7,7 +7,7 @@ import canRender from '../lib/can-render'
 import SettingsProvider from './contexts/SettingsContext'
 import SelectedProvider, { SelectedContext } from './contexts/SelectedContext'
 import StorageProvider, { StorageContext } from './contexts/StorageContext'
-import EditDrawerProvider, { EditDrawerContext } from './contexts/EditDrawerContext'
+import EditDrawerProvider from './contexts/EditDrawerContext'
 import TabsProvider from './contexts/TabsContext'
 import { msg, parseMsg, boolAttr } from '../lib/helpers'
 import '../global.css' //eslint-disable-line
