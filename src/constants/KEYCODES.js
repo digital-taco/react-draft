@@ -14,7 +14,8 @@ export const TABS = {
 export const ACTIVITY_VIEWS = {
   EXPLORER_VIEW: 65,
   PROPS_VIEW: 83,
-  SETTINGS_VIEW: 68,
+  SETTINGS_VIEW: 70,
+  DEMO_JSX: 68,
 }
 
 export const ESC = 27

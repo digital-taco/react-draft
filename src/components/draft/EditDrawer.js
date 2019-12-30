@@ -109,15 +109,13 @@ export default function EditDrawer() {
 
   const handleChange = newValue => {
     try {
-      let newPropState
-
-      if (editItem.valueType === 'jsx') {
-        // transform the JSX here
-      } else {
-        newPropState = newValue ? eval(`() => (${newValue})`)() : undefined // eslint-disable-line
+      // we try this and see if the thing borks, and if it does, we handle that in the catch,
+      // if it works then we can save the value safely
+      if (newValue.replace(/\s+/g, '')) {
+        eval(`() => (${newValue})`)() // eslint-disable-line
       }
 
-      const serialized = serialize(newPropState)
+      const serialized = serialize(newValue)
       updatePropState(editItem.propName, serialized) // eslint-disable-line
       setEditItem({ ...editItem, value: newValue })
       setHasError(false)

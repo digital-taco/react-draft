@@ -35,7 +35,7 @@ const noPropsCss = css`
   text-transform: uppercase;
 `
 
-export default function PropsDrawer({ propObjects, open }) {
+export default function PropsDrawer({ propObjects }) {
   if (!propObjects) return <div css={noPropsCss}>No props available</div>
 
   const { SelectedComponent, propStates, resetToDefaults, updatePropState } = useContext(
@@ -60,10 +60,6 @@ export default function PropsDrawer({ propObjects, open }) {
     }
   )
 
-  const style = {
-    display: open ? 'block' : 'none',
-  }
-
   function getInputProp(entry) {
     return getInput(entry, propStates, updatePropState)
   }
@@ -78,7 +74,7 @@ export default function PropsDrawer({ propObjects, open }) {
           onClick={resetToDefaults}
         />
       </div>
-      <div css={styles.propsDrawer} style={style} className="demo-font">
+      <div css={styles.propsDrawer} className="demo-font">
         <div css={styles.propsContainer}>
           {/* <ChildrenInput value={propStates.children} setEditItem={setEditItem} /> */}
           {inputs.string && inputs.string.map(getInputProp)}
