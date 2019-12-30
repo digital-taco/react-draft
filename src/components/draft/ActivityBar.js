@@ -3,6 +3,7 @@ import { css } from '@emotion/core'
 import SettingsIcon from '../../svgs/SettingsIcon'
 import FolderIcon from '../../svgs/FolderIcon'
 import PropsIcon from '../../svgs/PropsIcon'
+import CodeIcon from '../../svgs/CodeIcon'
 import { StorageContext } from '../contexts/StorageContext'
 import { ACTIVITY_VIEWS } from '../../constants/KEYCODES'
 import { SIDEBAR_VIEW, SIDEBAR_IS_OPEN } from '../../constants/STORAGE_KEYS'
@@ -15,7 +16,7 @@ const activityBarCss = css`
   width: 60px;
   color: white;
   display: grid;
-  grid-template-rows: 40px 40px 40px;
+  grid-template-rows: 40px 40px 40px 40px;
   grid-row-gap: 12px;
   align-items: center;
   box-sizing: border-box;
@@ -59,6 +60,7 @@ export default function ActivityBar() {
       if (['input', 'textarea'].includes(target.tagName.toLowerCase())) return
       if (keyCode === ACTIVITY_VIEWS.EXPLORER_VIEW) handleClick('explorer')
       if (keyCode === ACTIVITY_VIEWS.PROPS_VIEW) handleClick('props')
+      if (keyCode === ACTIVITY_VIEWS.DEMO_JSX) handleClick('demo jsx')
       if (keyCode === ACTIVITY_VIEWS.SETTINGS_VIEW) handleClick('settings')
     }
     document.addEventListener('keyup', handleKeyShortcut)
@@ -72,12 +74,17 @@ export default function ActivityBar() {
         data-selected={boolAttr(drawerIsOpen && drawerView === 'explorer')}
         onClick={() => handleClick('explorer')}
         data-test-explorer-icon
-        />
+      />
       <PropsIcon
         data-selected={boolAttr(drawerIsOpen && drawerView === 'props')}
         onClick={() => handleClick('props')}
         data-test-props-icon
-        />
+      />
+      <CodeIcon
+        data-selected={boolAttr(drawerIsOpen && drawerView === 'demo jsx')}
+        onClick={() => handleClick('demo jsx')}
+        data-test-code-icon
+      />
       <SettingsIcon
         data-selected={boolAttr(drawerIsOpen && drawerView === 'settings')}
         onClick={() => handleClick('settings')}

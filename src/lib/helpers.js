@@ -1,3 +1,4 @@
+/* eslint-disable no-eval */
 import stringifyObject from 'stringify-object'
 
 // -------------------------------------------------------
@@ -14,6 +15,10 @@ export function isJson(str) {
 
 export function removeQuotes(str) {
   return str.replace(/(^("|')|("|')$)/g, '')
+}
+
+export function boolAttr(val) {
+  return val ? '' : undefined
 }
 
 // -------------------------------------------------------
@@ -41,25 +46,21 @@ const SERIALIZED_TOKEN = '::SERIALIZED::'
 
 export function serialize(item) {
   if (item) {
-    // console.log('LOG: serialize -> item', item.constructor)
-    // console.log('LOG: serialize -> item', item instanceof Object, item)
     const stringed = item.constructor === Object ? stringifyObject(item) : item.toString()
-    console.log('LOG: serialize -> stringed', stringed)
     const processed = SERIALIZED_TOKEN + encodeURI(stringed)
     return processed
   }
 }
 
 export function deserialize(item, evaluate = true) {
-  // console.log('LOG: deserialize -> item', item)
   const needsProccessing = typeof item === 'string' && item.startsWith(SERIALIZED_TOKEN)
   let processed = needsProccessing ? decodeURI(item.replace(SERIALIZED_TOKEN, '')) : item
-  // console.log('LOG: deserialize -> processed', processed)
-  // eslint-disable-next-line no-eval
-  processed = needsProccessing && evaluate ? eval(`(()=>(${processed}))();`) : processed
+  if (needsProccessing && evaluate && processed.replace(/\s+/g, '')) {
+    processed = eval(`(()=>(${processed}))();`)
+  }
   return processed
 }
 
-export function boolAttr(val) {
-  return val ? '' : undefined
+export function deserializeAll(states) {
+  return Object.fromEntries(Object.entries(states).map(([s, v]) => [s, deserialize(v)]))
 }

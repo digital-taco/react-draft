@@ -1,7 +1,10 @@
 import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 import { StorageContext } from '../contexts/StorageContext'
-import { DRAWER_IS_OPEN } from '../../constants/STORAGE_KEYS'
+import { SIDEBAR_IS_OPEN, SIDEBAR_VIEW } from '../../constants/STORAGE_KEYS'
+import PropsDrawer from './PropsDrawer'
+import Explorer from './Explorer'
+import Settings from './Settings'
 
 const drawerCss = css`
   display: flex;
@@ -13,12 +16,29 @@ const drawerCss = css`
   width: 100%;
 `
 
-export default function SideBar({ children }) {
+export default function SideBar({ componentTree, propObjects }) {
   const { getItem } = useContext(StorageContext)
-  const drawerIsOpen = getItem(DRAWER_IS_OPEN, true)
-  return drawerIsOpen ? (
+  const sideBarIsOpen = getItem(SIDEBAR_IS_OPEN, true)
+  const sidebarView = getItem(SIDEBAR_VIEW, true)
+
+  function getSidebarView(view) {
+    switch (view) {
+      case 'props':
+        return <PropsDrawer propObjects={propObjects} />
+      case 'explorer':
+        return <Explorer componentTree={componentTree} />
+      case 'settings':
+        return <Settings />
+      case 'livecode':
+        return <span>Hello!</span>
+      default:
+        return null
+    }
+  }
+
+  return sideBarIsOpen ? (
     <div css={drawerCss} className="demo-font">
-      {children}
+      {getSidebarView(sidebarView)}
     </div>
   ) : null
 }

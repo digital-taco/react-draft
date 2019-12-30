@@ -1,12 +1,9 @@
 import React, { useContext, useRef, useState, useEffect } from 'react'
 import { css } from '@emotion/core'
 import SplitPane from 'react-split-pane'
-import PropsDrawer from './PropsDrawer'
 import EditDrawer from './EditDrawer'
 import ActivityBar from './ActivityBar'
 import SideBar from './SideBar'
-import Explorer from './Explorer'
-import Settings from './Settings'
 import { SettingsContext } from '../contexts/SettingsContext'
 import { StorageContext } from '../contexts/StorageContext'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
@@ -17,10 +14,10 @@ import { boolAttr } from '../../lib/helpers'
 import {
   SIDEBAR_VIEW,
   SIDEBAR_IS_OPEN,
-  EDIT_DRAWER_ITEM,
   EDIT_DRAWER_HEIGHT,
   EDIT_DRAWER_WIDTH,
   SIDEBAR_WIDTH,
+  TABS,
 } from '../../constants/STORAGE_KEYS'
 
 import {
@@ -34,6 +31,14 @@ const wrapperCss = css`
   max-height: 100vh;
   background: #283048;
   background: linear-gradient(to left, #859398, #283048);
+`
+
+const frameCss = css`
+  width: 100%;
+  border: none;
+  display: block;
+  height: 100px;
+  height: 100%;
 `
 
 const contentCss = css`
@@ -127,10 +132,10 @@ const displayCss = css`
   flex-grow: 2;
 `
 
-export default function DemoWrapper({ propObjects, children, componentTree }) {
+export default function DemoWrapper({ propObjects, componentTree, iframeRef, canRenderComponent }) {
   const { getItem, setItem } = useContext(StorageContext)
   const { settings } = useContext(SettingsContext)
-  const { setEditItem, editItem, closeEditDrawer } = useContext(EditDrawerContext)
+  const { editItem } = useContext(EditDrawerContext)
 
   const [demoVisible, setDemoVisible] = useState(true)
   const contentRef = useRef(null)
@@ -138,38 +143,41 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
   const sidebarView = getItem(SIDEBAR_VIEW, 'explorer')
   const sideBarIsOpen = getItem(SIDEBAR_IS_OPEN, true)
 
+  const tabs = getItem(TABS, [])
+
   const { editDrawerSide } = settings
-  // const editItem = getItem(EDIT_DRAWER_ITEM, { warnings: [] })
 
   const sideBarWidth = getItem(SIDEBAR_WIDTH, DEFAULT_SIDEBAR_WIDTH)
   const editDrawerSize = editDrawerSide === 'right' ? EDIT_DRAWER_WIDTH : EDIT_DRAWER_HEIGHT
   const editDrawerSizeDefault =
     editDrawerSide === 'right' ? DEFAULT_EDIT_DRAWER_WIDTH : DEFAULT_EDIT_DRAWER_HEIGHT
 
-  // const setEditItem = newEditItem => setItem(EDIT_DRAWER_ITEM, newEditItem)
+  const outerSplitPaneProps = {
+    split: editDrawerSide === 'right' ? 'vertical' : 'horizontal',
+    style: { position: 'unset' },
 
-  const VerticalSplitPane = editItem ? SplitPane : 'div'
-  const verticalSplitPaneProps = editItem
+    // Only collapse as far as the sidebar's width plus a little bit
+    minSize: editDrawerSide === 'right' ? sideBarWidth + 100 : 200,
+    maxSize: editItem ? -48 : undefined,
+    defaultSize: getItem(editDrawerSize, editDrawerSizeDefault),
+    resizerClassName: editDrawerSide === 'right' ? 'verticalResizer' : 'horizontalResizer',
+
+    // demoVisible is used to disable pointer-events on the iframe, which drops the dragging functionality on hover
+    onDragStarted: () => setDemoVisible(false),
+    onDragFinished: newValue => {
+      setItem(editDrawerSize, newValue)
+      setDemoVisible(true)
+    },
+  }
+
+  outerSplitPaneProps.pane1Style = !editItem
     ? {
-        split: editDrawerSide === 'right' ? 'vertical' : 'horizontal',
-        style: { position: 'unset' },
-
-        // Only collapse as far as the sidebar's width plus a little bit
-        minSize: editDrawerSide === 'right' ? sideBarWidth + 100 : 200,
-        maxSize: -48,
-        defaultSize: getItem(editDrawerSize, editDrawerSizeDefault),
-        resizerClassName: editDrawerSide === 'right' ? 'verticalResizer' : 'horizontalResizer',
-
-        // demoVisible is used to disable pointer-events on the iframe, which drops the dragging functionality on hover
-        onDragStarted: () => setDemoVisible(false),
-        onDragFinished: newValue => {
-          setItem(editDrawerSize, newValue)
-          setDemoVisible(true)
-        },
+        height: '100vh',
+        width: '100vw',
       }
-    : {}
+    : undefined
 
-  const horizontalSplitPaneProps = {
+  const innerSplitPaneProps = {
     split: 'vertical',
     className: 'horizontalSplitPane',
     minSize: sideBarIsOpen ? 300 : 68,
@@ -205,35 +213,24 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
     <div css={wrapperCss}>
       {/* CONTENT */}
       <div ref={contentRef} css={contentCss} non-resizable={boolAttr(!sideBarIsOpen)}>
-        <VerticalSplitPane {...verticalSplitPaneProps}>
-          {/* SIDEBAR */}
-          <SplitPane {...horizontalSplitPaneProps}>
+        <SplitPane {...outerSplitPaneProps}>
+          <SplitPane {...innerSplitPaneProps}>
+            {/* LEFT PANE - Sidebar */}
             <div style={{ height: '100%' }}>
               <div css={barCss}>
                 <SideBarTitle sideBarIsOpen={sideBarIsOpen} sidebarView={sidebarView} />
               </div>
+
               <div css={paneCss}>
+                {/* ACTIVITY BAR */}
                 <ActivityBar />
-                {sideBarIsOpen && (
-                  <SideBar>
-                    {/* PROPS VIEW */}
-                    {sidebarView === 'props' && (
-                      <PropsDrawer
-                        open={sideBarIsOpen && sidebarView === 'props'}
-                        propObjects={propObjects}
-                      />
-                    )}
 
-                    {/* EXPLORER VIEW */}
-                    {sidebarView === 'explorer' && <Explorer componentTree={componentTree} />}
-
-                    {/* SETTINGS VIEW */}
-                    {sidebarView === 'settings' && <Settings />}
-                  </SideBar>
-                )}
+                {/* SIDE BAR */}
+                <SideBar componentTree={componentTree} propObjects={propObjects} />
               </div>
             </div>
 
+            {/* RIGHT PANE - Demo */}
             <div style={{ height: '100%' }}>
               {/* TABS */}
               <div css={barCss}>
@@ -253,9 +250,20 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
                       pointerEvents: demoVisible ? 'initial' : 'none',
                     }}
                   >
-                    {children}
+                    {canRenderComponent && (
+                      <iframe
+                        ref={iframeRef}
+                        css={frameCss}
+                        onLoad={() => {
+                          iframeRef.current.height = `${iframeRef.current.contentDocument.body.scrollHeight}px`
+                        }}
+                        data-tabsopen={boolAttr(tabs.length > 0)}
+                        title="demo"
+                        src={`${process.env.PUBLIC_PATH || '/'}demo`}
+                      />
+                    )}
                   </div>
-                  {!children && <BadRenderMessage />}
+                  {/* TO DO: FIX THIS {!children && <BadRenderMessage />} */}
                 </div>
               </div>
             </div>
@@ -263,7 +271,7 @@ export default function DemoWrapper({ propObjects, children, componentTree }) {
 
           {/* EDIT DRAWER */}
           <EditDrawer />
-        </VerticalSplitPane>
+        </SplitPane>
       </div>
     </div>
   )
