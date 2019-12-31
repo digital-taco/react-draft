@@ -9,9 +9,9 @@ export default function StringNumberInput({
   propObj,
   updatePropState,
 }) {
-  const { required } = propObj
+  const { required, description } = propObj
   return (
-    <PropInputBase propName={propName} type={type}>
+    <PropInputBase propName={propName} type={type} description={description}>
       <TextInput
         id={propName}
         label={propName}

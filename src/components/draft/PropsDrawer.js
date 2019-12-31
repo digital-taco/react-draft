@@ -6,6 +6,7 @@ import { H2 } from '../common/Headers'
 import { SelectedContext } from '../contexts/SelectedContext'
 import ResetIcon from '../../svgs/ResetIcon'
 import IconButton from '../common/IconButton'
+import { EditDrawerContext } from '../contexts/EditDrawerContext'
 
 const propsDrawerCss = css`
   padding: 16px 16px 0 16px;
@@ -42,6 +43,8 @@ export default function PropsDrawer({ propObjects }) {
     SelectedContext
   )
 
+  const { setEditItem } = useContext(EditDrawerContext)
+
   const entries = Object.entries(propObjects)
 
   const inputs = entries.reduce(
@@ -64,6 +67,11 @@ export default function PropsDrawer({ propObjects }) {
     return getInput(entry, propStates, updatePropState)
   }
 
+  function handleResetToDefaults() {
+    resetToDefaults()
+    setEditItem(null)
+  }
+
   return (
     <div css={propsDrawerCss}>
       <div css={propsTitleCss}>
@@ -71,7 +79,7 @@ export default function PropsDrawer({ propObjects }) {
         <IconButton
           title="Reset all props to default values"
           Icon={ResetIcon}
-          onClick={resetToDefaults}
+          onClick={handleResetToDefaults}
         />
       </div>
       <div css={styles.propsDrawer} className="demo-font">

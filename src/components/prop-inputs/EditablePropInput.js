@@ -3,11 +3,18 @@ import PropInputBase from './PropInputBase'
 import Button from '../common/Button'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
 
-export default function EditablePropInput({ propName, type, value, warnings = [], valueType }) {
+export default function EditablePropInput({
+  propName,
+  description,
+  type,
+  value,
+  warnings = [],
+  valueType,
+}) {
   const { setEditItem } = useContext(EditDrawerContext)
 
   return (
-    <PropInputBase propName={propName} type={type}>
+    <PropInputBase propName={propName} type={type} description={description}>
       <Button
         variant="text"
         dense

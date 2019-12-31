@@ -8,7 +8,6 @@ import { SettingsContext } from '../contexts/SettingsContext'
 import { StorageContext } from '../contexts/StorageContext'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
 import Tabs from './Tabs'
-import BadRenderMessage from './BadRenderMessage'
 import SideBarTitle from './SideBarTitle'
 import { boolAttr } from '../../lib/helpers'
 import {
@@ -18,6 +17,7 @@ import {
   EDIT_DRAWER_WIDTH,
   SIDEBAR_WIDTH,
   TABS,
+  SELECTED_COMPONENT_HASH,
 } from '../../constants/STORAGE_KEYS'
 
 import {
@@ -181,7 +181,7 @@ export default function DemoWrapper({ propObjects, componentTree, iframeRef, can
     split: 'vertical',
     className: 'horizontalSplitPane',
     minSize: sideBarIsOpen ? 300 : 68,
-    maxSize: sideBarIsOpen ? -40 : 68,
+    maxSize: sideBarIsOpen ? -80 : 68,
     defaultSize: sideBarWidth,
     resizerClassName: 'verticalResizer',
     onDragStarted: () => setDemoVisible(false),

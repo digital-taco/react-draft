@@ -1,7 +1,9 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext } from 'react'
+import { css } from '@emotion/core'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { TabsContext } from '../contexts/TabsContext'
-import { css } from '@emotion/core'
 import Components from '../../../out/master-exports'
 import CodeIcon from '../../svgs/CodeIcon'
 import CloseIcon from '../../svgs/CloseIcon'
@@ -57,7 +59,8 @@ const tabCss = css`
 const closeIconCss = css`
   margin-left: 12px;
 
-  &, & svg {
+  &,
+  & svg {
     height: 16px;
     width: 16px;
   }
@@ -79,6 +82,11 @@ export default function Tab({ temp, name, filePath, componentHash }) {
     return null
   }
 
+  function handleRemoveTab(e) {
+    e.stopPropagation()
+    removeTab(componentHash)
+  }
+
   return (
     <div
       css={tabCss}
@@ -88,9 +96,9 @@ export default function Tab({ temp, name, filePath, componentHash }) {
     >
       <CodeIcon fill="var(--color-text-accent)" />
       <div>{name}</div>
-      
+
       {/* eslint-disable*/}
-      <div css={closeIconCss} role="button" onClick={() => removeTab(componentHash)}>
+      <div css={closeIconCss} role="button" onClick={handleRemoveTab}>
         <CloseIcon data-close fill="var(--color-text)" />
       </div>
       {/* eslint-enable */}

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { css } from '@emotion/core'
 import AceEditor from 'react-ace'
-import 'brace/mode/json'
-import 'brace/theme/tomorrow_night_bright'
+import 'brace/mode/javascript'
+import 'brace/theme/dracula'
 import { serialize, deserialize, boolAttr } from '../../lib/helpers'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
@@ -11,7 +11,22 @@ import IconButton from '../common/IconButton'
 import CloseIcon from '../../svgs/CloseIcon'
 
 const editDrawerCss = css`
+  @font-face {
+    font-family: 'Fira Code';
+    src: url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/eot/FiraCode-Regular.eot')
+        format('embedded-opentype'),
+      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/woff2/FiraCode-Regular.woff2')
+        format('woff2'),
+      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/woff/FiraCode-Regular.woff')
+        format('woff'),
+      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/ttf/FiraCode-Regular.ttf')
+        format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   background-color: var(--color-background-primary);
+
   color: var(--color-text);
   transition: margin-right 0.2s ease-in-out;
   box-shadow: 0 0 8px #333;
@@ -23,14 +38,12 @@ const editDrawerCss = css`
     max-width: 100% !important;
     height: calc(100% - 48px) !important;
     max-height: calc(100% - 48px) !important;
+    background-color: transparent;
     box-sizing: border-box;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family: 'Fira Code', 'Monaco', 'Ubuntu Mono', 'Consolas';
     font-weight: 600;
     font-size: 16px;
-  }
-
-  & .ace_editor {
-    height: 100% !important;
+    margin-top: 8px;
   }
 
   &[isopen] {
@@ -48,16 +61,15 @@ const titleBarCss = css`
   display: flex;
   height: 48px;
   align-items: center;
-  & > span {
-    flex-grow: 2;
-  }
 
   & > .title {
     padding: 0;
     margin: 0;
     font-weight: 600;
     display: flex;
+    align-items: center;
     min-height: 20px;
+    flex-grow: 2;
   }
 
   & > div.title svg {
@@ -68,13 +80,18 @@ const titleBarCss = css`
   }
 `
 
+const editItemTypeCss = css`
+  font-size: 12px;
+  color: var(--color-background-accent);
+  margin-right: 8px;
+  flex-grow: 2;
+  text-align: right;
+`
+
 /** A bottom-opening drawer containing an editor. Allows the user to edit the prop state for objects, shapes, and exact shapes. */
 export default function EditDrawer() {
   const { editItem, setEditItem, closeEditDrawer } = useContext(EditDrawerContext)
-  if (!editItem) return null
-
   const [hasError, setHasError] = useState(false)
-
   const { updatePropState } = useContext(SelectedContext)
   const editorRef = React.useRef()
 
@@ -90,17 +107,6 @@ export default function EditDrawer() {
     }
   }
 
-  /* Set the ace editor options */
-  useEffect(() => {
-    editItem &&
-      editorRef.current.editor.setOptions({
-        displayIndentGuides: false,
-        wrapBehavioursEnabled: false,
-        cursor: 'smooth',
-        useWorker: false,
-      })
-  }, [])
-
   /* Add ESC key shortcut to close the editor when open */
   useEffect(() => {
     document.addEventListener('keyup', keyboardClose)
@@ -109,10 +115,15 @@ export default function EditDrawer() {
 
   const handleChange = newValue => {
     try {
-      // we try this and see if the thing borks, and if it does, we handle that in the catch,
-      // if it works then we can save the value safely
+      // We do this to see if the thing the user types breaks, and if it does, we handle that in the catch.
+      // If it works, then we can save the value safely.
       if (newValue.replace(/\s+/g, '')) {
+        // this alertHolder wrapping the eval alows for the user to have uninterrupted typing
+        // should they type some stupid thing like `window.alert()` inline to their javascript
+        const alertHolder = window.alert
+        window.alert = undefined
         eval(`() => (${newValue})`)() // eslint-disable-line
+        window.alert = alertHolder
       }
 
       const serialized = serialize(newValue)
@@ -120,7 +131,7 @@ export default function EditDrawer() {
       setEditItem({ ...editItem, value: newValue })
       setHasError(false)
     } catch (e) {
-      console.error(e)
+      if (process.env.DEBUG) console.error(e)
       setEditItem({ ...editItem, value: newValue })
       setHasError(true)
     }
@@ -131,11 +142,11 @@ export default function EditDrawer() {
       <div css={headerCss}>
         {/* TITLE */}
         <div css={titleBarCss}>
-          <div className="title demo-font">
-            {editItem.propName} {hasError && <ErrorIcon />}
+          <div title="The current value is not valid" className="title demo-font">
+            <div>{editItem.propName}</div>
+            {hasError && <ErrorIcon />}
+            <div css={editItemTypeCss}>{editItem.valueType}</div>
           </div>
-
-          <span />
 
           {/* CLOSE BUTTON */}
           <IconButton Icon={CloseIcon} onClick={handleClose} />
@@ -145,13 +156,16 @@ export default function EditDrawer() {
       {/* EDITOR */}
       <AceEditor
         ref={editorRef}
-        mode="json"
+        mode="javascript"
         showPrintMargin={false}
-        editorProps={{
+        setOptions={{
+          useWorker: false,
           displayIndentGuides: false,
+          wrapBehavioursEnabled: false,
+          cursor: 'smooth',
         }}
         value={deserialize(editItem.value, false)}
-        theme="tomorrow_night_bright"
+        theme="dracula"
         name="test editor"
         onChange={handleChange}
       />
