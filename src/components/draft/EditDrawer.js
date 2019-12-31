@@ -48,16 +48,15 @@ const titleBarCss = css`
   display: flex;
   height: 48px;
   align-items: center;
-  & > span {
-    flex-grow: 2;
-  }
 
   & > .title {
     padding: 0;
     margin: 0;
     font-weight: 600;
     display: flex;
+    align-items: center;
     min-height: 20px;
+    flex-grow: 2;
   }
 
   & > div.title svg {
@@ -68,13 +67,18 @@ const titleBarCss = css`
   }
 `
 
+const editItemTypeCss = css`
+  font-size: 12px;
+  color: var(--color-background-accent);
+  margin-right: 8px;
+  flex-grow: 2;
+  text-align: right;
+`
+
 /** A bottom-opening drawer containing an editor. Allows the user to edit the prop state for objects, shapes, and exact shapes. */
 export default function EditDrawer() {
   const { editItem, setEditItem, closeEditDrawer } = useContext(EditDrawerContext)
-  if (!editItem) return null
-
   const [hasError, setHasError] = useState(false)
-
   const { updatePropState } = useContext(SelectedContext)
   const editorRef = React.useRef()
 
@@ -120,7 +124,7 @@ export default function EditDrawer() {
       setEditItem({ ...editItem, value: newValue })
       setHasError(false)
     } catch (e) {
-      console.error(e)
+      if (process.env.DEBUG) console.error(e)
       setEditItem({ ...editItem, value: newValue })
       setHasError(true)
     }
@@ -132,10 +136,10 @@ export default function EditDrawer() {
         {/* TITLE */}
         <div css={titleBarCss}>
           <div title="The current value is not valid" className="title demo-font">
-            {editItem.propName} {hasError && <ErrorIcon />}
+            <div>{editItem.propName}</div>
+            {hasError && <ErrorIcon />}
+            <div css={editItemTypeCss}>{editItem.valueType}</div>
           </div>
-
-          <span />
 
           {/* CLOSE BUTTON */}
           <IconButton Icon={CloseIcon} onClick={handleClose} />
@@ -149,6 +153,7 @@ export default function EditDrawer() {
         showPrintMargin={false}
         editorProps={{
           displayIndentGuides: false,
+          useWorker: false,
         }}
         value={deserialize(editItem.value, false)}
         theme="tomorrow_night_bright"
