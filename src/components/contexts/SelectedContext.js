@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { removeQuotes, isJson } from '../../lib/helpers'
 import { StorageContext } from './StorageContext'
 import { SELECTED_COMPONENT_HASH } from '../../constants/STORAGE_KEYS'
+import EmptyDemo from '../demo/EmptyDemo'
 
 const quoteRegExp = /['"]/
 
@@ -43,21 +44,6 @@ function getPropStateDefaults(props) {
   }, {})
 }
 
-/** Identifies the component with the shortest path */
-function getDefaultSelectedComponent(components) {
-  const componentEntries = Object.entries(components)
-  const getCount = path => (path.match(/(\/|\\)/g) || []).length
-  const component = componentEntries.reduce((acc, [, Component]) => {
-    if (!Component || !Component.meta) return acc
-    if (getCount(acc.meta.filePath) > getCount(Component.meta.filePath)) {
-      acc = Component
-    }
-    return acc
-  }, componentEntries[0][1])
-
-  // Must return a function that returns the component, since it is going directly into useState
-  return component
-}
 export const SelectedContext = React.createContext()
 
 export default function SelectedProvider({ children, components }) {
@@ -68,17 +54,7 @@ export default function SelectedProvider({ children, components }) {
 
   const { getItem, setItem } = useContext(StorageContext)
 
-  const selectedComponentHash = getItem(
-    SELECTED_COMPONENT_HASH,
-    getDefaultSelectedComponent(components).meta.componentHash
-  )
-
-  // If the stored hash is not one of the components available, get the default component to show
-  if (!components[selectedComponentHash]) {
-    setItem(SELECTED_COMPONENT_HASH, getDefaultSelectedComponent(components).meta.componentHash)
-    // Return null, since it has to rerender to get the default selected component hash
-    return null
-  }
+  const selectedComponentHash = getItem(SELECTED_COMPONENT_HASH, EmptyDemo.meta.componentHash)
 
   // Find the corresponding component
   const SelectedComponent = components[selectedComponentHash]
@@ -93,6 +69,7 @@ export default function SelectedProvider({ children, components }) {
 
   function getComponent(name, filePath) {
     const entry = Object.entries(components).find(([, Component]) => {
+      if (!Component.meta) return false
       return Component.meta.filePath === filePath && Component.meta.displayName === name
     })
     return entry ? entry[1] : null
@@ -101,7 +78,10 @@ export default function SelectedProvider({ children, components }) {
   /** Updates the currently selected component, identified by filepath */
   function updateSelectedComponent(filePath, displayName) {
     const component = getComponent(displayName, filePath)
-    setItem(SELECTED_COMPONENT_HASH, component ? component.meta.componentHash : null)
+    setItem(
+      SELECTED_COMPONENT_HASH,
+      component ? component.meta.componentHash : EmptyDemo.meta.componentHash
+    )
   }
 
   /** Resets all props to their default values */

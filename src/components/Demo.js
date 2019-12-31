@@ -4,9 +4,10 @@ import ReactDOM from 'react-dom'
 import { msg, parseMsg, deserializeAll } from '../lib/helpers'
 import Components from '../../out/master-exports'
 import ErrorBoundary from './demo/ErrorBoundary'
+import EmptyDemo from './demo/EmptyDemo'
 
 function Page() {
-  const [SelectedComponent, setSelectedComponent] = useState(null)
+  const [SelectedComponent, setSelectedComponent] = useState(() => EmptyDemo)
   const [propStates, setPropStates] = useState({})
 
   function receiveMessage(type, data) {
@@ -38,13 +39,13 @@ function Page() {
   // Wrap the demo in the provided Wrapper or just a fragment
   const Wrapper = Components.Wrapper || React.Fragment
 
-  return SelectedComponent ? (
+  return (
     <ErrorBoundary key={SelectedComponent.meta.componentHash}>
       <Wrapper>
-        {SelectedComponent && <SelectedComponent {...deserializeAll(propStates)} />}
+        <SelectedComponent {...deserializeAll(propStates)} />
       </Wrapper>
     </ErrorBoundary>
-  ) : null
+  )
 }
 
 // Render the demo in the dom

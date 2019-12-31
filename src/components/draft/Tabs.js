@@ -16,7 +16,7 @@ const tabsCss = css`
   position: absolute;
   left: 0;
   top: 0;
-  
+
   &[padleft] {
     margin-left: 16px;
   }
@@ -45,7 +45,7 @@ export default function Tabs() {
   return (
     <div css={tabsCss} padleft={boolAttr(sideBarIsOpen)} className="demo-font">
       {tempTab && <Tab temp {...tempTab} />}
-      {tabs.map((tab) => (
+      {tabs.map(tab => (
         <Tab key={tab.componentHash} {...tab} />
       ))}
     </div>

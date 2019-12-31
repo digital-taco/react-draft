@@ -8,7 +8,6 @@ import { SettingsContext } from '../contexts/SettingsContext'
 import { StorageContext } from '../contexts/StorageContext'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
 import Tabs from './Tabs'
-import BadRenderMessage from './BadRenderMessage'
 import SideBarTitle from './SideBarTitle'
 import { boolAttr } from '../../lib/helpers'
 import {
@@ -18,6 +17,7 @@ import {
   EDIT_DRAWER_WIDTH,
   SIDEBAR_WIDTH,
   TABS,
+  SELECTED_COMPONENT_HASH,
 } from '../../constants/STORAGE_KEYS'
 
 import {
