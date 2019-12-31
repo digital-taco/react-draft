@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { css } from '@emotion/core'
 import AceEditor from 'react-ace'
 import 'brace/mode/json'
+import 'brace/mode/javascript'
 import 'brace/theme/tomorrow_night_bright'
 import { serialize, deserialize, boolAttr } from '../../lib/helpers'
 import { SelectedContext } from '../contexts/SelectedContext'
@@ -102,10 +103,15 @@ export default function EditDrawer() {
 
   const handleChange = newValue => {
     try {
-      // we try this and see if the thing borks, and if it does, we handle that in the catch,
-      // if it works then we can save the value safely
+      // We do this to see if the thing the user types breaks, and if it does, we handle that in the catch.
+      // If it works, then we can save the value safely.
       if (newValue.replace(/\s+/g, '')) {
+        // this alertHolder wrapping the eval alows for the user to have uninterrupted typing
+        // should they type some stupid thing like `window.alert()` inline to their javascript
+        const alertHolder = window.alert
+        window.alert = undefined
         eval(`() => (${newValue})`)() // eslint-disable-line
+        window.alert = alertHolder
       }
 
       const serialized = serialize(newValue)
@@ -138,7 +144,7 @@ export default function EditDrawer() {
       {/* EDITOR */}
       <AceEditor
         ref={editorRef}
-        mode="json"
+        mode="javascript"
         showPrintMargin={false}
         setOptions={{
           useWorker: false,
