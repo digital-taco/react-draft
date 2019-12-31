@@ -18,7 +18,9 @@ export default function StringNumberInput({
         value={value}
         required={required}
         type={type}
-        onChange={e => updatePropState(propName, e.target.value)}
+        onChange={e =>
+          updatePropState(propName, type === 'number' ? +e.target.value : e.target.value)
+        }
       />
     </PropInputBase>
   )
