@@ -67,7 +67,7 @@ const checkboxCss = css`
   display: none;
 `
 
-export default function Toggle({ checked, onChange, label, id, ...props }) {
+export default function Toggle({ checked, onChange, label, id, title, ...props }) {
   const checkboxRef = useRef(null)
 
   /* Manually triggers the onChange, since the slider isn't the checkbox and isn't in the label */
@@ -90,7 +90,7 @@ export default function Toggle({ checked, onChange, label, id, ...props }) {
       <div role="button" tabIndex="0" css={sliderPanelCss} onClick={handleSliderClick}>
         <div css={sliderCss} />
       </div>
-      <InputLabel htmlFor={id} label={label} />
+      <InputLabel htmlFor={id} label={label} title={title} />
     </div>
   )
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import ObjectInput from './ObjectInput'
+import EditablePropInput from './EditablePropInput'
 
 export default function ShapeInput({ propObj, strict, ...props }) {
   const shapeProperties = propObj.type.value
@@ -28,5 +28,5 @@ export default function ShapeInput({ propObj, strict, ...props }) {
     }
   }
 
-  return <ObjectInput {...props} warnings={warnings} />
+  return <EditablePropInput {...props} warnings={warnings} />
 }

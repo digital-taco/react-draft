@@ -2,9 +2,8 @@ import React from 'react'
 import StringNumberInput from '../components/prop-inputs/StringNumberInput'
 import BooleanInput from '../components/prop-inputs/BooleanInput'
 import EnumInput from '../components/prop-inputs/EnumInput'
-import ObjectInput from '../components/prop-inputs/ObjectInput'
 import ShapeInput from '../components/prop-inputs/ShapeInput'
-import FunctionInput from '../components/prop-inputs/FunctionInput'
+import EditablePropInput from '../components/prop-inputs/EditablePropInput'
 
 export default function getInput([propName, propObj], propStates, updatePropState) {
   const inputMap = {
@@ -30,6 +29,7 @@ export default function getInput([propName, propObj], propStates, updatePropStat
       <BooleanInput
         updatePropState={updatePropState}
         propName={propName}
+        propObj={propObj}
         value={propStates[propName]}
       />
     ),
@@ -41,8 +41,22 @@ export default function getInput([propName, propObj], propStates, updatePropStat
         value={propStates[propName]}
       />
     ),
-    object: <ObjectInput propName={propName} value={propStates[propName]} valueType="object" />,
-    array: <ObjectInput propName={propName} value={propStates[propName]} valueType="array" />,
+    object: (
+      <EditablePropInput
+        propName={propName}
+        value={propStates[propName]}
+        valueType="object"
+        description={propObj.description}
+      />
+    ),
+    array: (
+      <EditablePropInput
+        propName={propName}
+        value={propStates[propName]}
+        valueType="array"
+        description={propObj.description}
+      />
+    ),
     shape: (
       <ShapeInput
         propName={propName}
@@ -61,11 +75,12 @@ export default function getInput([propName, propObj], propStates, updatePropStat
       />
     ),
     func: (
-      <FunctionInput
+      <EditablePropInput
         propName={propName}
         value={propStates[propName]}
         propObj={propObj}
         valueType="function"
+        description={propObj.description}
         strict
       />
     ),
