@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useContext } from 'react'
 import { css } from '@emotion/core'
 import AceEditor from 'react-ace'
-import 'brace/mode/json'
 import 'brace/mode/javascript'
-import 'brace/theme/tomorrow_night_bright'
+import 'brace/theme/dracula'
 import { serialize, deserialize, boolAttr } from '../../lib/helpers'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
@@ -12,7 +11,22 @@ import IconButton from '../common/IconButton'
 import CloseIcon from '../../svgs/CloseIcon'
 
 const editDrawerCss = css`
+  @font-face {
+    font-family: 'Fira Code';
+    src: url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/eot/FiraCode-Regular.eot')
+        format('embedded-opentype'),
+      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/woff2/FiraCode-Regular.woff2')
+        format('woff2'),
+      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/woff/FiraCode-Regular.woff')
+        format('woff'),
+      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/ttf/FiraCode-Regular.ttf')
+        format('truetype');
+    font-weight: normal;
+    font-style: normal;
+  }
+
   background-color: var(--color-background-primary);
+
   color: var(--color-text);
   transition: margin-right 0.2s ease-in-out;
   box-shadow: 0 0 8px #333;
@@ -24,14 +38,12 @@ const editDrawerCss = css`
     max-width: 100% !important;
     height: calc(100% - 48px) !important;
     max-height: calc(100% - 48px) !important;
+    background-color: transparent;
     box-sizing: border-box;
-    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+    font-family: 'Fira Code', 'Monaco', 'Ubuntu Mono', 'Consolas';
     font-weight: 600;
     font-size: 16px;
-  }
-
-  & .ace_editor {
-    height: 100% !important;
+    margin-top: 8px;
   }
 
   &[isopen] {
@@ -153,7 +165,7 @@ export default function EditDrawer() {
           cursor: 'smooth',
         }}
         value={deserialize(editItem.value, false)}
-        theme="tomorrow_night_bright"
+        theme="dracula"
         name="test editor"
         onChange={handleChange}
       />
