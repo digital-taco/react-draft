@@ -1,12 +1,11 @@
 import React, { useContext, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
-// import reactElementToJSXString from 'react-element-to-jsx-string'
 import Components from '../../out/master-exports'
 import DemoWrapper from './draft/DemoWrapper'
 import canRender from '../lib/can-render'
 import SettingsProvider from './contexts/SettingsContext'
 import SelectedProvider, { SelectedContext } from './contexts/SelectedContext'
-import StorageProvider, { StorageContext } from './contexts/StorageContext'
+import StorageProvider from './contexts/StorageContext'
 import EditDrawerProvider from './contexts/EditDrawerContext'
 import TabsProvider from './contexts/TabsContext'
 import { msg, parseMsg } from '../lib/helpers'
@@ -16,13 +15,10 @@ const { componentTree } = Components
 
 function Page() {
   const iframeRef = useRef(null)
-  // const { getItem } = useContext(StorageContext)
   const { SelectedComponent, propStates } = useContext(SelectedContext)
   const { meta } = SelectedComponent
   const { props } = meta
 
-  // const jsxString = getItem(JSX_STRING)
-  // console.log('LOG: Page -> jsxString', jsxString)
   const canRenderComponent = propStates && canRender(props, propStates)
   const handleMessage = parseMsg(receiveMessage)
 
@@ -52,13 +48,6 @@ function Page() {
   useEffect(() => {
     messagePropStates()
   }, [propStates])
-
-  // useEffect(() => {
-  // setItem(
-  //   JSX_STRING
-  //   // reactElementToJSXString(<SelectedComponent {...deserializeAll(propStates)} />)
-  // )
-  // }, [propStates])
 
   return (
     <DemoWrapper
