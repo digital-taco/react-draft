@@ -94,17 +94,6 @@ export default function EditDrawer() {
     }
   }
 
-  /* Set the ace editor options */
-  useEffect(() => {
-    editItem &&
-      editorRef.current.editor.setOptions({
-        displayIndentGuides: false,
-        wrapBehavioursEnabled: false,
-        cursor: 'smooth',
-        useWorker: false,
-      })
-  }, [])
-
   /* Add ESC key shortcut to close the editor when open */
   useEffect(() => {
     document.addEventListener('keyup', keyboardClose)
@@ -151,9 +140,11 @@ export default function EditDrawer() {
         ref={editorRef}
         mode="json"
         showPrintMargin={false}
-        editorProps={{
-          displayIndentGuides: false,
+        setOptions={{
           useWorker: false,
+          displayIndentGuides: false,
+          wrapBehavioursEnabled: false,
+          cursor: 'smooth',
         }}
         value={deserialize(editItem.value, false)}
         theme="tomorrow_night_bright"

@@ -181,7 +181,7 @@ export default function DemoWrapper({ propObjects, componentTree, iframeRef, can
     split: 'vertical',
     className: 'horizontalSplitPane',
     minSize: sideBarIsOpen ? 300 : 68,
-    maxSize: sideBarIsOpen ? -40 : 68,
+    maxSize: sideBarIsOpen ? -80 : 68,
     defaultSize: sideBarWidth,
     resizerClassName: 'verticalResizer',
     onDragStarted: () => setDemoVisible(false),

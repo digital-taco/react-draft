@@ -84,8 +84,6 @@ export default function Tab({ temp, name, filePath, componentHash }) {
 
   function handleRemoveTab(e) {
     e.stopPropagation()
-    e.preventDefault()
-
     removeTab(componentHash)
   }
 

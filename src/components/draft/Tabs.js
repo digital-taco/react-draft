@@ -4,7 +4,8 @@ import { SelectedContext } from '../contexts/SelectedContext'
 import { StorageContext } from '../contexts/StorageContext'
 import { TabsContext } from '../contexts/TabsContext'
 import Tab from './Tab'
-import { TABS, SIDEBAR_IS_OPEN } from '../../constants/STORAGE_KEYS'
+import { SIDEBAR_IS_OPEN } from '../../constants/STORAGE_KEYS'
+import { TABS } from '../../constants/KEYCODES'
 import { boolAttr } from '../../lib/helpers'
 
 const tabsCss = css`
