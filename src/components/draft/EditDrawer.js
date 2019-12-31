@@ -131,7 +131,7 @@ export default function EditDrawer() {
       <div css={headerCss}>
         {/* TITLE */}
         <div css={titleBarCss}>
-          <div className="title demo-font">
+          <div title="The current value is not valid" className="title demo-font">
             {editItem.propName} {hasError && <ErrorIcon />}
           </div>
 
