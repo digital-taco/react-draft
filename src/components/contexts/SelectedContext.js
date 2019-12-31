@@ -3,6 +3,8 @@ import { removeQuotes, isJson } from '../../lib/helpers'
 import { StorageContext } from './StorageContext'
 import { SELECTED_COMPONENT_HASH } from '../../constants/STORAGE_KEYS'
 
+const quoteRegExp = /['"]/
+
 /**
  * Gets the default states for the props
  * @param {} props
@@ -12,7 +14,12 @@ function getPropStateDefaults(props) {
   return Object.entries(props).reduce((acc, [propName, propObj]) => {
     let defaultValue = propObj.defaultValue && propObj.defaultValue.value
     // Remove extra quotes around strings
-    if (defaultValue && typeof defaultValue === 'string') {
+    if (
+      defaultValue &&
+      typeof defaultValue === 'string' &&
+      quoteRegExp.test(defaultValue[0]) &&
+      quoteRegExp.test(defaultValue[defaultValue.length - 1])
+    ) {
       defaultValue = removeQuotes(defaultValue)
     }
 
