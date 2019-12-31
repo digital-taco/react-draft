@@ -11,20 +11,6 @@ import IconButton from '../common/IconButton'
 import CloseIcon from '../../svgs/CloseIcon'
 
 const editDrawerCss = css`
-  @font-face {
-    font-family: 'Fira Code';
-    src: url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/eot/FiraCode-Regular.eot')
-        format('embedded-opentype'),
-      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/woff2/FiraCode-Regular.woff2')
-        format('woff2'),
-      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/woff/FiraCode-Regular.woff')
-        format('woff'),
-      url('https://raw.githubusercontent.com/tonsky/FiraCode/master/distr/ttf/FiraCode-Regular.ttf')
-        format('truetype');
-    font-weight: normal;
-    font-style: normal;
-  }
-
   background-color: var(--color-background-primary);
 
   color: var(--color-text);
@@ -43,6 +29,7 @@ const editDrawerCss = css`
     font-family: 'Fira Code', 'Monaco', 'Ubuntu Mono', 'Consolas';
     font-weight: 600;
     font-size: 16px;
+    line-height: 24px;
     margin-top: 8px;
   }
 
@@ -93,7 +80,6 @@ export default function EditDrawer() {
   const { editItem, setEditItem, closeEditDrawer } = useContext(EditDrawerContext)
   const [hasError, setHasError] = useState(false)
   const { updatePropState } = useContext(SelectedContext)
-  const editorRef = React.useRef()
 
   /* Close the drawer and remove the current edit item */
   function handleClose() {
@@ -155,7 +141,6 @@ export default function EditDrawer() {
 
       {/* EDITOR */}
       <AceEditor
-        ref={editorRef}
         mode="javascript"
         showPrintMargin={false}
         setOptions={{
@@ -166,7 +151,7 @@ export default function EditDrawer() {
         }}
         value={deserialize(editItem.value, false)}
         theme="dracula"
-        name="test editor"
+        name="edit-drawer-editor"
         onChange={handleChange}
       />
     </div>

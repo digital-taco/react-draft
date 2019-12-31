@@ -5,6 +5,7 @@ import { SIDEBAR_IS_OPEN, SIDEBAR_VIEW } from '../../constants/STORAGE_KEYS'
 import PropsDrawer from './PropsDrawer'
 import Explorer from './Explorer'
 import Settings from './Settings'
+import DemoJSX from './DemoJSX'
 
 const drawerCss = css`
   display: flex;
@@ -29,8 +30,8 @@ export default function SideBar({ componentTree, propObjects }) {
         return <Explorer componentTree={componentTree} />
       case 'settings':
         return <Settings />
-      case 'livecode':
-        return <span>Hello!</span>
+      case 'demo jsx':
+        return <DemoJSX />
       default:
         return null
     }
