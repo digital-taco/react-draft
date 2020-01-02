@@ -5,7 +5,7 @@ import copy from 'copy-to-clipboard'
 import AceEditor from 'react-ace'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { deserializeAll, removeQuotes } from '../../lib/helpers'
-import 'brace/mode/javascript'
+import 'brace/mode/jsx'
 import 'brace/theme/dracula'
 import Button from '../common/Button'
 
@@ -79,7 +79,7 @@ export default function DemoJSX() {
         value={jsxString}
         theme="dracula"
         name="demo-jsx-editor"
-        mode="javascript"
+        mode="jsx"
         setOptions={{
           useWorker: false,
           displayIndentGuides: false,

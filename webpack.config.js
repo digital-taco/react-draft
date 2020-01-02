@@ -68,19 +68,23 @@ module.exports = draftConfig => {
 
     resolve: {
       symlinks: true,
-      alias: {
-        // Resolve the path to React so we don't import multiple react versions
-        react: path.resolve(__dirname, './node_modules/react'),
-        '@emotion/core': path.resolve(__dirname, './node_modules/@emotion/core'),
-      },
+      alias: draftConfig.DEBUG
+        ? {
+            // Resolve the path to React so we don't import multiple react versions
+            react: path.resolve(__dirname, './node_modules/react'),
+            '@emotion/core': path.resolve(__dirname, './node_modules/@emotion/core'),
+          }
+        : undefined,
     },
 
     // Webpack tries to look in the CWD node_modules for these loaders, which has issues sometimes. This just always resolves them to draft's node_modules.
     resolveLoader: {
-      alias: {
-        'thread-loader': path.resolve(__dirname, 'node_modules/thread-loader/'),
-        'cache-loader': path.resolve(__dirname, 'node_modules/cache-loader/'),
-      },
+      alias: draftConfig.DEBUG
+        ? {
+            'thread-loader': path.resolve(__dirname, 'node_modules/thread-loader/'),
+            'cache-loader': path.resolve(__dirname, 'node_modules/cache-loader/'),
+          }
+        : undefined,
     },
 
     output: {
