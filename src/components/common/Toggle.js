@@ -7,7 +7,7 @@ import { boolAttr } from '../../lib/helpers'
 const containerCss = css`
   display: flex;
   align-items: center;
-  margin: 12px 0;
+  margin: 20px 0;
 
   & > *,
   & label {

@@ -99,7 +99,9 @@ export default function DemoJSX() {
         }}
       />
       <div css={actionsCss}>
-        <Button onClick={() => copy(jsxString)}>Copy</Button>
+        <Button dense onClick={() => copy(jsxString)}>
+          Copy
+        </Button>
       </div>
     </div>
   )

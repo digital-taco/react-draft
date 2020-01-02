@@ -21,10 +21,12 @@ body {
   --color-background-highlight: #4d535c;
   --color-background-highlight2: #535963;
   --color-background-accent: #767d8a;
+  --color-primary: #1B9CFC;
+  --color-primary-hover: #1193F3;
   --color-text: #f9f9f9;
   --color-text-secondary: #d9d9d9;
-  --color-text-hover: #009dff;
-  --color-text-selected: #009dff;
+  --color-text-hover: #1B9CFC;
+  --color-text-selected: #1B9CFC;
   --color-text-selected-half: #60c2ff;
   --color-text-accent: #00FFB7;
   --color-error-text: rgb(255, 98, 98);

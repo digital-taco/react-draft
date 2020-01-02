@@ -1,13 +1,14 @@
 import React from 'react'
 import { css } from '@emotion/core'
+import { boolAttr } from '../../lib/helpers'
 
-const buttonCss = dense => css`
+const buttonCss = css`
   appearance: none;
   text-transform: uppercase;
   color: var(--color-text);
   font-weight: bold;
-  background-color: var(--color-background-highlight);
-  padding: ${dense ? '8px 16px' : '12px 16px'};
+  background-color: var(--color-primary);
+  padding: 12px 16px;
   border-radius: 4px;
   border: none;
   font-size: 14px;
@@ -16,12 +17,29 @@ const buttonCss = dense => css`
   display: flex;
   align-items: center;
 
+  &[secondary] {
+    background-color: var(--color-background-highlight2);
+  }
+  &[secondary]:hover {
+    background-color: var(--color-background-highlight);
+  }
+
+  &[dense] {
+    padding: 8px 16px;
+  }
+
+  &[maxwidth] {
+    width: 100%;
+    text-align: center;
+    display: block;
+  }
+
   & > svg {
     margin-left: 16px;
   }
 
   &:hover {
-    background-color: var(--color-background-highlight2);
+    background-color: var(--color-primary-hover);
   }
   &:focus {
     outline: none;
@@ -31,9 +49,16 @@ const buttonCss = dense => css`
   }
 `
 
-export default function Button({ children, dense, ...props }) {
+export default function Button({ children, dense, secondary, maxWidth, ...props }) {
   return (
-    <button type="button" css={buttonCss(dense)} {...props}>
+    <button
+      type="button"
+      dense={boolAttr(dense)}
+      maxwidth={boolAttr(maxWidth)}
+      secondary={boolAttr(secondary)}
+      css={buttonCss}
+      {...props}
+    >
       {children}
     </button>
   )

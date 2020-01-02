@@ -11,23 +11,31 @@ export default function EditablePropInput({
   warnings = [],
   valueType,
 }) {
-  const { setEditItem } = useContext(EditDrawerContext)
+  const { setEditItem, editItem } = useContext(EditDrawerContext)
+
+  function handleSetEditItem() {
+    if (editItem && editItem.propName === propName) {
+      setEditItem(null)
+    } else {
+      setEditItem({
+        propName,
+        value,
+        warnings,
+        valueType,
+      })
+    }
+  }
 
   return (
     <PropInputBase propName={propName} type={type} description={description}>
       <Button
         variant="text"
+        secondary={editItem && editItem.propName === propName}
         dense
-        onClick={() => {
-          setEditItem({
-            propName,
-            value,
-            warnings,
-            valueType,
-          })
-        }}
+        // maxWidth
+        onClick={handleSetEditItem}
       >
-        Edit
+        {editItem && editItem.propName === propName ? 'Stop Editing' : 'Edit'}
       </Button>
     </PropInputBase>
   )
