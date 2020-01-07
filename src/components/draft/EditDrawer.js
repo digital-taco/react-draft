@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react'
 import { css } from '@emotion/core'
 import AceEditor from 'react-ace'
 import 'brace/mode/javascript'
+import 'brace/mode/jsx'
 import 'brace/theme/dracula'
 import { serialize, deserialize, boolAttr } from '../../lib/helpers'
 import { SelectedContext } from '../contexts/SelectedContext'
@@ -9,6 +10,8 @@ import { EditDrawerContext } from '../contexts/EditDrawerContext'
 import ErrorIcon from '../../svgs/ErrorIcon'
 import IconButton from '../common/IconButton'
 import CloseIcon from '../../svgs/CloseIcon'
+
+import { transpile, isJsxString } from '../../lib/transpile-jsx'
 
 const editDrawerCss = css`
   background-color: var(--color-background-primary);
@@ -75,6 +78,15 @@ const editItemTypeCss = css`
   text-align: right;
 `
 
+const modeMap = {
+  object: 'javascript',
+  array: 'javascript',
+  shape: 'javascript',
+  exact: 'javascript',
+  function: 'javascript',
+  jsx: 'jsx',
+}
+
 /** A bottom-opening drawer containing an editor. Allows the user to edit the prop state for objects, shapes, and exact shapes. */
 export default function EditDrawer() {
   const { editItem, setEditItem, closeEditDrawer } = useContext(EditDrawerContext)
@@ -101,19 +113,21 @@ export default function EditDrawer() {
 
   const handleChange = newValue => {
     try {
-      // We do this to see if the thing the user types breaks, and if it does, we handle that in the catch.
-      // If it works, then we can save the value safely.
-      if (newValue.replace(/\s+/g, '')) {
-        // this alertHolder wrapping the eval alows for the user to have uninterrupted typing
-        // should they type some stupid thing like `window.alert()` inline to their javascript
-        const alertHolder = window.alert
-        window.alert = undefined
-        eval(`() => (${newValue})`)() // eslint-disable-line
-        window.alert = alertHolder
-      }
+      // this alertHolder wrapping the eval alows for the user to have uninterrupted typing
+      // should they type some stupid thing like `window.alert()` inline to their javascript
+      const alertHolder = window.alert
+      window.alert = undefined
 
-      const serialized = serialize(newValue)
-      updatePropState(editItem.propName, serialized) // eslint-disable-line
+      // We do this to see if the thing the user types breaks, and if it does, we handle that in the catch.
+      transpile(newValue)
+      window.alert = alertHolder
+
+      const newPropStateValue =
+        editItem.valueType === 'jsx' && !isJsxString(newValue)
+          ? serialize(newValue, ['STRING'])
+          : serialize(newValue, ['TRANSPILE'])
+
+      updatePropState(editItem.propName, newPropStateValue)
       setEditItem({ ...editItem, value: newValue })
       setHasError(false)
     } catch (e) {
@@ -141,7 +155,7 @@ export default function EditDrawer() {
 
       {/* EDITOR */}
       <AceEditor
-        mode="javascript"
+        mode={modeMap[editItem.valueType]}
         showPrintMargin={false}
         setOptions={{
           useWorker: false,

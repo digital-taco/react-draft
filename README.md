@@ -1,6 +1,8 @@
 # React Draft
 📝 WIP: Develop your React components in isolation without any configuration.
 
+React Draft is a local development tool for developing components without any setup. It's primary goal is to deliver a _fast, streamlined experience_ for developing new components in React. It is not meant to serve as a documentation tool or as a component storefront. Other tools, such as Storybook or Styleguidist, provide excellent ways to produce documentation for components. Where React Draft shines is in local development. By shaving off the extra weight that comes with documentatation, addons, and the like, Draft is able to out-perform other local development tools dramatically.
+
 ## Installation
 
 In your project's root directory, run:

@@ -1,5 +1,10 @@
 /* eslint-disable no-eval */
 import stringifyObject from 'stringify-object'
+import React from 'react'
+import { transpile } from './transpile-jsx'
+
+// React needs to be defined on the window for babel standalone to work with jsx strings
+if (!window.React) window.React = React
 
 // -------------------------------------------------------
 // UTIL
@@ -42,21 +47,33 @@ export function parseMsg(fn) {
 // DATA SERIALIZATION FOR COMPLEX INFORMATION
 // -------------------------------------------------------
 
-const SERIALIZED_TOKEN = '::SERIALIZED::'
+const TOKEN_DELIMITER = '::⏣::'
 
-export function serialize(item) {
+export function serialize(item, options = []) {
   if (item) {
+    const tokens = options.join('|')
     const stringed = item.constructor === Object ? stringifyObject(item) : item.toString()
-    const processed = SERIALIZED_TOKEN + encodeURI(stringed)
+    const processed = `${tokens}${TOKEN_DELIMITER}${encodeURI(stringed)}`
     return processed
   }
 }
 
 export function deserialize(item, evaluate = true) {
-  const needsProccessing = typeof item === 'string' && item.startsWith(SERIALIZED_TOKEN)
-  let processed = needsProccessing ? decodeURI(item.replace(SERIALIZED_TOKEN, '')) : item
-  if (needsProccessing && evaluate && processed.replace(/\s+/g, '')) {
-    processed = eval(`(()=>(${processed}))();`)
+  const needsProccessing = typeof item === 'string' && item.includes(TOKEN_DELIMITER)
+
+  let processed = item
+
+  if (needsProccessing) {
+    const [tokenString, valueString] = item.split(TOKEN_DELIMITER)
+    const tokens = tokenString.split('|')
+    const decodedValue = decodeURI(valueString)
+    processed = decodedValue
+
+    // TRANSPILE
+    if (evaluate && tokens.includes('TRANSPILE') && processed.replace(/\s+/g, '')) {
+      processed = transpile(`(() => { return ${decodedValue} })()`)
+      processed = eval(`(() => { return ${processed} })()`)
+    }
   }
   return processed
 }

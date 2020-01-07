@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 import getInput from '../../lib/get-input'
-// import ChildrenInput from '../Inputs/ChildrenInput'
 import { H2 } from '../common/Headers'
 import { SelectedContext } from '../contexts/SelectedContext'
 import ResetIcon from '../../svgs/ResetIcon'
@@ -50,11 +49,17 @@ export default function PropsDrawer({ propObjects }) {
   const inputs = entries.reduce(
     (acc, [propName, propInfo]) => {
       if (!propInfo) return acc
+
+      // collect missing prop types
       if (!propInfo.type) {
         acc.missingPropTypes.push([propName, propInfo])
         return acc
       }
+
+      // create empty array for the type if it does not exist
       if (!acc[propInfo.type.name]) acc[propInfo.type.name] = []
+
+      // push it to its type on the acc
       acc[propInfo.type.name].push([propName, propInfo])
       return acc
     },
@@ -84,7 +89,7 @@ export default function PropsDrawer({ propObjects }) {
       </div>
       <div css={styles.propsDrawer} className="demo-font">
         <div css={styles.propsContainer}>
-          {/* <ChildrenInput value={propStates.children} setEditItem={setEditItem} /> */}
+          {inputs.node && inputs.node.map(getInputProp)}
           {inputs.string && inputs.string.map(getInputProp)}
           {inputs.number && inputs.number.map(getInputProp)}
           {inputs.enum && inputs.enum.map(getInputProp)}
@@ -94,6 +99,7 @@ export default function PropsDrawer({ propObjects }) {
           {inputs.exact && inputs.exact.map(getInputProp)}
           {inputs.func && inputs.func.map(getInputProp)}
           {inputs.bool && inputs.bool.map(getInputProp)}
+          {inputs.custom && inputs.custom.map(getInputProp)}
         </div>
       </div>
     </div>

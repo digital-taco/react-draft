@@ -2,7 +2,6 @@ import React from 'react'
 import StringNumberInput from '../components/prop-inputs/StringNumberInput'
 import BooleanInput from '../components/prop-inputs/BooleanInput'
 import EnumInput from '../components/prop-inputs/EnumInput'
-import ShapeInput from '../components/prop-inputs/ShapeInput'
 import EditablePropInput from '../components/prop-inputs/EditablePropInput'
 
 export default function getInput([propName, propObj], propStates, updatePropState) {
@@ -58,7 +57,7 @@ export default function getInput([propName, propObj], propStates, updatePropStat
       />
     ),
     shape: (
-      <ShapeInput
+      <EditablePropInput
         propName={propName}
         value={propStates[propName]}
         propObj={propObj}
@@ -66,7 +65,7 @@ export default function getInput([propName, propObj], propStates, updatePropStat
       />
     ),
     exact: (
-      <ShapeInput
+      <EditablePropInput
         propName={propName}
         value={propStates[propName]}
         propObj={propObj}
@@ -84,13 +83,23 @@ export default function getInput([propName, propObj], propStates, updatePropStat
         strict
       />
     ),
+    node: (
+      <EditablePropInput
+        propName={propName}
+        value={propStates[propName]}
+        propObj={propObj}
+        valueType="jsx"
+        description={propObj.description}
+        strict
+      />
+    ),
   }
 
   const isMissingRequired = propObj.required && !propStates[propName]
 
   return (
     <div key={propName} data-required={isMissingRequired}>
-      {inputMap[propObj.type.name] || propName}
+      {inputMap[propObj.type.name] || inputMap.node}
     </div>
   )
 }
