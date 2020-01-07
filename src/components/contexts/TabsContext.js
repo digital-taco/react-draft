@@ -20,15 +20,18 @@ export default function TabsProvider({ children }) {
   }
 
   function removeTab(componentHash) {
-    let index
     if (tempTab && componentHash === tempTab.componentHash) {
       setItem(TEMP_TAB, null)
-    } else {
-      index = tabs.findIndex(t => t.componentHash === componentHash)
-      if (index !== -1) {
-        setItem(TABS, [...tabs.slice(0, index), ...tabs.slice(index + 1, tabs.length)])
-      }
+      const newTab = tabs[0] || {}
+      updateSelectedComponent(newTab.filePath, newTab.name)
+      return
     }
+
+    const index = tabs.findIndex(t => t.componentHash === componentHash)
+    if (index !== -1) {
+      setItem(TABS, [...tabs.slice(0, index), ...tabs.slice(index + 1, tabs.length)])
+    }
+
     if (componentHash === SelectedComponent.meta.componentHash) {
       let newFocusTabIndex = index - 1
       newFocusTabIndex = newFocusTabIndex <= 0 ? 1 : newFocusTabIndex
