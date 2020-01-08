@@ -43,6 +43,7 @@ const actionsCss = css`
 const toJsxOptions = {
   showDefaultProps: false,
   showFunctions: true,
+  filterProps: ['key'], // so it doesn't add useless keys to everything
 }
 
 const quoteRegExp = /['"]/

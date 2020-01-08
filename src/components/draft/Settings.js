@@ -1,13 +1,23 @@
 import React, { useContext } from 'react'
-import { SettingsContext } from '../contexts/SettingsContext'
 import { css } from '@emotion/core'
+import { SettingsContext } from '../contexts/SettingsContext'
 import TextInput from '../common/TextInput'
 import Select from '../common/Select'
 import InputLabel from '../common/InputLabel'
+import Button from '../common/Button'
 
 const settingsCss = css`
   padding: 8px 16px 0;
 `
+
+function clearData() {
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith('DRAFT_')) {
+      localStorage.removeItem(key)
+    }
+  })
+  window.location.reload()
+}
 
 export default function Settings() {
   const { settings, updateSetting } = useContext(SettingsContext)
@@ -44,6 +54,9 @@ export default function Settings() {
         <option value="right">Right</option>
         <option value="bottom">Bottom</option>
       </Select>
+
+      <InputLabel htmlFor="setting_clearData" label="Clear Draft Data" />
+      <Button onClick={clearData}>Clear Data</Button>
     </div>
   )
 }
