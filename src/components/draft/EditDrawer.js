@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useRef } from 'react'
 import { css } from '@emotion/core'
 import AceEditor from 'react-ace'
 import 'brace/mode/javascript'
@@ -38,6 +38,12 @@ const editDrawerCss = css`
 
   &[isopen] {
     display: block;
+  }
+
+  /* The highlighted line color was the same color as selected text - this makes them different */
+  & .ace_editor .ace_marker-layer .ace_active-line,
+  & .ace_editor .ace_gutter .ace_gutter-active-line {
+    background: var(--color-background-secondary) !important;
   }
 `
 
@@ -87,11 +93,21 @@ const modeMap = {
   jsx: 'jsx',
 }
 
+const placeholderMap = {
+  object: '{ ... }',
+  array: '[ ... ]',
+  shape: '{ ... }',
+  exact: '{ ... }',
+  function: '() => { ... }',
+  jsx: '<div> ... </div>',
+}
+
 /** A bottom-opening drawer containing an editor. Allows the user to edit the prop state for objects, shapes, and exact shapes. */
 export default function EditDrawer() {
   const { editItem, setEditItem, closeEditDrawer } = useContext(EditDrawerContext)
   const [hasError, setHasError] = useState(false)
   const { updatePropState } = useContext(SelectedContext)
+  const editorRef = useRef(null)
 
   /* Close the drawer and remove the current edit item */
   function handleClose() {
@@ -110,6 +126,14 @@ export default function EditDrawer() {
     document.addEventListener('keyup', keyboardClose)
     return () => document.removeEventListener('keyup', keyboardClose)
   }, [])
+
+  /* Focus on editor as soon as it opens */
+  useEffect(() => {
+    if (editItem && document.activeElement !== editorRef.current.editor.textInput.getElement()) {
+      editorRef.current.editor.focus()
+      editorRef.current.editor.navigateFileEnd()
+    }
+  }, [editItem])
 
   const handleChange = newValue => {
     try {
@@ -156,6 +180,8 @@ export default function EditDrawer() {
       {/* EDITOR */}
       <AceEditor
         mode={modeMap[editItem.valueType]}
+        placeholder={placeholderMap[editItem.valueType]}
+        ref={editorRef}
         showPrintMargin={false}
         setOptions={{
           useWorker: false,

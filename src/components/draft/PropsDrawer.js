@@ -44,6 +44,15 @@ export default function PropsDrawer({ propObjects }) {
 
   const { setEditItem } = useContext(EditDrawerContext)
 
+  // This guarantees that all components have a children prop input (does not override defined prop types for children)
+  if (!propObjects.children) {
+    propObjects.children = {
+      type: {
+        name: 'node',
+      },
+    }
+  }
+
   const entries = Object.entries(propObjects)
 
   const inputs = entries.reduce(
