@@ -20,8 +20,9 @@ const { babelModules = [], ignore = [], port = 8080 } = draftConfig
 
 const files = find.fileSync(/\.js$/, path.resolve('.')).filter(fp => {
   if (fp.includes('node_modules/')) return false
+  const ignorePatterns = ['.draft.js', ...ignore]
   // eslint-disable-next-line array-callback-return
-  return !ignore.some(ignorePath => {
+  return !ignorePatterns.some(ignorePath => {
     if (ignorePath instanceof RegExp) {
       return ignorePath.exec(fp)
     }

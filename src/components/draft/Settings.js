@@ -10,6 +10,7 @@ const settingsCss = css`
   padding: 8px 16px 0;
 `
 
+/** Identifies any draft data stored in local storage and removes it. */
 function clearData() {
   Object.keys(localStorage).forEach(key => {
     if (key.startsWith('DRAFT_')) {
