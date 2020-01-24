@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext } from 'react'
@@ -15,11 +16,13 @@ import { boolAttr } from '../../lib/helpers'
 const explorerCss = css`
   letter-spacing: 0.5px;
   font-size: 14px;
-  padding: 16px 16px 0 16px;
+  padding: 0 16px 0 16px;
 
   & svg {
     width: 16px;
+    min-width: 16px;
     height: 16px;
+    min-height: 16px;
   }
 `
 
@@ -27,6 +30,8 @@ const itemContainerCss = css`
   display: flex;
   align-items: center;
   overflow-x: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 `
 
 const iconContainerCss = css`
@@ -40,17 +45,17 @@ const componentCss = css`
   user-select: none;
   padding: 2px;
   margin-left: 20px;
-  color: white;
+  color: var(--color-text-primary);
   border-radius: 2px;
 
   &[data-selected='true'] {
-    background-color: var(--color-text-selected);
-    color: white;
+    /* background-color: var(--color-text-selected); */
+    /* color: white; */
     font-weight: bold;
   }
 
   &:hover {
-    background-color: var(--color-background-highlight);
+    /* background-color: var(--color-background-highlight); */
   }
 
   & svg {
@@ -61,12 +66,12 @@ const componentCss = css`
 
 const folderContentsCss = css`
   padding-left: 16px;
-  border-left: 1px solid var(--color-background-highlight);
+  border-left: 1px solid #b9b9b9;
 `
 
 const folderNameCss = css`
   ${itemContainerCss}
-  color: white;
+  /* color: white; */
   padding: 4px 0;
   cursor: pointer;
   user-select: none;
@@ -80,7 +85,7 @@ const folderNameCss = css`
   }
 
   &:hover {
-    background-color: var(--color-background-highlight);
+    /* background-color: var(--color-background-highlight); */
   }
 `
 
@@ -120,11 +125,7 @@ function ExpandableItem({
     // If there is only one component in the file and the file is about to expand, then select the one component
     if (!isOpen && isFile && components.length === 1) {
       const name = components[0].displayName
-      if (
-        tempTab &&
-        tempTab.filePath === filePath &&
-        tempTab.name === name
-      ) {
+      if (tempTab && tempTab.filePath === filePath && tempTab.name === name) {
         // if the tab is the temp tab, make it a persistent tab
         addTab(name, filePath)
       } else if (!tabs.find(t => t.name === name && t.filePath === filePath)) {
@@ -138,7 +139,12 @@ function ExpandableItem({
 
   return (
     <div>
-      <div is-file={boolAttr(isFile)} css={folderNameCss} onClick={handleFileClick} data-test-path={path}>
+      <div
+        is-file={boolAttr(isFile)}
+        css={folderNameCss}
+        onClick={handleFileClick}
+        data-test-path={path}
+      >
         {/* eslint-disable-next-line no-nested-ternary */}
         <ItemIcons
           Icon={isFile ? FileIcon : FolderIcon}
@@ -172,11 +178,7 @@ const RecursiveFileSystem = ({
   const children = []
 
   function handleComponentClick(filePath, name) {
-    if (
-      tempTab &&
-      tempTab.filePath === filePath &&
-      tempTab.name === name
-    ) {
+    if (tempTab && tempTab.filePath === filePath && tempTab.name === name) {
       addTab(name, filePath)
     } else if (!tabs.find(t => t.name === name && t.filePath === filePath)) {
       setTempTab(name, filePath)
@@ -196,8 +198,8 @@ const RecursiveFileSystem = ({
             key={`ec_${filePath}_${component.displayName}`}
             displayName={component.displayName}
             selected={
-              SelectedComponent.meta.filePath === filePath &&
-              SelectedComponent.meta.displayName === component.displayName
+              SelectedComponent.filePath === filePath &&
+              SelectedComponent.displayName === component.displayName
             }
             onClick={() => handleComponentClick(filePath, component.displayName)}
           />

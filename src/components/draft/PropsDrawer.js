@@ -1,14 +1,15 @@
 import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 import getInput from '../../lib/get-input'
-import { H2 } from '../common/Headers'
+import { H4 } from '../common/Headers'
 import { SelectedContext } from '../contexts/SelectedContext'
 import ResetIcon from '../../svgs/ResetIcon'
 import IconButton from '../common/IconButton'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
 
 const propsDrawerCss = css`
-  padding: 16px 16px 0 16px;
+  padding: 0 16px 0 16px;
+  position: relative;
 `
 
 const styles = {
@@ -23,9 +24,9 @@ const styles = {
 }
 
 const propsTitleCss = css`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  position: absolute;
+  top: -32px;
+  right: 0;
 `
 
 const noPropsCss = css`
@@ -38,9 +39,7 @@ const noPropsCss = css`
 export default function PropsDrawer({ propObjects }) {
   if (!propObjects) return <div css={noPropsCss}>No props available</div>
 
-  const { SelectedComponent, propStates, resetToDefaults, updatePropState } = useContext(
-    SelectedContext
-  )
+  const { propStates, resetToDefaults, updatePropState } = useContext(SelectedContext)
 
   const { setEditItem } = useContext(EditDrawerContext)
 
@@ -89,7 +88,6 @@ export default function PropsDrawer({ propObjects }) {
   return (
     <div css={propsDrawerCss}>
       <div css={propsTitleCss}>
-        <H2>{SelectedComponent.meta.displayName} Props</H2>
         <IconButton
           title="Reset all props to default values"
           Icon={ResetIcon}

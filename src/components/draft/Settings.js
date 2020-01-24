@@ -7,7 +7,7 @@ import InputLabel from '../common/InputLabel'
 import Button from '../common/Button'
 
 const settingsCss = css`
-  padding: 8px 16px 0;
+  padding: 0 16px;
 `
 
 /** Identifies any draft data stored in local storage and removes it. */

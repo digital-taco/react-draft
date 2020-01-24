@@ -1,6 +1,5 @@
 import React, { useContext, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
-import Components from '../../out/master-exports'
 import DemoWrapper from './draft/DemoWrapper'
 import canRender from '../lib/can-render'
 import SettingsProvider from './contexts/SettingsContext'
@@ -11,19 +10,20 @@ import TabsProvider from './contexts/TabsContext'
 import { msg, parseMsg } from '../lib/helpers'
 import '../global.css' //eslint-disable-line
 
-const { componentTree } = Components
-
 function Page() {
   const iframeRef = useRef(null)
   const { SelectedComponent, propStates } = useContext(SelectedContext)
-  const { meta } = SelectedComponent
-  const { props } = meta
+  const { props } = SelectedComponent
 
   const canRenderComponent = propStates && canRender(props, propStates)
   const handleMessage = parseMsg(receiveMessage)
 
   const messageSelectedComponent = () =>
-    msg(iframeRef.current && iframeRef.current.contentWindow, 'SELECTED_COMPONENT', meta)
+    msg(
+      iframeRef.current && iframeRef.current.contentWindow,
+      'SELECTED_COMPONENT',
+      SelectedComponent
+    )
 
   const messagePropStates = () =>
     msg(iframeRef.current && iframeRef.current.contentWindow, 'PROP_STATES', propStates)
@@ -52,7 +52,6 @@ function Page() {
   return (
     <DemoWrapper
       propObjects={props}
-      componentTree={componentTree}
       iframeRef={iframeRef}
       canRenderComponent={canRenderComponent}
     />
@@ -62,7 +61,7 @@ function Page() {
 // Render the demo in the dom
 ReactDOM.render(
   <StorageProvider>
-    <SelectedProvider components={Components}>
+    <SelectedProvider>
       <EditDrawerProvider>
         <SettingsProvider>
           <TabsProvider>

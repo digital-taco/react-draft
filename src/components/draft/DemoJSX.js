@@ -54,7 +54,7 @@ export default function DemoJSX() {
 
   // Garbage collection does not have enough time to remove undefined props, so they show up when we don't want them to
   // This bit of logic removes any undefined prop states from our deserialized values
-  const { props = {} } = SelectedComponent.meta
+  const { props = {} } = SelectedComponent
   Object.entries(deserializedPropStates).forEach(([k, v]) => {
     let { value: defaultValue } = props[k].defaultValue || {}
     if (

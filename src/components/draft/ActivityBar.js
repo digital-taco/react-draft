@@ -1,43 +1,72 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { useContext, useEffect } from 'react'
 import { css } from '@emotion/core'
 import SettingsIcon from '../../svgs/SettingsIcon'
 import FolderIcon from '../../svgs/FolderIcon'
 import PropsIcon from '../../svgs/PropsIcon'
 import CodeIcon from '../../svgs/CodeIcon'
+import ArrowIcon from '../../svgs/ArrowIcon'
 import { StorageContext } from '../contexts/StorageContext'
 import { ACTIVITY_VIEWS } from '../../constants/KEYCODES'
-import { SIDEBAR_VIEW, SIDEBAR_IS_OPEN } from '../../constants/STORAGE_KEYS'
+import { SIDEBAR_VIEW, SIDEBAR_IS_OPEN, LAST_SELECTED_VIEW } from '../../constants/STORAGE_KEYS'
 import { boolAttr } from '../../lib/helpers'
 
-import ReloadNotification from './ReloadNotification'
-
-const activityBarCss = css`
-  height: 100%;
-  width: 60px;
-  color: white;
-  display: grid;
-  grid-template-rows: 40px 40px 40px 40px;
-  grid-row-gap: 12px;
+const iconContainerCss = css`
+  display: flex;
   align-items: center;
-  box-sizing: border-box;
-  padding: 15px;
+  justify-content: center;
+  text-align: center;
+  flex-grow: 2;
+  transition: all 0.03s linear;
+  cursor: pointer;
+  &:hover,
+  &[data-selected] {
+    background-color: #fff1;
+  }
+
+  &[data-selected] svg {
+    opacity: 1;
+    fill: var(--color-text-accent);
+  }
 
   & svg {
-    height: 30px;
-    width: 30px;
-    fill: var(--color-text);
+    height: 22px;
+    min-height: 22px;
+    width: 22px;
+    min-width: 22px;
+    opacity: 0.9;
+    fill: white;
     cursor: pointer;
     transition: all 0.1s ease-in-out;
   }
 
   & svg:hover {
-    fill: var(--color-text-hover);
-    opacity: 0.8;
+    opacity: 0.95;
   }
+`
 
-  & svg[data-selected] {
-    fill: var(--color-text-selected);
+const arrowContainerCss = css`
+  transition: all 0.03s linear;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  width: 20px;
+  &:hover {
+    background-color: #fff1;
   }
+  & svg {
+    width: 16px;
+    fill: #fff4;
+  }
+`
+
+const activityBarCss = css`
+  height: 100%;
+  width: 284px;
+  color: white;
+  display: flex;
+  box-sizing: border-box;
 `
 
 export default function ActivityBar() {
@@ -52,6 +81,7 @@ export default function ActivityBar() {
       setItem(SIDEBAR_IS_OPEN, !isOpen)
     }
     setItem(SIDEBAR_VIEW, drawerType)
+    setItem(LAST_SELECTED_VIEW, drawerType)
   }
 
   // Add keyboard shortcuts
@@ -69,27 +99,39 @@ export default function ActivityBar() {
 
   return (
     <div css={activityBarCss}>
-      <ReloadNotification />
-      <FolderIcon
-        data-selected={boolAttr(drawerIsOpen && drawerView === 'explorer')}
+      {!drawerIsOpen && (
+        <div css={arrowContainerCss} onClick={() => setItem(SIDEBAR_IS_OPEN, true)}>
+          <ArrowIcon style={{ transform: 'translateX(-2px) rotate(-90deg)' }} direction="right" />
+        </div>
+      )}
+      <div
+        css={iconContainerCss}
         onClick={() => handleClick('explorer')}
-        data-test-explorer-icon
-      />
-      <PropsIcon
-        data-selected={boolAttr(drawerIsOpen && drawerView === 'props')}
+        data-selected={boolAttr(drawerIsOpen && drawerView === 'explorer')}
+      >
+        <FolderIcon data-test-explorer-icon />
+      </div>
+      <div
+        css={iconContainerCss}
         onClick={() => handleClick('props')}
-        data-test-props-icon
-      />
-      <CodeIcon
-        data-selected={boolAttr(drawerIsOpen && drawerView === 'demo jsx')}
+        data-selected={boolAttr(drawerIsOpen && drawerView === 'props')}
+      >
+        <PropsIcon data-test-props-icon />
+      </div>
+      <div
+        css={iconContainerCss}
         onClick={() => handleClick('demo jsx')}
-        data-test-code-icon
-      />
-      <SettingsIcon
-        data-selected={boolAttr(drawerIsOpen && drawerView === 'settings')}
+        data-selected={boolAttr(drawerIsOpen && drawerView === 'demo jsx')}
+      >
+        <CodeIcon data-test-code-icon />
+      </div>
+      <div
+        css={iconContainerCss}
         onClick={() => handleClick('settings')}
-        data-test-settings-icon
-      />
+        data-selected={boolAttr(drawerIsOpen && drawerView === 'settings')}
+      >
+        <SettingsIcon data-test-settings-icon />
+      </div>
     </div>
   )
 }

@@ -19,19 +19,23 @@ body {
   --color-background-secondary: #31353c;
   --color-background-tertiary: #434348;
   --color-background-highlight: #4d535c;
-  --color-background-highlight2: #535963;
+  --color-button-secondary: #4d535c;
+  --color-button-secondary-hover: #434348;
+  --color-background-highlight2: #5359636e;
   --color-background-accent: #767d8a;
-  --color-primary: #1B9CFC;
-  --color-primary-hover: #1193F3;
-  --color-text: #f9f9f9;
-  --color-text-secondary: #d9d9d9;
+  --color-text: #323232;
+  --color-text-secondary: #767d8a;
   --color-text-hover: #1B9CFC;
   --color-text-selected: #1B9CFC;
   --color-text-selected-half: #60c2ff;
-  --color-text-accent: #00FFB7;
+  --color-text-accent: #2979ff;
+  --color-primary: #2979ff;
+  --color-primary-hover: #2171e8;
   --color-error-text: rgb(255, 98, 98);
   --color-warning-text: rgb(255, 182, 98);
   --border-color-warning: rgb(255, 136, 0);
+
+  --color-border-bottom: #aaa;
 
 
   /* ALERTS */

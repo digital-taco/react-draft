@@ -13,8 +13,8 @@ export default function TabsProvider({ children }) {
 
   function addTab(name, filePath) {
     const component = getComponent(name, filePath)
-    setItem(TABS, [{ filePath, name, componentHash: component.meta.componentHash }, ...tabs])
-    if (tempTab && component.meta.componentHash === tempTab.componentHash) {
+    setItem(TABS, [{ filePath, name, componentHash: component.componentHash }, ...tabs])
+    if (tempTab && component.componentHash === tempTab.componentHash) {
       setItem(TEMP_TAB, null)
     }
   }
@@ -32,7 +32,7 @@ export default function TabsProvider({ children }) {
       setItem(TABS, [...tabs.slice(0, index), ...tabs.slice(index + 1, tabs.length)])
     }
 
-    if (componentHash === SelectedComponent.meta.componentHash) {
+    if (componentHash === SelectedComponent.componentHash) {
       let newFocusTabIndex = index - 1
       newFocusTabIndex = newFocusTabIndex <= 0 ? 1 : newFocusTabIndex
       newFocusTabIndex = index === 1 ? 0 : newFocusTabIndex
@@ -43,7 +43,7 @@ export default function TabsProvider({ children }) {
 
   function setTempTab(name, filePath) {
     const component = getComponent(name, filePath)
-    setItem(TEMP_TAB, { name, filePath, componentHash: component.meta.componentHash })
+    setItem(TEMP_TAB, { name, filePath, componentHash: component.componentHash })
   }
 
   return (

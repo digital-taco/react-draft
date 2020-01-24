@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { msg, parseMsg, deserializeAll } from '../lib/helpers'
-import Components from '../../out/master-exports'
+import Components from '../../out/component-list'
 import ErrorBoundary from './demo/ErrorBoundary'
 import EmptyDemo from './demo/EmptyDemo'
 
@@ -40,7 +40,7 @@ function Page() {
   const Wrapper = Components.Wrapper || React.Fragment
 
   return (
-    <ErrorBoundary key={SelectedComponent.meta.componentHash}>
+    <ErrorBoundary key={SelectedComponent.componentHash}>
       <Wrapper>
         <SelectedComponent {...deserializeAll(propStates)} />
       </Wrapper>

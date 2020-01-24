@@ -7,7 +7,7 @@ import { boolAttr } from '../../lib/helpers'
 const containerCss = css`
   display: flex;
   align-items: center;
-  margin: 20px 0;
+  margin: 8px 0;
 
   & > *,
   & label {
@@ -22,8 +22,8 @@ const containerCss = css`
 const sliderPanelCss = css`
   height: 24px;
   width: 48px;
-  border: solid 2px var(--color-background-accent);
-  background: var(--color-background-secondary);
+  border: solid 2px var(--color-border-bottom);
+  background: transparent;
   border-radius: 28px;
   padding: 2px;
   box-sizing: border-box;
@@ -31,35 +31,40 @@ const sliderPanelCss = css`
   margin-right: 16px;
 
   [is-true] > & {
-    background: var(--color-background-accent);
+    background: var(--color-primary);
+    border-color: var(--color-primary);
   }
 
   &:hover {
-    background: var(--color-background-tertiary);
+    background: #ddd;
   }
 
   [is-true] > &:hover {
-    background: var(--color-background-highlight);
+    background: var(--color-primary-hover);
   }
 
   &:focus {
     outline: none;
   }
 
-  &:active,
+  &:active {
+    background-color: #ccc;
+  }
+
   [is-true] > &:active {
-    background: var(--color-background-highlight2);
+    background-color: var(--color-primary-hover);
   }
 `
 
 const sliderCss = css`
-  background: var(--color-text);
+  background-color: var(--color-background-highlight);
   height: 16px;
   width: 16px;
   border-radius: 16px;
   transition: all 0.1s;
   [is-true] > div > & {
     transform: translateX(24px);
+    background: white;
   }
 `
 
