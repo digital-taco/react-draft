@@ -20,7 +20,7 @@
   },
   "files": [
     "dist/",
-    "launch.prod.js"
+    "bin/launch.prod.js"
   ],
   "license": "ISC",
   "dependencies": {
