@@ -8,7 +8,7 @@ const log = require('../lib/logger')
 const buildMasterExports = require('../lib/build-master-exports')
 const buildComponentTree = require('../lib/build-component-tree')
 const getFileStructure = require('../lib/get-files')
-const { getComponentGlossary } = require('../lib/component-meta-helpers')
+const { getComponentGlossary } = require('../lib/get-component-glossary')
 
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
