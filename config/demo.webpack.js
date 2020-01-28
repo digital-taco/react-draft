@@ -30,10 +30,10 @@ module.exports = draftConfig => {
     plugins: [
       // ENV variables
       new webpack.EnvironmentPlugin({
-        NODE_ENV: process.env.NODE_ENV || 'development',
-        PUBLIC_PATH: process.env.PUBLIC_PATH,
-        WRITE_TO_DISK: process.env.WRITE_TO_DISK,
-        DEBUG: process.env.DEBUG,
+        NODE_ENV: 'development',
+        PUBLIC_PATH: '/',
+        WRITE_TO_DISK: false,
+        DEBUG: false,
       }),
 
       // Build the HTML template for the demo

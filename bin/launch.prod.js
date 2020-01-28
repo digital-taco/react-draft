@@ -53,7 +53,12 @@ const wss = new WebSocket.Server({ port: 7999 })
 log.debug('Setting up web socket', 'Web Socket')
 wss.on('connection', ws => {
   log.debug('Client Connected', 'Web Socket')
-  ws.send(JSON.stringify(getComponentGlossary(componentTree)))
+  ws.send(
+    JSON.stringify({
+      glossary: getComponentGlossary(componentTree),
+      tree: componentTree,
+    })
+  )
 })
 
 const devServerOptions = {

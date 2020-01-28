@@ -58,12 +58,12 @@ const closeIconCss = css`
 export default function Tab({ temp, name, filePath, componentHash }) {
   const { updateSelectedComponent, SelectedComponent } = useContext(SelectedContext)
   const { removeTab } = useContext(TabsContext)
-  const componentGlossary = useContext(GlossaryContext)
+  const { glossary } = useContext(GlossaryContext)
 
   const isSelected = SelectedComponent.componentHash === componentHash
 
   // If the tab is for a component that isn't in the tree anymore, remove the tab
-  if (!componentGlossary[componentHash]) {
+  if (!glossary[componentHash]) {
     removeTab()
     return null
   }

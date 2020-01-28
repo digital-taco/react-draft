@@ -11,6 +11,7 @@ import CodeIcon from '../../svgs/CodeIcon'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { StorageContext } from '../contexts/StorageContext'
 import { TabsContext } from '../contexts/TabsContext'
+import { GlossaryContext } from '../contexts/GlossaryContext'
 import { boolAttr } from '../../lib/helpers'
 
 const explorerCss = css`
@@ -225,13 +226,14 @@ const RecursiveFileSystem = ({
   return children
 }
 
-export default function Explorer({ componentTree }) {
+export default function Explorer() {
   const { SelectedComponent, updateSelectedComponent } = useContext(SelectedContext)
+  const { tree } = useContext(GlossaryContext)
 
   return (
     <div css={explorerCss}>
       <RecursiveFileSystem
-        tree={componentTree}
+        tree={tree}
         SelectedComponent={SelectedComponent}
         updateSelectedComponent={updateSelectedComponent}
       />

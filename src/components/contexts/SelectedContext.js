@@ -48,11 +48,11 @@ function getPropStateDefaults(props) {
 export const SelectedContext = React.createContext()
 
 export default function SelectedProvider({ children }) {
-  const componentGlossary = useContext(GlossaryContext)
+  const { glossary } = useContext(GlossaryContext)
 
   // TEMPORARY: Aliased components do not work, so we'll remove them here
-  Object.entries(componentGlossary).forEach(([key, c]) => {
-    if (!c) delete componentGlossary[key]
+  Object.entries(glossary).forEach(([key, c]) => {
+    if (!c) delete glossary[key]
   })
 
   const { getItem, setItem } = useContext(StorageContext)
@@ -60,7 +60,7 @@ export default function SelectedProvider({ children }) {
   const selectedComponentHash = getItem(SELECTED_COMPONENT_HASH)
 
   // Find the corresponding component
-  const SelectedComponent = componentGlossary[selectedComponentHash] || {
+  const SelectedComponent = glossary[selectedComponentHash] || {
     componentHash: 'EmptyDemo',
   }
 
@@ -70,7 +70,7 @@ export default function SelectedProvider({ children }) {
   const propStates = getItem(selectedPropStatesKey, getPropStateDefaults(SelectedComponent.props))
 
   function getComponent(name, filePath) {
-    const entry = Object.entries(componentGlossary).find(([, Component]) => {
+    const entry = Object.entries(glossary).find(([, Component]) => {
       if (!Component) return false
       return Component.filePath === filePath && Component.displayName === name
     })

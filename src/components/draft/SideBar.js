@@ -2,7 +2,6 @@ import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 import { StorageContext } from '../contexts/StorageContext'
 import { SIDEBAR_IS_OPEN, SIDEBAR_VIEW } from '../../constants/STORAGE_KEYS'
-import componentTree from '../../../out/component-tree'
 import PropsDrawer from './PropsDrawer'
 import Explorer from './Explorer'
 import Settings from './Settings'
@@ -29,7 +28,7 @@ export default function SideBar({ propObjects }) {
       case 'props':
         return <PropsDrawer propObjects={propObjects} />
       case 'explorer':
-        return <Explorer componentTree={componentTree} />
+        return <Explorer />
       case 'settings':
         return <Settings />
       case 'demo jsx':
