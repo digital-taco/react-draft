@@ -9,46 +9,33 @@ const { includedModules, excludedModules } = getInclusionRules(
 
 module.exports = {
   context: path.resolve(__dirname, '../src'),
-  mode: 'development',
+  mode: 'production',
   cache: false,
-  name: 'draft',
   devtool: 'none',
 
   entry: {
-    'draft-main': [path.resolve(__dirname, '../src/components/Draft.js')],
+    draft: [path.resolve(__dirname, '../src/components/Draft.js')],
   },
 
   plugins: [
     new HtmlWebpackPlugin({
       title: `Draft`,
       filename: 'index.html',
-      chunks: ['runtime~draft-main', 'draft-main', 'vendors'],
+      chunks: ['runtime~draft', 'draft', 'vendors'],
       template: path.resolve(__dirname, '../templates/index.html'),
     }),
   ],
+
+  performance: {
+    // Disables the warnings about entrypoints being too large
+    hints: false,
+  },
 
   output: {
     path: path.resolve(__dirname, '../dist'),
     filename: '[name].js',
     libraryTarget: 'umd',
   },
-
-  // resolve: {
-  //   symlinks: true,
-  //   alias: {
-  //     // Resolve the path to React so we don't import multiple react versions
-  //     react: path.resolve(__dirname, '../node_modules/react'),
-  //     '@emotion/core': path.resolve(__dirname, '../node_modules/@emotion/core'),
-  //   },
-  // },
-
-  // Webpack tries to look in the CWD node_modules for these loaders, which has issues sometimes. This just always resolves them to draft's node_modules.
-  // resolveLoader: {
-  //   alias: {
-  //     'thread-loader': path.resolve(__dirname, '../node_modules/thread-loader/'),
-  //     // 'cache-loader': path.resolve(__dirname, '../node_modules/cache-loader/'),
-  //   },
-  // },
 
   module: {
     rules: [
@@ -57,7 +44,6 @@ module.exports = {
         include: includedModules,
         exclude: excludedModules,
         use: [
-          // 'cache-loader',
           {
             loader: 'babel-loader',
             options: {

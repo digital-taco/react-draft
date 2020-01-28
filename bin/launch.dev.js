@@ -9,6 +9,7 @@ const buildMasterExports = require('../lib/build-master-exports')
 const buildComponentTree = require('../lib/build-component-tree')
 const getFileStructure = require('../lib/get-files')
 const { getComponentGlossary } = require('../lib/get-component-glossary')
+const statsOptions = require('../config/stats-options')
 
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
@@ -70,7 +71,7 @@ wss.on('connection', ws => {
 
 const devServerOptions = {
   // Only print errors to the console
-  stats: 'errors-only',
+  stats: statsOptions,
   // Enable HMR
   hot: true,
   // Prevents the page from refreshing when HMR fails

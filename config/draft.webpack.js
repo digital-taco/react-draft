@@ -3,12 +3,12 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
 const { getInclusionRules } = require('../lib/config-helpers')
 
-module.exports = () => {
-  const { includedModules, excludedModules } = getInclusionRules(
-    [],
-    [path.resolve(__dirname, '../src')]
-  )
+const { includedModules, excludedModules } = getInclusionRules(
+  [],
+  [path.resolve(__dirname, '../src')]
+)
 
+module.exports = () => {
   const config = {
     context: path.resolve(__dirname, '../src'),
     mode: 'development',
@@ -19,17 +19,14 @@ module.exports = () => {
     devtool: process.env.DISABLE_SOURCE_MAPS ? 'none' : 'cheap-module-eval-source-map',
 
     entry: {
-      'draft-main': [
-        'react-hot-loader/patch',
-        path.resolve(__dirname, '../src/components/Draft.js'),
-      ],
+      draft: ['react-hot-loader/patch', path.resolve(__dirname, '../src/components/Draft.js')],
     },
 
     plugins: [
       new HtmlWebpackPlugin({
         title: `Draft`,
         filename: 'index.html',
-        chunks: ['runtime~draft-main', 'draft-main', 'vendors'],
+        chunks: ['runtime~draft', 'draft', 'vendors'],
         template: path.resolve(__dirname, '../templates/index.html'),
       }),
 

@@ -2,6 +2,7 @@
 
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
+const WebSocket = require('ws')
 const fs = require('fs')
 const path = require('path')
 const colors = require('colors')
@@ -10,6 +11,7 @@ const buildMasterExports = require('../lib/build-master-exports')
 const buildComponentTree = require('../lib/build-component-tree')
 const getFileStructure = require('../lib/get-files')
 const { getComponentGlossary } = require('../lib/get-component-glossary')
+const statsOptions = require('../config/stats-options')
 
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
@@ -46,18 +48,26 @@ demoCompiler.hooks.done.tap('Done', stats => {
   log(`Compiled ${colors.dim.italic(`(${stats.endTime - stats.startTime}ms)`)}`, demoCompiler.tag)
 })
 
+// WEB SOCKET
+const wss = new WebSocket.Server({ port: 7999 })
+log.debug('Setting up web socket', 'Web Socket')
+wss.on('connection', ws => {
+  log.debug('Client Connected', 'Web Socket')
+  ws.send(JSON.stringify(getComponentGlossary(componentTree)))
+})
+
 const devServerOptions = {
-  // stats: {
-  //   preset: 'errors-warnings', // only show errors and warnings
-  //   warningsFilter: ['out/component-list.js'], // filter out warnings from component list
-  //   version: false,
-  //   children: false,
-  //   hash: false,
-  // },
-  stats: 'errors-only',
+  // Only print errors to the console
+  stats: statsOptions,
+  // Enable HMR
   hot: true,
+  // Prevents the page from refreshing when HMR fails
+  hotOnly: true,
+  // Don't log anything to the console - we'll handle it (except errors)
   noInfo: true,
+  // Only show errors on the client
   clientLogLevel: 'error',
+
   watchOptions: {
     ignored: [
       new RegExp(
@@ -67,13 +77,19 @@ const devServerOptions = {
       path.resolve(__dirname, '../out/*'), // ignore all component data files
     ],
   },
+
   before: app => {
+    // Route to get the component tree
     app.use('/tree', (req, res) => {
       res.json(componentTree)
     })
+
+    // Route to get the component glossary
     app.use('/glossary', (req, res) => {
       res.json(getComponentGlossary(componentTree))
     })
+
+    // Route to get the demo page
     app.use('/demo', (req, res, next) => {
       const indexPath = path.join(demoCompiler.outputPath, 'demo.html')
       demoCompiler.outputFileSystem.readFile(indexPath, (err, result) => {
@@ -83,9 +99,13 @@ const devServerOptions = {
         res.end()
       })
     })
-    app.use('/draft-main.js', (req, res) => {
-      res.sendFile(path.resolve(__dirname, '../dist/draft-main.js'))
+
+    // Route to get draft
+    app.use('/draft.js', (req, res) => {
+      res.sendFile(path.resolve(__dirname, '../dist/draft.js'))
     })
+
+    // Route to get index.html
     app.use(/^\/$/, (req, res) => {
       res.sendFile(path.resolve(__dirname, '../dist/index.html'))
     })
