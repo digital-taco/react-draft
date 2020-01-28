@@ -5,9 +5,9 @@ import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { TabsContext } from '../contexts/TabsContext'
-import componentMeta from '../../../out/component-meta'
 import CloseIcon from '../../svgs/CloseIcon'
 import { boolAttr } from '../../lib/helpers'
+import { GlossaryContext } from '../contexts/GlossaryContext'
 
 const tabCss = css`
   padding: 0 16px;
@@ -58,11 +58,12 @@ const closeIconCss = css`
 export default function Tab({ temp, name, filePath, componentHash }) {
   const { updateSelectedComponent, SelectedComponent } = useContext(SelectedContext)
   const { removeTab } = useContext(TabsContext)
+  const componentGlossary = useContext(GlossaryContext)
 
   const isSelected = SelectedComponent.componentHash === componentHash
 
   // If the tab is for a component that isn't in the tree anymore, remove the tab
-  if (!componentMeta[componentHash]) {
+  if (!componentGlossary[componentHash]) {
     removeTab()
     return null
   }

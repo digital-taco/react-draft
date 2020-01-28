@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 const webpack = require('webpack')
 const WebpackDevServer = require('webpack-dev-server')
 const fs = require('fs')
@@ -7,6 +9,7 @@ const log = require('../lib/logger')
 const buildMasterExports = require('../lib/build-master-exports')
 const buildComponentTree = require('../lib/build-component-tree')
 const getFileStructure = require('../lib/get-files')
+const { getComponentGlossary } = require('../lib/get-component-glossary')
 
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
@@ -65,6 +68,12 @@ const devServerOptions = {
     ],
   },
   before: app => {
+    app.use('/tree', (req, res) => {
+      res.json(componentTree)
+    })
+    app.use('/glossary', (req, res) => {
+      res.json(getComponentGlossary(componentTree))
+    })
     app.use('/demo', (req, res, next) => {
       const indexPath = path.join(demoCompiler.outputPath, 'demo.html')
       demoCompiler.outputFileSystem.readFile(indexPath, (err, result) => {
@@ -77,12 +86,12 @@ const devServerOptions = {
     app.use('/draft-main.js', (req, res) => {
       res.sendFile(path.resolve(__dirname, '../dist/draft-main.js'))
     })
-    app.use('/runtime~draft-main.js', (req, res) => {
-      res.sendFile(path.resolve(__dirname, '../dist/runtime~draft-main.js'))
-    })
     app.use(/^\/$/, (req, res) => {
       res.sendFile(path.resolve(__dirname, '../dist/index.html'))
     })
+
+    // Add any custom middleware
+    draftConfig.middleware && draftConfig.middleware(app)
   },
 }
 

@@ -57,7 +57,7 @@ const arrowContainerCss = css`
   }
   & svg {
     width: 16px;
-    fill: #fff4;
+    fill: #fff7;
   }
 `
 

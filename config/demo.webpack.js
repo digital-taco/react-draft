@@ -2,18 +2,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const threadLoader = require('thread-loader')
 const { getInclusionRules, buildBabelConfig } = require('../lib/config-helpers')
-
-const threadLoaderOptions = {
-  workerParallelJobs: 100,
-  poolRespawn: false,
-  workerNodeArgs: ['--max-old-space-size=2048'],
-  poolTimeout: Infinity,
-  name: 'threads',
-}
-
-threadLoader.warmup(threadLoaderOptions, ['babel-loader', 'cache-loader', 'file-loader'])
 
 module.exports = draftConfig => {
   const { babelModules = [], babelConfig = {} } = draftConfig
@@ -29,13 +18,13 @@ module.exports = draftConfig => {
     context: path.resolve('.'),
     mode: 'development',
     cache: true,
-    name: 'demo',
+    name: 'iframe',
 
     // Enables source maps - this option is slow for building, but fastest with original code for rebuilding (https://webpack.js.org/guides/build-performance/#devtool)
     devtool: process.env.DISABLE_SOURCE_MAPS ? 'none' : 'cheap-module-eval-source-map',
 
     entry: {
-      demo: [path.resolve(__dirname, '../src/components/Demo.js')],
+      demo: ['react-hot-loader/patch', path.resolve(__dirname, '../src/components/Demo.js')],
     },
 
     plugins: [
@@ -50,7 +39,7 @@ module.exports = draftConfig => {
       // Build the HTML template for the demo
       new HtmlWebpackPlugin({
         filename: 'demo.html',
-        chunks: ['runtime~demo', 'demo', 'vendors', 'demo~draft-main'],
+        chunks: ['runtime~demo', 'demo', 'vendors'],
         template: path.resolve(__dirname, '../templates/demo.html'),
       }),
 
@@ -64,8 +53,12 @@ module.exports = draftConfig => {
     resolve: {
       symlinks: true,
       alias: {
+        // Must be resolved before react
+        'react-hot-loader': path.resolve(__dirname, '../node_modules/react-hot-loader'),
         // Resolve the path to React so we don't import multiple react versions
         react: path.resolve(__dirname, '../node_modules/react'),
+        // react-hot-loader alters react-dom, so we need to resolve to the altered version
+        'react-dom': path.resolve(__dirname, '../node_modules/@hot-loader/react-dom/'),
         '@emotion/core': path.resolve(__dirname, '../node_modules/@emotion/core'),
       },
     },
@@ -76,6 +69,10 @@ module.exports = draftConfig => {
         'thread-loader': path.resolve(__dirname, '../node_modules/thread-loader/'),
         'cache-loader': path.resolve(__dirname, '../node_modules/cache-loader/'),
         'ignore-loader': path.resolve(__dirname, '../node_modules/ignore-loader/'),
+        'react-hot-loader/webpack': path.resolve(
+          __dirname,
+          '../node_modules/react-hot-loader/webpack'
+        ),
       },
     },
 
@@ -86,9 +83,12 @@ module.exports = draftConfig => {
         ? path.resolve('.', 'draft-build')
         : path.resolve(__dirname, '..'),
       pathinfo: false, // REASON: https://webpack.js.org/guides/build-performance/#output-without-path-info
-      publicPath: process.env.PUBLIC_PATH || '/',
       filename: '[name].js',
       libraryTarget: 'umd',
+
+      // HMR only works with our setup like this
+      hotUpdateChunkFilename: 'hot-update.js',
+      hotUpdateMainFilename: 'main.hot-update.json',
     },
 
     optimization: {
@@ -124,10 +124,7 @@ module.exports = draftConfig => {
           exclude: excludedModules,
           use: [
             'cache-loader',
-            {
-              loader: 'thread-loader',
-              options: threadLoaderOptions,
-            },
+            'react-hot-loader/webpack',
             {
               loader: 'babel-loader',
               options: {

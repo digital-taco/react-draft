@@ -1,5 +1,6 @@
 import React, { useContext, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
+import { hot } from 'react-hot-loader'
 import DemoWrapper from './draft/DemoWrapper'
 import canRender from '../lib/can-render'
 import SettingsProvider from './contexts/SettingsContext'
@@ -7,6 +8,7 @@ import SelectedProvider, { SelectedContext } from './contexts/SelectedContext'
 import StorageProvider from './contexts/StorageContext'
 import EditDrawerProvider from './contexts/EditDrawerContext'
 import TabsProvider from './contexts/TabsContext'
+import GlossaryProvider from './contexts/GlossaryContext'
 import { msg, parseMsg } from '../lib/helpers'
 import '../global.css' //eslint-disable-line
 
@@ -29,7 +31,7 @@ function Page() {
     msg(iframeRef.current && iframeRef.current.contentWindow, 'PROP_STATES', propStates)
 
   function receiveMessage(type) {
-    if (process.env.DEBUG) console.log('DRAFT | Message Received: ', type)
+    if (process.env.DEBUG) console.log('[Iframe Messages][Draft]  Message Received: ', type)
     if (type === 'DEMO_INITIALIZED') {
       messageSelectedComponent()
       messagePropStates()
@@ -58,18 +60,22 @@ function Page() {
   )
 }
 
+const HotPage = hot(module)(Page)
+
 // Render the demo in the dom
 ReactDOM.render(
   <StorageProvider>
-    <SelectedProvider>
-      <EditDrawerProvider>
-        <SettingsProvider>
-          <TabsProvider>
-            <Page />
-          </TabsProvider>
-        </SettingsProvider>
-      </EditDrawerProvider>
-    </SelectedProvider>
+    <GlossaryProvider>
+      <SelectedProvider>
+        <EditDrawerProvider>
+          <SettingsProvider>
+            <TabsProvider>
+              <HotPage />
+            </TabsProvider>
+          </SettingsProvider>
+        </EditDrawerProvider>
+      </SelectedProvider>
+    </GlossaryProvider>
   </StorageProvider>,
   document.getElementById('app')
 )

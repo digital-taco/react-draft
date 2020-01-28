@@ -3,7 +3,7 @@ import { removeQuotes, isJson } from '../../lib/helpers'
 import { StorageContext } from './StorageContext'
 import { SELECTED_COMPONENT_HASH } from '../../constants/STORAGE_KEYS'
 import EmptyDemo from '../demo/EmptyDemo'
-import componentMeta from '../../../out/component-meta'
+import { GlossaryContext } from './GlossaryContext'
 
 const quoteRegExp = /['"]/
 
@@ -48,17 +48,21 @@ function getPropStateDefaults(props) {
 export const SelectedContext = React.createContext()
 
 export default function SelectedProvider({ children }) {
+  const componentGlossary = useContext(GlossaryContext)
+
   // TEMPORARY: Aliased components do not work, so we'll remove them here
-  Object.entries(componentMeta).forEach(([key, c]) => {
-    if (!c) delete componentMeta[key]
+  Object.entries(componentGlossary).forEach(([key, c]) => {
+    if (!c) delete componentGlossary[key]
   })
 
   const { getItem, setItem } = useContext(StorageContext)
 
-  const selectedComponentHash = getItem(SELECTED_COMPONENT_HASH, EmptyDemo.componentHash)
+  const selectedComponentHash = getItem(SELECTED_COMPONENT_HASH)
 
   // Find the corresponding component
-  const SelectedComponent = componentMeta[selectedComponentHash] || { componentHash: 'EmptyDemo' }
+  const SelectedComponent = componentGlossary[selectedComponentHash] || {
+    componentHash: 'EmptyDemo',
+  }
 
   const selectedPropStatesKey = `DRAFT_${selectedComponentHash}_Prop_States`
 
@@ -66,7 +70,7 @@ export default function SelectedProvider({ children }) {
   const propStates = getItem(selectedPropStatesKey, getPropStateDefaults(SelectedComponent.props))
 
   function getComponent(name, filePath) {
-    const entry = Object.entries(componentMeta).find(([, Component]) => {
+    const entry = Object.entries(componentGlossary).find(([, Component]) => {
       if (!Component) return false
       return Component.filePath === filePath && Component.displayName === name
     })
