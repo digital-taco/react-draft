@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { getInclusionRules } = require('../lib/config-helpers')
 
@@ -18,6 +19,14 @@ module.exports = {
   },
 
   plugins: [
+    // ENV variables
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: process.env.NODE_ENV || 'development',
+      PUBLIC_PATH: process.env.PUBLIC_PATH,
+      WRITE_TO_DISK: process.env.WRITE_TO_DISK,
+      DEBUG: process.env.DEBUG,
+    }),
+
     new HtmlWebpackPlugin({
       title: `Draft`,
       filename: 'index.html',
