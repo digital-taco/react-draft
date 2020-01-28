@@ -74,7 +74,7 @@ export default function DemoJSX() {
     toJsxOptions
   )
 
-  return (
+  return SelectedComponent.componentHash !== 'EmptyDemo' ? (
     <div css={jsxCss} className="ace_editor ace-dracula ace_dark">
       <AceEditor
         value={jsxString}
@@ -105,5 +105,7 @@ export default function DemoJSX() {
         </Button>
       </div>
     </div>
+  ) : (
+    <div style={{ margin: 16 }}>Please select a component.</div>
   )
 }
