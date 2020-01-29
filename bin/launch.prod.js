@@ -7,6 +7,7 @@ const fs = require('fs')
 const path = require('path')
 const colors = require('colors')
 const boxen = require('boxen')
+const open = require('open')
 const log = require('../lib/logger')
 const buildMasterExports = require('../lib/build-master-exports')
 const buildComponentTree = require('../lib/build-component-tree')
@@ -128,8 +129,8 @@ function launchServer() {
     if (err) {
       log.error(err)
     } else {
-      log(
-        `\n${boxen(
+      console.log(
+        boxen(
           `   Draft launched on port ${port}   \n\n${colors.brightGreen(
             `http://localhost:${port}`
           )}`,
@@ -144,8 +145,7 @@ function launchServer() {
             align: 'center',
             dimBorder: true,
           }
-        )}`,
-        'Server'
+        )
       )
       if (openAtLaunch) {
         open(`http://localhost:${port}`)

@@ -129,8 +129,8 @@ function launchServer() {
     if (err) {
       log.error(err)
     } else {
-      log(
-        `\n${boxen(
+      console.log(
+        boxen(
           `   Draft launched on port ${port}   \n\n${colors.brightGreen(
             `http://localhost:${port}`
           )}`,
@@ -145,8 +145,7 @@ function launchServer() {
             align: 'center',
             dimBorder: true,
           }
-        )}`,
-        'Server'
+        )
       )
       if (openAtLaunch) {
         open(`http://localhost:${port}`)

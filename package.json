@@ -2,7 +2,7 @@
   "name": "@digital-taco/react-draft",
   "version": "0.5.0",
   "description": "Develop your React components in isolation without any configuration",
-  "main": "launch.prod.js",
+  "main": "bin/launch.prod.js",
   "scripts": {
     "test": "bash test/index.sh",
     "test:ci": "bash test/index.sh --ci",
