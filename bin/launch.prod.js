@@ -6,6 +6,7 @@ const WebSocket = require('ws')
 const fs = require('fs')
 const path = require('path')
 const colors = require('colors')
+const boxen = require('boxen')
 const log = require('../lib/logger')
 const buildMasterExports = require('../lib/build-master-exports')
 const buildComponentTree = require('../lib/build-component-tree')
@@ -15,7 +16,7 @@ const statsOptions = require('../config/stats-options')
 
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
-const { babelModules = [], ignore = [], port = 8080 } = draftConfig
+const { babelModules = [], ignore = [], port = 8080, openAtLaunch = true } = draftConfig
 const joinedIncludedNodesModules = babelModules.join('|')
 
 const demoWebpackConfig = require('../config/demo.webpack')(draftConfig)
@@ -123,5 +124,32 @@ const devServerOptions = {
 const server = new WebpackDevServer(demoCompiler, devServerOptions)
 
 function launchServer() {
-  server.listen(port, '127.0.0.1', () => log(`Server launched on port ${port}`, 'Server'))
+  server.listen(port, '127.0.0.1', err => {
+    if (err) {
+      log.error(err)
+    } else {
+      log(
+        `\n${boxen(
+          `   Draft launched on port ${port}   \n\n${colors.brightGreen(
+            `http://localhost:${port}`
+          )}`,
+          {
+            padding: {
+              top: 1,
+              left: 0,
+              right: 0,
+              bottom: 1,
+            },
+            borderColor: '#2979ff',
+            align: 'center',
+            dimBorder: true,
+          }
+        )}`,
+        'Server'
+      )
+      if (openAtLaunch) {
+        open(`http://localhost:${port}`)
+      }
+    }
+  })
 }
