@@ -2,7 +2,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const { getInclusionRules, buildBabelConfig } = require('../lib/config-helpers')
+const { getInclusionRules, buildBabelConfig, resolvePackagePath } = require('../lib/config-helpers')
 
 module.exports = draftConfig => {
   const { babelModules = [], babelConfig = {} } = draftConfig
@@ -13,6 +13,8 @@ module.exports = draftConfig => {
     path.resolve(__dirname, '../src/components/Demo.js'),
     path.resolve(__dirname, '../src/components/demo'),
   ])
+
+  if (!process.env.NODE_ENV) process.env.NODE_ENV = 'development'
 
   const config = {
     context: path.resolve('.'),
@@ -54,25 +56,22 @@ module.exports = draftConfig => {
       symlinks: true,
       alias: {
         // Must be resolved before react
-        'react-hot-loader': path.resolve(__dirname, '../node_modules/react-hot-loader'),
+        'react-hot-loader': resolvePackagePath('react-hot-loader'),
         // Resolve the path to React so we don't import multiple react versions
-        react: path.resolve(__dirname, '../node_modules/react'),
+        react: resolvePackagePath('react'),
         // react-hot-loader alters react-dom, so we need to resolve to the altered version
-        'react-dom': path.resolve(__dirname, '../node_modules/@hot-loader/react-dom/'),
-        '@emotion/core': path.resolve(__dirname, '../node_modules/@emotion/core'),
+        'react-dom': resolvePackagePath('@hot-loader/react-dom'),
+        '@emotion/core': resolvePackagePath('@emotion/core'),
       },
     },
 
     // Webpack tries to look in the CWD node_modules for these loaders, which has issues sometimes. This just always resolves them to draft's node_modules.
     resolveLoader: {
       alias: {
-        'thread-loader': path.resolve(__dirname, '../node_modules/thread-loader/'),
-        'cache-loader': path.resolve(__dirname, '../node_modules/cache-loader/'),
-        'ignore-loader': path.resolve(__dirname, '../node_modules/ignore-loader/'),
-        'react-hot-loader/webpack': path.resolve(
-          __dirname,
-          '../node_modules/react-hot-loader/webpack'
-        ),
+        'thread-loader': resolvePackagePath('thread-loader'),
+        'cache-loader': resolvePackagePath('cache-loader'),
+        'ignore-loader': resolvePackagePath('ignore-loader'),
+        'react-hot-loader/webpack': resolvePackagePath('react-hot-loader/webpack.js'),
       },
     },
 

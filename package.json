@@ -1,6 +1,6 @@
 {
   "name": "@digital-taco/react-draft",
-  "version": "0.5.0",
+  "version": "0.5.9",
   "description": "Develop your React components in isolation without any configuration",
   "main": "bin/launch.prod.js",
   "scripts": {
@@ -20,7 +20,13 @@
   },
   "files": [
     "dist/",
-    "bin/launch.prod.js"
+    "bin/launch.prod.js",
+    "lib/",
+    "config/",
+    "templates/",
+    "src/components/Demo.js",
+    "src/components/demo/",
+    "src/lib"
   ],
   "license": "ISC",
   "dependencies": {
