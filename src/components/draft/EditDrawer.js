@@ -45,6 +45,10 @@ const editDrawerCss = css`
   & .ace_editor .ace_gutter .ace_gutter-active-line {
     background: var(--color-background-secondary) !important;
   }
+
+  & .ace_editor .ace_placeholder {
+    opacity: 0.6;
+  }
 `
 
 const headerCss = css`
