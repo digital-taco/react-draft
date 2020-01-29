@@ -8,7 +8,7 @@ import { SettingsContext } from '../contexts/SettingsContext'
 import { StorageContext } from '../contexts/StorageContext'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
 import Tabs from './Tabs'
-import SideBarTitle from './SideBarTitle'
+// import SideBarTitle from './SideBarTitle'
 import { boolAttr } from '../../lib/helpers'
 import {
   SIDEBAR_VIEW,
@@ -17,7 +17,6 @@ import {
   EDIT_DRAWER_WIDTH,
   SIDEBAR_WIDTH,
   TABS,
-  SELECTED_COMPONENT_HASH,
 } from '../../constants/STORAGE_KEYS'
 
 import {
@@ -29,8 +28,8 @@ import {
 const wrapperCss = css`
   height: 100vh;
   max-height: 100vh;
-  background: #283048;
-  background: linear-gradient(to left, #859398, #283048);
+  background: #f7f7f7;
+  /* background: linear-gradient(to left, #859398, #283048); */
 `
 
 const frameCss = css`
@@ -101,7 +100,7 @@ const contentCss = css`
 `
 
 const barCss = css`
-  color: var(--color-text);
+  color: white;
   background-color: var(--color-background-primary);
   height: 48px;
 `
@@ -119,8 +118,8 @@ const boxCss = css`
 
 const containerCss = css`
   box-sizing: border-box;
-  box-shadow: 0 0 16px 0 #0009;
-  border-radius: 3px;
+  box-shadow: 0 0 6px 0 #3334;
+  /* border-radius: 3px; */
   overflow: hidden;
   position: relative;
   height: 100%;
@@ -132,7 +131,7 @@ const displayCss = css`
   flex-grow: 2;
 `
 
-export default function DemoWrapper({ propObjects, componentTree, iframeRef, canRenderComponent }) {
+export default function DemoWrapper({ propObjects, iframeRef, canRenderComponent }) {
   const { getItem, setItem } = useContext(StorageContext)
   const { settings } = useContext(SettingsContext)
   const { editItem } = useContext(EditDrawerContext)
@@ -140,7 +139,6 @@ export default function DemoWrapper({ propObjects, componentTree, iframeRef, can
   const [demoVisible, setDemoVisible] = useState(true)
   const contentRef = useRef(null)
 
-  const sidebarView = getItem(SIDEBAR_VIEW, 'explorer')
   const sideBarIsOpen = getItem(SIDEBAR_IS_OPEN, true)
 
   const tabs = getItem(TABS, [])
@@ -158,7 +156,7 @@ export default function DemoWrapper({ propObjects, componentTree, iframeRef, can
 
     // Only collapse as far as the sidebar's width plus a little bit
     minSize: editDrawerSide === 'right' ? sideBarWidth + 100 : 200,
-    maxSize: editItem ? -48 : undefined,
+    maxSize: editItem ? -48 : 0,
     defaultSize: getItem(editDrawerSize, editDrawerSizeDefault),
     resizerClassName: editDrawerSide === 'right' ? 'verticalResizer' : 'horizontalResizer',
 
@@ -180,8 +178,8 @@ export default function DemoWrapper({ propObjects, componentTree, iframeRef, can
   const innerSplitPaneProps = {
     split: 'vertical',
     className: 'horizontalSplitPane',
-    minSize: sideBarIsOpen ? 300 : 68,
-    maxSize: sideBarIsOpen ? -80 : 68,
+    minSize: sideBarIsOpen ? 288 : 0,
+    maxSize: sideBarIsOpen ? -80 : 0,
     defaultSize: sideBarWidth,
     resizerClassName: 'verticalResizer',
     onDragStarted: () => setDemoVisible(false),
@@ -206,7 +204,7 @@ export default function DemoWrapper({ propObjects, componentTree, iframeRef, can
   // Resizes the horizontal pane whenever the sidebar is opened or closed so the state stays uptodate
   useEffect(() => {
     const pane1 = contentRef.current.querySelector('.horizontalSplitPane > .Pane1')
-    pane1.style.width = sideBarIsOpen ? `${sideBarWidth}px` : '68px'
+    pane1.style.width = sideBarIsOpen ? `${sideBarWidth}px` : '16px'
   }, [sideBarIsOpen, editItem])
 
   return (
@@ -218,15 +216,14 @@ export default function DemoWrapper({ propObjects, componentTree, iframeRef, can
             {/* LEFT PANE - Sidebar */}
             <div style={{ height: '100%' }}>
               <div css={barCss}>
-                <SideBarTitle sideBarIsOpen={sideBarIsOpen} sidebarView={sidebarView} />
+                {/* <SideBarTitle sideBarIsOpen={sideBarIsOpen} sidebarView={sidebarView} /> */}
+                {/* ACTIVITY BAR */}
+                <ActivityBar />
               </div>
 
               <div css={paneCss}>
-                {/* ACTIVITY BAR */}
-                <ActivityBar />
-
                 {/* SIDE BAR */}
-                <SideBar componentTree={componentTree} propObjects={propObjects} />
+                <SideBar propObjects={propObjects} />
               </div>
             </div>
 

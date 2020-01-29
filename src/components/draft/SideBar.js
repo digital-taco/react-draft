@@ -6,6 +6,7 @@ import PropsDrawer from './PropsDrawer'
 import Explorer from './Explorer'
 import Settings from './Settings'
 import DemoJSX from './DemoJSX'
+import SideBarTitle from './SideBarTitle'
 
 const drawerCss = css`
   display: flex;
@@ -17,7 +18,7 @@ const drawerCss = css`
   width: 100%;
 `
 
-export default function SideBar({ componentTree, propObjects }) {
+export default function SideBar({ propObjects }) {
   const { getItem } = useContext(StorageContext)
   const sideBarIsOpen = getItem(SIDEBAR_IS_OPEN, true)
   const sidebarView = getItem(SIDEBAR_VIEW, true)
@@ -27,7 +28,7 @@ export default function SideBar({ componentTree, propObjects }) {
       case 'props':
         return <PropsDrawer propObjects={propObjects} />
       case 'explorer':
-        return <Explorer componentTree={componentTree} />
+        return <Explorer />
       case 'settings':
         return <Settings />
       case 'demo jsx':
@@ -39,6 +40,7 @@ export default function SideBar({ componentTree, propObjects }) {
 
   return sideBarIsOpen ? (
     <div css={drawerCss} className="demo-font">
+      <SideBarTitle sideBarIsOpen={sideBarIsOpen} sidebarView={sidebarView} />
       {getSidebarView(sidebarView)}
     </div>
   ) : null

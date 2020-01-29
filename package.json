@@ -1,12 +1,14 @@
 {
   "name": "@digital-taco/react-draft",
-  "version": "0.4.3",
+  "version": "0.5.9",
   "description": "Develop your React components in isolation without any configuration",
-  "main": "index.js",
+  "main": "bin/launch.prod.js",
   "scripts": {
     "test": "bash test/index.sh",
     "test:ci": "bash test/index.sh --ci",
-    "jest-tests": "jest"
+    "jest-tests": "jest",
+    "build": "node ./production.build.js",
+    "prepublish": "npm run build"
   },
   "author": {
     "name": "DigitalTaco",
@@ -16,20 +18,34 @@
     "type": "git",
     "url": "git+https://github.com/digital-taco/react-draft.git"
   },
+  "files": [
+    "dist/",
+    "bin/launch.prod.js",
+    "lib/",
+    "config/",
+    "templates/",
+    "src/components/Demo.js",
+    "src/components/demo/",
+    "src/lib"
+  ],
   "license": "ISC",
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.7.4",
-    "@babel/plugin-transform-runtime": "^7.5.0",
+    "@babel/plugin-transform-runtime": "^7.8.3",
     "@babel/polyfill": "^7.4.4",
-    "@babel/runtime": "^7.5.4",
+    "@babel/preset-env": "^7.8.2",
+    "@babel/preset-react": "^7.8.0",
+    "@babel/runtime": "^7.8.3",
     "@babel/runtime-corejs2": "^7.5.4",
     "@babel/runtime-corejs3": "^7.5.4",
-    "@babel/standalone": "^7.7.7",
     "@emotion/babel-preset-css-prop": "^10.0.17",
     "@emotion/core": "^10.0.14",
+    "@hot-loader/react-dom": "^16.11.0",
     "babel-loader": "^8.0.6",
+    "boxen": "^4.2.0",
     "brace": "^0.11.1",
     "cache-loader": "^4.1.0",
+    "colors": "^1.4.0",
     "copy-to-clipboard": "^3.2.0",
     "core-js": "^3.1.4",
     "css-loader": "^3.2.0",
@@ -37,25 +53,24 @@
     "file-loader": "^4.0.0",
     "find": "^0.3.0",
     "html-webpack-plugin": "^3.2.0",
+    "ignore-loader": "^0.1.2",
     "open": "^6.4.0",
     "react": "^16.8.6",
     "react-ace": "^7.0.2",
     "react-docgen": "^4.1.1",
     "react-dom": "^16.8.6",
     "react-element-to-jsx-string": "^14.1.0",
+    "react-hot-loader": "^4.12.19",
     "react-split-pane": "^0.1.89",
-    "react-view": "^2.0.2",
     "stringify-object": "^3.3.0",
     "style-loader": "^1.0.0",
-    "thread-loader": "^2.1.3",
     "webpack": "^4.35.3",
     "webpack-cli": "^3.3.6",
-    "webpack-dev-middleware": "^3.7.0",
-    "webpack-dev-server": "^3.7.2",
-    "webpack-hot-middleware": "^2.25.0"
+    "webpack-dev-server": "^3.10.1",
+    "ws": "^7.2.1"
   },
   "bin": {
-    "draft": "./bin/launch.js"
+    "draft": "./bin/launch.prod.js"
   },
   "devDependencies": {
     "eslint": "^6.8.0",

@@ -16,7 +16,7 @@ import { transpile, isJsxString } from '../../lib/transpile-jsx'
 const editDrawerCss = css`
   background-color: var(--color-background-primary);
 
-  color: var(--color-text);
+  color: white;
   transition: margin-right 0.2s ease-in-out;
   box-shadow: 0 0 8px #333;
   height: 100%;
@@ -44,6 +44,10 @@ const editDrawerCss = css`
   & .ace_editor .ace_marker-layer .ace_active-line,
   & .ace_editor .ace_gutter .ace_gutter-active-line {
     background: var(--color-background-secondary) !important;
+  }
+
+  & .ace_editor .ace_placeholder {
+    opacity: 0.6;
   }
 `
 
@@ -78,7 +82,7 @@ const titleBarCss = css`
 
 const editItemTypeCss = css`
   font-size: 12px;
-  color: var(--color-background-accent);
+  color: #fff9;
   margin-right: 8px;
   flex-grow: 2;
   text-align: right;

@@ -3,6 +3,7 @@ import { removeQuotes, isJson } from '../../lib/helpers'
 import { StorageContext } from './StorageContext'
 import { SELECTED_COMPONENT_HASH } from '../../constants/STORAGE_KEYS'
 import EmptyDemo from '../demo/EmptyDemo'
+import { GlossaryContext } from './GlossaryContext'
 
 const quoteRegExp = /['"]/
 
@@ -46,31 +47,32 @@ function getPropStateDefaults(props) {
 
 export const SelectedContext = React.createContext()
 
-export default function SelectedProvider({ children, components }) {
+export default function SelectedProvider({ children }) {
+  const { glossary } = useContext(GlossaryContext)
+
   // TEMPORARY: Aliased components do not work, so we'll remove them here
-  Object.entries(components).forEach(([key, c]) => {
-    if (!c) delete components[key]
+  Object.entries(glossary).forEach(([key, c]) => {
+    if (!c) delete glossary[key]
   })
 
   const { getItem, setItem } = useContext(StorageContext)
 
-  const selectedComponentHash = getItem(SELECTED_COMPONENT_HASH, EmptyDemo.meta.componentHash)
+  const selectedComponentHash = getItem(SELECTED_COMPONENT_HASH)
 
   // Find the corresponding component
-  const SelectedComponent = components[selectedComponentHash]
+  const SelectedComponent = glossary[selectedComponentHash] || {
+    componentHash: 'EmptyDemo',
+  }
 
   const selectedPropStatesKey = `DRAFT_${selectedComponentHash}_Prop_States`
 
   // Get/set the selected component's prop values from storage
-  const propStates = getItem(
-    selectedPropStatesKey,
-    getPropStateDefaults(SelectedComponent.meta.props)
-  )
+  const propStates = getItem(selectedPropStatesKey, getPropStateDefaults(SelectedComponent.props))
 
   function getComponent(name, filePath) {
-    const entry = Object.entries(components).find(([, Component]) => {
-      if (!Component.meta) return false
-      return Component.meta.filePath === filePath && Component.meta.displayName === name
+    const entry = Object.entries(glossary).find(([, Component]) => {
+      if (!Component) return false
+      return Component.filePath === filePath && Component.displayName === name
     })
     return entry ? entry[1] : null
   }
@@ -78,15 +80,12 @@ export default function SelectedProvider({ children, components }) {
   /** Updates the currently selected component, identified by filepath */
   function updateSelectedComponent(filePath, displayName) {
     const component = getComponent(displayName, filePath)
-    setItem(
-      SELECTED_COMPONENT_HASH,
-      component ? component.meta.componentHash : EmptyDemo.meta.componentHash
-    )
+    setItem(SELECTED_COMPONENT_HASH, component ? component.componentHash : EmptyDemo.componentHash)
   }
 
   /** Resets all props to their default values */
   function resetToDefaults() {
-    setItem(selectedPropStatesKey, getPropStateDefaults(SelectedComponent.meta.props))
+    setItem(selectedPropStatesKey, getPropStateDefaults(SelectedComponent.props))
   }
 
   /** Updates a specific prop state */

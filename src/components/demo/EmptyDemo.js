@@ -20,6 +20,4 @@ export default function EmptyDemo() {
   )
 }
 
-EmptyDemo.meta = {
-  componentHash: 'EmptyDemo',
-}
+EmptyDemo.componentHash = 'EmptyDemo'

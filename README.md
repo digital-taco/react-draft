@@ -57,6 +57,7 @@ Here are the available options:
 |babelModules|An array of strings or regexes to match against additional modules that need to be run through babel that live outside the project's directory or in the project's node_modules.|
 |middleware|A function that is passed the `app` instance of express. This allows adding custom middleware needed for things like authentication.|
 |port|The port used to run the server. Defaults to `8080`.|
+|openAtLaunch|True by default. If false, draft will not open in a new tab at launch.|
 
 #### Ignoring Files
 

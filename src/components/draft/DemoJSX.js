@@ -54,7 +54,7 @@ export default function DemoJSX() {
 
   // Garbage collection does not have enough time to remove undefined props, so they show up when we don't want them to
   // This bit of logic removes any undefined prop states from our deserialized values
-  const { props = {} } = SelectedComponent.meta
+  const { props = {} } = SelectedComponent
   Object.entries(deserializedPropStates).forEach(([k, v]) => {
     let { value: defaultValue } = props[k].defaultValue || {}
     if (
@@ -74,7 +74,7 @@ export default function DemoJSX() {
     toJsxOptions
   )
 
-  return (
+  return SelectedComponent.componentHash !== 'EmptyDemo' ? (
     <div css={jsxCss} className="ace_editor ace-dracula ace_dark">
       <AceEditor
         value={jsxString}
@@ -105,5 +105,7 @@ export default function DemoJSX() {
         </Button>
       </div>
     </div>
+  ) : (
+    <div style={{ margin: 16 }}>Please select a component.</div>
   )
 }
