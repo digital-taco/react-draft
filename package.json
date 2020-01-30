@@ -8,7 +8,7 @@
     "test:ci": "bash test/index.sh --ci",
     "jest-tests": "jest",
     "build": "node ./production.build.js",
-    "prepublish": "npm run build"
+    "prepare": "npm run build"
   },
   "author": {
     "name": "DigitalTaco",
