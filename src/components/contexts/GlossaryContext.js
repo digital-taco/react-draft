@@ -10,7 +10,8 @@ export default function GlossaryProvider({ children }) {
     const socket = new WebSocket(`ws://${window.location.hostname}:7999`)
 
     socket.addEventListener('message', ({ data }) => {
-      if (process.env.DEBUG) console.log('[WEB SOCKET] Glossary Received', JSON.parse(data))
+      if (process.env.DEBUG || process.env.VERBOSE)
+        console.log('[WEB SOCKET] Glossary Received', JSON.parse(data))
       const glossaryData = JSON.parse(data)
 
       if (!glossaryData.glossary) {

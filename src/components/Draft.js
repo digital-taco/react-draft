@@ -30,11 +30,14 @@ function Page() {
   const messagePropStates = () =>
     msg(iframeRef.current && iframeRef.current.contentWindow, 'PROP_STATES', propStates)
 
-  function receiveMessage(type) {
+  function receiveMessage(type, data) {
     if (process.env.DEBUG) console.log('[Iframe Messages][Draft]  Message Received: ', type)
     if (type === 'DEMO_INITIALIZED') {
       messageSelectedComponent()
       messagePropStates()
+    } else if (type === 'PACKAGE_NAME') {
+      document.title = `Draft - ${SelectedComponent.componentHash !== 'EmptyDemo' &&
+        SelectedComponent.displayName} (${data})`
     }
   }
 

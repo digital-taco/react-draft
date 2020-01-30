@@ -34,6 +34,7 @@ function Page() {
   useEffect(() => {
     window.addEventListener('message', handleMessage)
     msg(window.top, 'DEMO_INITIALIZED', { state: 'ready' })
+    if (process.env.PACKAGE_NAME) msg(window.top, 'PACKAGE_NAME', process.env.PACKAGE_NAME)
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 

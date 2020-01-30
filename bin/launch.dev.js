@@ -18,8 +18,12 @@ const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : 
 const { babelModules = [], ignore = [], port = 8080, openAtLaunch = true } = draftConfig
 const joinedIncludedNodesModules = babelModules.join('|')
 
+log.verbose('Launching Draft')
+
 const draftWebpackConfig = require('../config/draft.webpack')(draftConfig)
 const demoWebpackConfig = require('../config/demo.webpack')(draftConfig)
+
+log.verbose('Webpack Configs Retrieved')
 
 const fileStructure = getFileStructure(ignore)
 const componentTree = buildComponentTree(fileStructure)
@@ -35,11 +39,34 @@ demoCompiler.initialBuild = false
 draftCompiler.tag = 'draft'
 demoCompiler.tag = 'demo'
 
+// WEB SOCKET
+const wss = new WebSocket.Server({ port: 7999 })
+log.debug('Setting up web socket', 'Web Socket')
+wss.on('connection', ws => {
+  log.verbose('Client Connected (Initial)', 'Web Socket')
+  ws.send(
+    JSON.stringify({
+      glossary: getComponentGlossary(componentTree),
+      tree: componentTree,
+    })
+  )
+})
+
 // Whenever the compilation goes invalid (something changed), rebuild the master exports
 multiCompiler.compilers.forEach(compiler =>
   compiler.hooks.invalid.tap('BuildExportsList', fileName => {
     log.debug(`File Changed: ${fileName}`, 'demo')
     buildMasterExports(componentTree, draftConfig)
+    wss.clients.forEach(socket => {
+      log.verbose(`Updating glossary - Client []`, 'Web Socket')
+      const updatedFileStructure = getFileStructure(ignore)
+      socket.send(
+        JSON.stringify({
+          glossary: getComponentGlossary(componentTree),
+          tree: buildComponentTree(updatedFileStructure),
+        })
+      )
+    })
   })
 )
 
@@ -62,19 +89,6 @@ multiCompiler.compilers.forEach(compiler =>
     log(`Compiled ${colors.dim.italic(`(${stats.endTime - stats.startTime}ms)`)}`, compiler.tag)
   })
 )
-
-// WEB SOCKET
-const wss = new WebSocket.Server({ port: 7999 })
-log.debug('Setting up web socket', 'Web Socket')
-wss.on('connection', ws => {
-  log.debug('Client Connected', 'Web Socket')
-  ws.send(
-    JSON.stringify({
-      glossary: getComponentGlossary(componentTree),
-      tree: componentTree,
-    })
-  )
-})
 
 const devServerOptions = {
   // Only print errors to the console

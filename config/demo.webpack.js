@@ -2,7 +2,12 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const { getInclusionRules, buildBabelConfig, resolvePackagePath } = require('../lib/config-helpers')
+const {
+  getInclusionRules,
+  buildBabelConfig,
+  resolvePackagePath,
+  getPackageName,
+} = require('../lib/config-helpers')
 
 module.exports = draftConfig => {
   const { babelModules = [], babelConfig = {} } = draftConfig
@@ -36,6 +41,7 @@ module.exports = draftConfig => {
         PUBLIC_PATH: '/',
         WRITE_TO_DISK: false,
         DEBUG: false,
+        PACKAGE_NAME: getPackageName(),
       }),
 
       // Build the HTML template for the demo
