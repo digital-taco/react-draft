@@ -9,7 +9,6 @@ const buttonCss = css`
   font-weight: bold;
   background-color: var(--color-primary);
   padding: 12px 16px;
-  /* border-radius: 4px; */
   border: none;
   font-size: 14px;
   cursor: pointer;
