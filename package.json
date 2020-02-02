@@ -1,6 +1,6 @@
 {
   "name": "@digital-taco/react-draft",
-  "version": "0.5.11",
+  "version": "0.5.12",
   "description": "Develop your React components in isolation without any configuration",
   "main": "bin/launch.prod.js",
   "scripts": {
