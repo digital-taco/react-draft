@@ -11,7 +11,6 @@ import Tabs from './Tabs'
 // import SideBarTitle from './SideBarTitle'
 import { boolAttr } from '../../lib/helpers'
 import {
-  SIDEBAR_VIEW,
   SIDEBAR_IS_OPEN,
   EDIT_DRAWER_HEIGHT,
   EDIT_DRAWER_WIDTH,
@@ -29,7 +28,6 @@ const wrapperCss = css`
   height: 100vh;
   max-height: 100vh;
   background: #f7f7f7;
-  /* background: linear-gradient(to left, #859398, #283048); */
 `
 
 const frameCss = css`
@@ -119,7 +117,6 @@ const boxCss = css`
 const containerCss = css`
   box-sizing: border-box;
   box-shadow: 0 0 6px 0 #3334;
-  /* border-radius: 3px; */
   overflow: hidden;
   position: relative;
   height: 100%;
@@ -216,7 +213,6 @@ export default function DemoWrapper({ propObjects, iframeRef, canRenderComponent
             {/* LEFT PANE - Sidebar */}
             <div style={{ height: '100%' }}>
               <div css={barCss}>
-                {/* <SideBarTitle sideBarIsOpen={sideBarIsOpen} sidebarView={sidebarView} /> */}
                 {/* ACTIVITY BAR */}
                 <ActivityBar />
               </div>
@@ -260,7 +256,6 @@ export default function DemoWrapper({ propObjects, iframeRef, canRenderComponent
                       />
                     )}
                   </div>
-                  {/* TO DO: FIX THIS {!children && <BadRenderMessage />} */}
                 </div>
               </div>
             </div>

@@ -31,7 +31,6 @@ export default function ReloadNotification() {
         setReloading(false)
       }
     }
-    console.log(module)
     module.hot.addStatusHandler(handler)
     return () => module.hot.removeStatusHandler(handler)
   })

@@ -9,7 +9,7 @@ const noRenderCss = css`
 
 const titleCss = css`
   font-weight: bold;
-  letter-spacing: .035rem;
+  letter-spacing: 0.035rem;
   line-height: 3rem;
 `
 

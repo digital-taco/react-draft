@@ -1,18 +1,23 @@
-import React from 'react'
-import useLocalStorage from '../../useLocalStorage'
+import React, { useContext } from 'react'
+import { StorageContext } from './StorageContext'
+import { SETTINGS } from '../../constants/STORAGE_KEYS'
 
 export const SettingsContext = React.createContext()
 
 export default function SettingsProvider({ children }) {
-  const [settings, setSettings] = useLocalStorage('react-draft-settings', {
+  const { getItem, setItem } = useContext(StorageContext)
+
+  const settings = getItem(SETTINGS, {
     demoPadding: 0,
     editDrawerSide: 'right',
   })
 
   const updateSetting = (settingKey, newValue) => {
-    setSettings(prev => {
-      return { ...prev, [settingKey]: newValue }
+    const currentSettings = getItem(SETTINGS, {
+      demoPadding: 0,
+      editDrawerSide: 'right',
     })
+    setItem(SETTINGS, { ...currentSettings, [settingKey]: newValue })
   }
 
   return (

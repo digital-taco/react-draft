@@ -32,6 +32,10 @@ const jsxCss = css`
   & div.ace_scroller {
     left: 16px !important;
   }
+
+  & .ace_hidden-cursors {
+    opacity: 0;
+  }
 `
 
 const actionsCss = css`

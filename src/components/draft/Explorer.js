@@ -50,8 +50,6 @@ const componentCss = css`
   border-radius: 2px;
 
   &[data-selected='true'] {
-    /* background-color: var(--color-text-selected); */
-    /* color: white; */
     font-weight: bold;
   }
 
@@ -72,7 +70,6 @@ const folderContentsCss = css`
 
 const folderNameCss = css`
   ${itemContainerCss}
-  /* color: white; */
   padding: 4px 0;
   cursor: pointer;
   user-select: none;

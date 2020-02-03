@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 import getInput from '../../lib/get-input'
-import { H4 } from '../common/Headers'
 import { SelectedContext } from '../contexts/SelectedContext'
 import ResetIcon from '../../svgs/ResetIcon'
 import IconButton from '../common/IconButton'
