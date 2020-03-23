@@ -1,4 +1,4 @@
-import React, { useContext, useRef, useEffect } from 'react'
+import React, { useState, useContext, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { hot } from 'react-hot-loader'
 import DemoWrapper from './draft/DemoWrapper'
@@ -19,6 +19,7 @@ function Page() {
 
   const canRenderComponent = propStates && canRender(props, propStates)
   const handleMessage = parseMsg(receiveMessage)
+  const [packageName, setPackageName] = useState('')
 
   const messageSelectedComponent = () =>
     msg(
@@ -36,20 +37,29 @@ function Page() {
       messageSelectedComponent()
       messagePropStates()
     } else if (type === 'PACKAGE_NAME') {
-      document.title = `Draft - ${SelectedComponent.componentHash !== 'EmptyDemo' &&
-        SelectedComponent.displayName} (${data})`
+      setPackageName(data)
     }
   }
 
+  // Set the document title
+  useEffect(() => {
+    document.title = `Draft ${
+      SelectedComponent.componentHash !== 'EmptyDemo' ? `- ${SelectedComponent.displayName}` : ''
+    } ${packageName && `(${packageName})`}`
+  }, [SelectedComponent, packageName])
+
+  // Add iframe message system handler
   useEffect(() => {
     window.addEventListener('message', handleMessage)
     return () => window.removeEventListener('message', handleMessage)
   }, [])
 
+  // Each time the SelectedComponent updates, update the demo iframe
   useEffect(() => {
     messageSelectedComponent()
   }, [SelectedComponent])
 
+  // Each time the prop states update, update the demo iframe
   useEffect(() => {
     messagePropStates()
   }, [propStates])

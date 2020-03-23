@@ -1,20 +1,9 @@
 import React from 'react'
-import { css } from '@emotion/core'
-
-const emptyDemoCss = css`
-  padding: 40px;
-  height: 100vh;
-  width: 100vw;
-  box-sizing: border-box;
-
-  & > * {
-    text-align: center;
-  }
-`
+import styles from './demo.module.css'
 
 export default function EmptyDemo() {
   return (
-    <div css={emptyDemoCss}>
+    <div className={styles.emptyDemo}>
       <div>Please select a component to display</div>
     </div>
   )
