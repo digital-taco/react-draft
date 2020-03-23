@@ -39,6 +39,7 @@
     "@babel/runtime": "^7.8.3",
     "@babel/runtime-corejs2": "^7.5.4",
     "@babel/runtime-corejs3": "^7.5.4",
+    "@babel/standalone": "^7.9.3",
     "@emotion/babel-preset-css-prop": "^10.0.17",
     "@emotion/core": "^10.0.14",
     "@hot-loader/react-dom": "^16.11.0",

@@ -1,26 +1,5 @@
 import React from 'react'
-import { css } from '@emotion/core'
-
-const errorCss = css`
-  background: #fcc;
-  color: #911;
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu',
-    'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-`
-
-const messageCss = css`
-  margin-bottom: 16px;
-  font-size: 20px;
-  font-weight: bold;
-`
-
-const stackCSs = css`
-  white-space: pre-wrap;
-  overflow-wrap: break-word;
-`
+import styles from './demo.module.css'
 
 export default class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -34,13 +13,15 @@ export default class ErrorBoundary extends React.Component {
   }
 
   render() {
-    return this.state.hasError ? (
-      <div css={errorCss}>
-        <div css={messageCss}>{this.state.error.message}</div>
-        <div css={stackCSs}>{this.state.error.stack}</div>
+    const { error, hasError } = this.state
+    const { children } = this.props
+    return hasError ? (
+      <div css={styles.error}>
+        <div css={styles.message}>{error.message}</div>
+        <div css={styles.stack}>{error.stack}</div>
       </div>
     ) : (
-      this.props.children
+      children
     )
   }
 }

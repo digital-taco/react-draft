@@ -60,7 +60,7 @@ export default function DemoJSX() {
   // This bit of logic removes any undefined prop states from our deserialized values
   const { props = {} } = SelectedComponent
   Object.entries(deserializedPropStates).forEach(([k, v]) => {
-    let { value: defaultValue } = props[k].defaultValue || {}
+    let { value: defaultValue } = (props[k] && props[k].defaultValue) || {}
     if (
       typeof defaultValue === 'string' &&
       quoteRegExp.test(defaultValue[0]) &&

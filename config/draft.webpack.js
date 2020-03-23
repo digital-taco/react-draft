@@ -105,10 +105,11 @@ module.exports = () => {
               options: {
                 cacheDirectory: true,
                 cacheCompression: false,
+                configFile: false, // Without this, babel searches for a babel config - which means it will pick up the user's config if they have one
                 presets: [
                   ['@babel/preset-env', { targets: { node: 'current' }, modules: false }],
                   '@babel/preset-react',
-                  require.resolve('@emotion/babel-preset-css-prop'),
+                  require('@emotion/babel-preset-css-prop').default,
                 ],
                 plugins: ['@babel/plugin-syntax-dynamic-import'],
               },

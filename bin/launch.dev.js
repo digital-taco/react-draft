@@ -18,7 +18,7 @@ const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : 
 const { babelModules = [], ignore = [], port = 8080, openAtLaunch = true } = draftConfig
 const joinedIncludedNodesModules = babelModules.join('|')
 
-log.verbose('Launching Draft')
+log('Launching...', ['Dev'])
 
 const draftWebpackConfig = require('../config/draft.webpack')(draftConfig)
 const demoWebpackConfig = require('../config/demo.webpack')(draftConfig)

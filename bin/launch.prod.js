@@ -15,6 +15,8 @@ const getFileStructure = require('../lib/get-files')
 const { getComponentGlossary } = require('../lib/get-component-glossary')
 const statsOptions = require('../config/stats-options')
 
+log('Launching...')
+
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
 const { babelModules = [], ignore = [], port = 8080, openAtLaunch = true } = draftConfig

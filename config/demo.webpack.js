@@ -13,6 +13,7 @@ module.exports = draftConfig => {
   const { babelModules = [], babelConfig = {} } = draftConfig
 
   const draftBabelConfig = buildBabelConfig(babelConfig)
+
   const { includedModules, excludedModules } = getInclusionRules(babelModules, [
     path.resolve('.'),
     path.resolve(__dirname, '../src/components/Demo.js'),
@@ -67,7 +68,6 @@ module.exports = draftConfig => {
         react: resolvePackagePath('react'),
         // react-hot-loader alters react-dom, so we need to resolve to the altered version
         'react-dom': resolvePackagePath('@hot-loader/react-dom'),
-        '@emotion/core': resolvePackagePath('@emotion/core'),
       },
     },
 
@@ -119,10 +119,13 @@ module.exports = draftConfig => {
 
     module: {
       rules: [
+        // IGNORE LOADER
         {
           test: /\.mdx$/,
           use: 'ignore-loader',
         },
+
+        // BABEL LOADER
         {
           test: /(\.js|\.jsx)$/,
           include: includedModules,
@@ -140,10 +143,14 @@ module.exports = draftConfig => {
             },
           ],
         },
+
+        // FILE LOADER
         {
           test: /\.(jpg|jpeg|png|gif|ttf|ttf2|woff|woff2|svg)$/,
           loader: 'file-loader?name=[name].[ext]',
         },
+
+        // STYLE LOADER
         {
           test: /\.css$/,
           use: [
