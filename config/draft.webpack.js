@@ -98,7 +98,7 @@ module.exports = () => {
           include: includedModules,
           exclude: excludedModules,
           use: [
-            'cache-loader',
+            // 'cache-loader',
             'react-hot-loader/webpack',
             {
               loader: 'babel-loader',
