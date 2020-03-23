@@ -131,7 +131,6 @@ module.exports = draftConfig => {
           include: includedModules,
           exclude: excludedModules,
           use: [
-            'cache-loader',
             'react-hot-loader/webpack',
             {
               loader: 'babel-loader',
