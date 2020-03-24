@@ -17,7 +17,7 @@ import { boolAttr } from '../../lib/helpers'
 const explorerCss = css`
   letter-spacing: 0.5px;
   font-size: 14px;
-  padding: 0 16px 0 16px;
+  padding: 0 8px 0 16px;
 
   & svg {
     width: 16px;
@@ -27,12 +27,15 @@ const explorerCss = css`
   }
 `
 
-const itemContainerCss = css`
-  display: flex;
-  align-items: center;
+const ellipsisCss = css`
   overflow-x: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+`
+
+const itemContainerCss = css`
+  display: flex;
+  align-items: center;
 `
 
 const iconContainerCss = css`
@@ -45,16 +48,15 @@ const componentCss = css`
   cursor: pointer;
   user-select: none;
   padding: 2px;
-  margin-left: 20px;
   color: var(--color-text-primary);
-  border-radius: 2px;
+  border-radius: 3px;
 
   &[data-selected='true'] {
     font-weight: bold;
   }
 
   &:hover {
-    /* background-color: var(--color-background-highlight); */
+    background-color: #dddddf;
   }
 
   & svg {
@@ -63,16 +65,12 @@ const componentCss = css`
   }
 `
 
-const folderContentsCss = css`
-  padding-left: 16px;
-  border-left: 1px solid #b9b9b9;
-`
-
 const folderNameCss = css`
   ${itemContainerCss}
   padding: 4px 0;
   cursor: pointer;
   user-select: none;
+  border-radius: 3px;
 
   & svg {
     vertical-align: bottom;
@@ -83,7 +81,7 @@ const folderNameCss = css`
   }
 
   &:hover {
-    /* background-color: var(--color-background-highlight); */
+    background-color: #dddddf;
   }
 `
 
@@ -96,11 +94,18 @@ function ItemIcons({ Icon, color = 'var(--color-text)', isOpen, hideArrow }) {
   )
 }
 
-function ExportedComponent({ selected, onClick, displayName }) {
+function ExportedComponent({ selected, onClick, displayName, depth }) {
   return (
-    <div css={componentCss} data-selected={selected} onClick={onClick}>
+    <div
+      css={componentCss}
+      data-selected={selected}
+      onClick={onClick}
+      style={{
+        paddingLeft: (depth + 1) * 16 + 8,
+      }}
+    >
       <ItemIcons hideArrow Icon={CodeIcon} />
-      {displayName}
+      <div css={ellipsisCss}>{displayName}</div>
     </div>
   )
 }
@@ -113,6 +118,7 @@ function ExpandableItem({
   components = [],
   SelectedComponent,
   updateSelectedComponent,
+  depth,
 }) {
   const { getItem, setItem } = useContext(StorageContext)
   const { tabs, tempTab, addTab, setTempTab } = useContext(TabsContext)
@@ -142,6 +148,9 @@ function ExpandableItem({
         css={folderNameCss}
         onClick={handleFileClick}
         data-test-path={path}
+        style={{
+          paddingLeft: depth * 16,
+        }}
       >
         {/* eslint-disable-next-line no-nested-ternary */}
         <ItemIcons
@@ -149,18 +158,17 @@ function ExpandableItem({
           isOpen={isOpen}
           color={isFile ? 'var(--color-text)' : 'var(--color-text-selected)'}
         />
-        {path}
+        <div css={ellipsisCss}>{path}</div>
       </div>
 
       {isOpen && (
-        <div css={folderContentsCss}>
-          <RecursiveFileSystem
-            tree={tree}
-            displayComponents={isFile}
-            SelectedComponent={SelectedComponent}
-            updateSelectedComponent={updateSelectedComponent}
-          />
-        </div>
+        <RecursiveFileSystem
+          depth={depth + 1}
+          tree={tree}
+          displayComponents={isFile}
+          SelectedComponent={SelectedComponent}
+          updateSelectedComponent={updateSelectedComponent}
+        />
       )}
     </div>
   )
@@ -171,6 +179,7 @@ const RecursiveFileSystem = ({
   SelectedComponent,
   updateSelectedComponent,
   displayComponents,
+  depth,
 }) => {
   const { addTab, setTempTab, tempTab, tabs } = useContext(TabsContext)
   const children = []
@@ -193,6 +202,7 @@ const RecursiveFileSystem = ({
       components.forEach(component => {
         children.push(
           <ExportedComponent
+            depth={depth}
             key={`ec_${filePath}_${component.displayName}`}
             displayName={component.displayName}
             selected={
@@ -209,6 +219,7 @@ const RecursiveFileSystem = ({
           key={`ei_${index}`}
           isFile={isFile}
           path={path}
+          depth={depth}
           tree={isFile ? { [path]: value } : value}
           displayComponents={isFile}
           filePath={isFile ? value[0] : undefined}
@@ -230,6 +241,7 @@ export default function Explorer() {
   return (
     <div css={explorerCss}>
       <RecursiveFileSystem
+        depth={0}
         tree={tree}
         SelectedComponent={SelectedComponent}
         updateSelectedComponent={updateSelectedComponent}

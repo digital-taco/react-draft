@@ -49,7 +49,7 @@ module.exports = draftConfig => {
       new HtmlWebpackPlugin({
         filename: 'demo.html',
         chunks: ['runtime~demo', 'demo', 'vendors'],
-        template: path.resolve(__dirname, '../templates/demo.html'),
+        template: path.resolve(__dirname, './templates/demo.html'),
       }),
 
       // Needed for HMR
