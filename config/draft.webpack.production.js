@@ -31,7 +31,7 @@ module.exports = {
       title: `Draft`,
       filename: 'index.html',
       chunks: ['runtime~draft', 'draft', 'vendors'],
-      template: path.resolve(__dirname, '../templates/index.html'),
+      template: path.resolve(__dirname, './templates/index.html'),
       favicon: '../assets/favicon.png',
     }),
   ],
