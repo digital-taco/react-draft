@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 import getInput from '../../lib/get-input'
 import { SelectedContext } from '../contexts/SelectedContext'
-import ResetIcon from '../../svgs/ResetIcon'
+import ResetIcon from '../icons/ResetIcon'
 import IconButton from '../common/IconButton'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
 

@@ -1,7 +1,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const { getInclusionRules } = require('../lib/config-helpers')
+const { getInclusionRules, getPackageName } = require('../lib/config-helpers')
 
 const { includedModules, excludedModules } = getInclusionRules(
   [],
@@ -29,13 +29,14 @@ module.exports = () => {
         PUBLIC_PATH: '/',
         WRITE_TO_DISK: false,
         DEBUG: false,
+        PACKAGE_NAME: getPackageName(),
       }),
 
       new HtmlWebpackPlugin({
         title: `Draft`,
         filename: 'index.html',
         chunks: ['runtime~draft', 'draft', 'vendors'],
-        template: path.resolve(__dirname, './templates/index.html'),
+        template: path.resolve(__dirname, '../templates/index.html'),
         favicon: '../assets/favicon.png',
       }),
 

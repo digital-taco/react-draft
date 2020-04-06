@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import { removeQuotes, isJson } from '../../lib/helpers'
 import { StorageContext } from './StorageContext'
 import { SELECTED_COMPONENT_HASH } from '../../constants/STORAGE_KEYS'
@@ -6,6 +6,8 @@ import EmptyDemo from '../demo/EmptyDemo'
 import { GlossaryContext } from './GlossaryContext'
 
 const quoteRegExp = /['"]/
+
+const socket = new WebSocket(`ws://${window.location.hostname}:7999`)
 
 /**
  * Gets the default states for the props
@@ -95,6 +97,16 @@ export default function SelectedProvider({ children }) {
       [propName]: newState,
     })
   }
+
+  useEffect(() => {
+    socket.send(
+      JSON.stringify({
+        type: 'SELECTED_COMPONENT',
+        componentName: SelectedComponent.displayName,
+        filePath: SelectedComponent.filePath,
+      })
+    )
+  }, [SelectedComponent])
 
   return (
     <SelectedContext.Provider

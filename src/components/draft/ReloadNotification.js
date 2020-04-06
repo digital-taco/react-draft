@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { css } from '@emotion/core'
-import ReloadingIcon from '../../svgs/ReloadingIcon'
+import ReloadingIcon from '../icons/ReloadingIcon'
 
 const notificationCss = css`
   background-color: var(--color-background-highlight);

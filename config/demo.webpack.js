@@ -2,12 +2,7 @@
 const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const webpack = require('webpack')
-const {
-  getInclusionRules,
-  buildBabelConfig,
-  resolvePackagePath,
-  getPackageName,
-} = require('../lib/config-helpers')
+const { getInclusionRules, buildBabelConfig, resolvePackagePath } = require('../lib/config-helpers')
 
 module.exports = draftConfig => {
   const { babelModules = [], babelConfig = {} } = draftConfig
@@ -42,14 +37,13 @@ module.exports = draftConfig => {
         PUBLIC_PATH: '/',
         WRITE_TO_DISK: false,
         DEBUG: false,
-        PACKAGE_NAME: getPackageName(),
       }),
 
       // Build the HTML template for the demo
       new HtmlWebpackPlugin({
         filename: 'demo.html',
         chunks: ['runtime~demo', 'demo', 'vendors'],
-        template: path.resolve(__dirname, './templates/demo.html'),
+        template: path.resolve(__dirname, '../templates/demo.html'),
       }),
 
       // Needed for HMR
@@ -92,8 +86,8 @@ module.exports = draftConfig => {
       libraryTarget: 'umd',
 
       // HMR only works with our setup like this
-      hotUpdateChunkFilename: 'hot-update.js',
-      hotUpdateMainFilename: 'main.hot-update.json',
+      hotUpdateChunkFilename: 'demo.hot-update.js',
+      hotUpdateMainFilename: 'demo.main.hot-update.json',
     },
 
     optimization: {

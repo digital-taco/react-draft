@@ -8,9 +8,9 @@ const buttonCss = css`
   color: white;
   font-weight: bold;
   background-color: var(--color-primary);
-  padding: 12px 16px;
+  padding: 8px 12px;
   border: none;
-  font-size: 14px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.1s ease-out;
   display: flex;

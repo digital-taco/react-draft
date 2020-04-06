@@ -1,6 +1,6 @@
 module.exports = {
   preset: 'errors-warnings',
-  warningsFilter: [/out\/component-list\.js/, /EnvironmentPlugin/],
+  warningsFilter: [/out\/component-(list|index)\.js/, /EnvironmentPlugin/],
   assets: false,
   version: false,
   hash: false,

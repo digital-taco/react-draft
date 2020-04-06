@@ -6,12 +6,17 @@ const open = require('open')
 const colors = require('colors')
 const WebSocket = require('ws')
 const boxen = require('boxen')
-const log = require('../lib/logger')
-const buildMasterExports = require('../lib/build-master-exports')
-const buildComponentTree = require('../lib/build-component-tree')
-const getFileStructure = require('../lib/get-files')
-const { getComponentGlossary } = require('../lib/get-component-glossary')
+const tcpPortUsed = require('tcp-port-used')
 const statsOptions = require('../config/stats-options')
+const {
+  buildComponentTree,
+  buildComponentIndex,
+  clearComponentIndex,
+  buildWrapperExport,
+  getFileStructure,
+  getComponentGlossary,
+  log,
+} = require('../lib')
 
 const reactConfigPath = path.resolve('.', 'draft.config.js')
 const draftConfig = fs.existsSync(reactConfigPath) ? require(reactConfigPath) : {}
@@ -23,13 +28,8 @@ log('Launching...', ['Dev'])
 const draftWebpackConfig = require('../config/draft.webpack')(draftConfig)
 const demoWebpackConfig = require('../config/demo.webpack')(draftConfig)
 
-log.verbose('Webpack Configs Retrieved')
-
 const fileStructure = getFileStructure(ignore)
 const componentTree = buildComponentTree(fileStructure)
-
-// Write the exports list on initial load
-buildMasterExports(componentTree, draftConfig)
 
 const multiCompiler = webpack([draftWebpackConfig, demoWebpackConfig])
 const [draftCompiler, demoCompiler] = multiCompiler.compilers
@@ -39,43 +39,43 @@ demoCompiler.initialBuild = false
 draftCompiler.tag = 'draft'
 demoCompiler.tag = 'demo'
 
+const selectedComponent = {
+  filePath: '',
+  componentName: '',
+}
+
+// Clean out the component index file before we run the compilers
+clearComponentIndex()
+
+// Build the export file for the user's custom wrapper (if they have one)
+buildWrapperExport(draftConfig)
+
 // WEB SOCKET
-const wss = new WebSocket.Server({ port: 7999 })
-log.debug('Setting up web socket', 'Web Socket')
-wss.on('connection', ws => {
-  log.verbose('Client Connected (Initial)', 'Web Socket')
+const draftWSS = new WebSocket.Server({ port: 7999 })
+const iframeWSS = new WebSocket.Server({ port: 7998 })
+draftWSS.on('connection', ws => {
   ws.send(
     JSON.stringify({
       glossary: getComponentGlossary(componentTree),
       tree: componentTree,
     })
   )
+
+  ws.on('message', message => {
+    const { componentName, filePath } = JSON.parse(message)
+
+    if (selectedComponent.componentName !== componentName) {
+      iframeWSS.clients.forEach(clientWS => {
+        clientWS.send(JSON.stringify({ type: 'REBUILDING_INDEX' }))
+      })
+
+      buildComponentIndex(filePath, componentName, () => {
+        selectedComponent.componentName = componentName
+        selectedComponent.filePath = filePath
+      })
+    }
+  })
 })
-
-// Whenever the compilation goes invalid (something changed), rebuild the master exports
-multiCompiler.compilers.forEach(compiler =>
-  compiler.hooks.invalid.tap('BuildExportsList', fileName => {
-    log.debug(`File Changed: ${fileName}`, 'demo')
-    buildMasterExports(componentTree, draftConfig)
-    wss.clients.forEach(socket => {
-      log.verbose(`Updating glossary - Client []`, 'Web Socket')
-      const updatedFileStructure = getFileStructure(ignore)
-      socket.send(
-        JSON.stringify({
-          glossary: getComponentGlossary(componentTree),
-          tree: buildComponentTree(updatedFileStructure),
-        })
-      )
-    })
-  })
-)
-
-// Log whenever we start a build
-multiCompiler.compilers.forEach(compiler =>
-  compiler.hooks.watchRun.tap('BeforeRun', () => {
-    log('Compiling...', compiler.tag)
-  })
-)
 
 // Log whenever we finish a build
 multiCompiler.compilers.forEach(compiler =>
@@ -83,7 +83,7 @@ multiCompiler.compilers.forEach(compiler =>
     if (!compiler.initialBuild) {
       compiler.initialBuild = true
       if (draftCompiler.initialBuild && demoCompiler.initialBuild) {
-        launchServer()
+        launchServer(port)
       }
     }
     log(`Compiled ${colors.dim.italic(`(${stats.endTime - stats.startTime}ms)`)}`, compiler.tag)
@@ -101,27 +101,23 @@ const devServerOptions = {
   noInfo: true,
   // Only show errors on the client
   clientLogLevel: 'error',
-
+  port,
   watchOptions: {
     ignored: [
       new RegExp(
         `node_modules${joinedIncludedNodesModules && `?!(/${joinedIncludedNodesModules})`}`
       ), // ignore all node_modules except ones defined in user config
       path.resolve('.', 'draft-build/'), // ignore static site build
-      path.resolve(__dirname, '../out/*'), // ignore all component data files
+      // path.resolve(__dirname, '../out/*'), // ignore all component data files
     ],
   },
 
   before: app => {
     // Route to get the component tree
-    app.use('/tree', (req, res) => {
-      res.json(componentTree)
-    })
+    app.use('/tree', (req, res) => res.json(componentTree))
 
     // Route to get the component glossary
-    app.use('/glossary', (req, res) => {
-      res.json(getComponentGlossary(componentTree))
-    })
+    app.use('/glossary', (req, res) => res.json(getComponentGlossary(componentTree)))
 
     // Route to get the demo page
     app.use('/demo', (req, res, next) => {
@@ -138,32 +134,38 @@ const devServerOptions = {
 
 const server = new WebpackDevServer(multiCompiler, devServerOptions)
 
-function launchServer() {
-  server.listen(port, '127.0.0.1', err => {
-    if (err) {
-      log.error(err)
+function launchServer(serverPort) {
+  tcpPortUsed.check(serverPort).then(isInUse => {
+    if (isInUse) {
+      launchServer(serverPort - 1)
     } else {
-      console.log(
-        boxen(
-          `   Draft launched on port ${port}   \n\n${colors.brightGreen(
-            `http://localhost:${port}`
-          )}`,
-          {
-            padding: {
-              top: 1,
-              left: 0,
-              right: 0,
-              bottom: 1,
-            },
-            borderColor: '#2979ff',
-            align: 'center',
-            dimBorder: true,
+      server.listen(port, '127.0.0.1', err => {
+        if (err) {
+          log.error(err)
+        } else {
+          console.log(
+            boxen(
+              `   Draft launched on port ${port}   \n\n${colors.brightGreen(
+                `http://localhost:${port}`
+              )}`,
+              {
+                padding: {
+                  top: 1,
+                  left: 0,
+                  right: 0,
+                  bottom: 1,
+                },
+                borderColor: '#2979ff',
+                align: 'center',
+                dimBorder: true,
+              }
+            )
+          )
+          if (openAtLaunch) {
+            open(`http://localhost:${port}`)
           }
-        )
-      )
-      if (openAtLaunch) {
-        open(`http://localhost:${port}`)
-      }
+        }
+      })
     }
   })
 }

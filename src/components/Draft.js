@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useEffect } from 'react'
+import React, { useContext, useRef, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { hot } from 'react-hot-loader'
 import DemoWrapper from './draft/DemoWrapper'
@@ -10,7 +10,9 @@ import EditDrawerProvider from './contexts/EditDrawerContext'
 import TabsProvider from './contexts/TabsContext'
 import GlossaryProvider from './contexts/GlossaryContext'
 import { msg, parseMsg } from '../lib/helpers'
-import '../global.css' //eslint-disable-line
+
+
+import './global.css'
 
 function Page() {
   const iframeRef = useRef(null)
@@ -19,40 +21,33 @@ function Page() {
 
   const canRenderComponent = propStates && canRender(props, propStates)
   const handleMessage = parseMsg(receiveMessage)
-  const [packageName, setPackageName] = useState('')
 
   const messageSelectedComponent = () =>
-    msg(
-      iframeRef.current && iframeRef.current.contentWindow,
-      'SELECTED_COMPONENT',
-      SelectedComponent
-    )
+    msg(iframeRef.current && iframeRef.current.contentWindow, 'SELECTED_COMPONENT_UPDATED', {
+      componentName: SelectedComponent?.displayName,
+      filePath: SelectedComponent?.filePath,
+    })
 
   const messagePropStates = () =>
     msg(iframeRef.current && iframeRef.current.contentWindow, 'PROP_STATES', propStates)
 
-  function receiveMessage(type, data) {
-    if (process.env.DEBUG) console.log('[Iframe Messages][Draft]  Message Received: ', type)
-    if (type === 'DEMO_INITIALIZED') {
-      messageSelectedComponent()
-      messagePropStates()
-    } else if (type === 'PACKAGE_NAME') {
-      setPackageName(data)
+  function receiveMessage(type) {
+    switch (type) {
+      case 'DEMO_INITIALIZED': {
+        messageSelectedComponent()
+        messagePropStates()
+        break
+      }
     }
   }
 
   // Set the document title
   useEffect(() => {
+    const packageName = process.env.PACKAGE_NAME
     document.title = `Draft ${
       SelectedComponent.componentHash !== 'EmptyDemo' ? `- ${SelectedComponent.displayName}` : ''
     } ${packageName && `(${packageName})`}`
-  }, [SelectedComponent, packageName])
-
-  // Add iframe message system handler
-  useEffect(() => {
-    window.addEventListener('message', handleMessage)
-    return () => window.removeEventListener('message', handleMessage)
-  }, [])
+  }, [SelectedComponent])
 
   // Each time the SelectedComponent updates, update the demo iframe
   useEffect(() => {
@@ -63,6 +58,14 @@ function Page() {
   useEffect(() => {
     messagePropStates()
   }, [propStates])
+
+  // Add iframe message system handler
+  useEffect(() => {
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
+  const componentName = SelectedComponent?.componentName
 
   return (
     <DemoWrapper

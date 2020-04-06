@@ -5,7 +5,7 @@ import React, { useContext } from 'react'
 import { css } from '@emotion/core'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { TabsContext } from '../contexts/TabsContext'
-import CloseIcon from '../../svgs/CloseIcon'
+import CloseIcon from '../icons/CloseIcon'
 import { boolAttr } from '../../lib/helpers'
 import { GlossaryContext } from '../contexts/GlossaryContext'
 

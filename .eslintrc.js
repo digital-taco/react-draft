@@ -36,6 +36,7 @@ module.exports = {
       'no-param-reassign': 'off',
       'no-plusplus': 'off',
       'consistent-return': 'off',
+      'default-case': 'off',
       'no-unused-expressions': ['warn', { allowShortCircuit: true }],
       'no-use-before-define': ['error', { functions: false, classes: true, variables: true }],
       'no-warning-comments': 1,

@@ -7,9 +7,9 @@ import 'brace/theme/dracula'
 import { serialize, deserialize, boolAttr } from '../../lib/helpers'
 import { SelectedContext } from '../contexts/SelectedContext'
 import { EditDrawerContext } from '../contexts/EditDrawerContext'
-import ErrorIcon from '../../svgs/ErrorIcon'
+import ErrorIcon from '../icons/ErrorIcon'
 import IconButton from '../common/IconButton'
-import CloseIcon from '../../svgs/CloseIcon'
+import CloseIcon from '../icons/CloseIcon'
 
 import { transpile, isJsxString } from '../../lib/transpile-jsx'
 
